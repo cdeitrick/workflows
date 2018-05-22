@@ -107,7 +107,7 @@ class Spades:
 
 		kwargs['parent_folder'] = kwargs.get('parent_folder', fwd.parent.parent)
 
-		return cls(fwd, rev, ufwd, urev, parent_folder = parent_folder, **kwargs)
+		return cls(fwd, rev, ufwd, urev, **kwargs)
 
 
 class Trimmomatic:
