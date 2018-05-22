@@ -107,5 +107,6 @@ def main():
 			reverse = isolate_folder / "P148-1_2.clip1.fastq",
 			folder = base_folder / "P148-1"
 		)
+		iterate_assemblies(sample)
 if __name__ == "__main__":
 	main()
