@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import List, Dict
+from typing import List
 import sys
 
 sys.path.append(str(Path(__file__).parent))
@@ -104,10 +104,12 @@ if __name__ == "__main__":
 			output_folder.mkdir()
 		assemble_workflow(moreira_samples)
 	else:
+		base_folder = Path.home() / "projects" / "moreira_por"
+		isolate_folder = base_folder / "isolates" / "Clinical_isolates_{}".format("P148-1")
 		base_path = Path.home() / "projects"
 		sample = Sample(
 			name = "P148-1",
-			forward = "",
-			reverse = "",
-			folder = ""
+			forward = isolate_folder / "P148-1_1.clip1.fastq",
+			reverse = isolate_folder / "P148-1_2.clip1.fastq",
+			folder = Path.home() / "Documents" / "projects"/ "P148-1"
 		)

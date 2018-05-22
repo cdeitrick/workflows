@@ -2,13 +2,10 @@ from pathlib import Path
 from dataclasses import dataclass
 from typing import Union
 import subprocess
+from .common import Sample, checkdir
+import argparse
+
 THREADS = 16
-
-
-def checkdir(path):
-	if isinstance(path, str): path = Path(path)
-	if not path.exists(): path.mkdir()
-	return path
 
 
 @dataclass
@@ -39,7 +36,7 @@ class TrimmomaticOptions:
 
 
 class FastQC:
-	def __init__(self, forward:Path, reverse:Path, **kwargs):
+	def __init__(self, forward: Path, reverse: Path, **kwargs):
 		parent_folder = kwargs['parent_folder']
 		output_folder = parent_folder / "fastqc_output"
 
@@ -60,7 +57,6 @@ class FastQC:
 
 	@classmethod
 	def from_sample(cls, sample):
-
 		return cls(sample.forward, sample.reverse, parent_folder = sample.folder)
 
 
@@ -146,4 +142,43 @@ class Trimmomatic:
 
 
 if __name__ == "__main__":
-	pass
+	parser = argparse.ArgumentParser(
+		description = "Read pre-processing."
+
+	)
+
+	parser.add_argument(
+		"-n", "--name",
+		action = 'store',
+		help = "Name of the sample. Used when naming the output files.",
+		dest = "name"
+	)
+	parser.add_argument(
+		"-f", "--forward",
+		action = "store",
+		help = "Path the the forward read.",
+		dest = 'forward'
+	)
+	parser.add_argument(
+		"-r", "--reverse",
+		action = "store",
+		help = "Path the the reverse read",
+		dest = "reverse"
+	)
+	parser.add_argument(
+		"-p", "--parent-folder",
+		action = 'store',
+		help = "Path to the output folder.",
+		dest = 'parent_folder'
+	)
+	args = parser.parse_args()
+
+	sample = Sample(
+		name = "name",
+		forward = args.forward,
+		reverse = args.reverse,
+		folder = args.parent_folder
+	)
+
+	FastQC.from_sample(sample)
+	Trimmomatic.from_sample(sample)

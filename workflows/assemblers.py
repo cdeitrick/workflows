@@ -3,13 +3,9 @@ from dataclasses import dataclass
 import subprocess
 from .read_quality import TrimmomaticOutput
 from .Terminal import Workflow
+from .common import checkdir
+import argparse
 THREADS = 16
-
-
-def checkdir(path):
-	if isinstance(path, str): path = Path(path)
-	if not path.exists(): path.mkdir()
-	return path
 
 
 @dataclass
@@ -60,8 +56,7 @@ class Spades:
 			spades_program,
 			"-t", str(THREADS),
 			"--careful",
-			# 21,33,55,77,91
-			"-k", spades_kmer_length,  # "15,21,25,31", #Must be odd values
+			"-k", spades_kmer_length,  # "15,21,25,31", #Must be odd values and less than 128
 			"--pe1-1", forward,
 			"--pe1-2", reverse,
 			"--pe1-s", forward_unpaired,
@@ -117,5 +112,45 @@ class SpadesWorkflow:
 
 		workflow = Workflow('spades', command, output_folder)
 
+
+
 if __name__ == "__main__":
-	pass
+	parser = argparse.ArgumentParser(
+		description = "Read assembling."
+
+	)
+
+	parser.add_argument(
+		"-n", "--name",
+		action = 'store',
+		help = "Name of the sample. Used when naming the output files.",
+		dest = "name"
+	)
+	parser.add_argument(
+		"-f", "--forward",
+		action = "store",
+		help = "Path the the forward read.",
+		dest = 'forward'
+	)
+	parser.add_argument(
+		"-r", "--reverse",
+		action = "store",
+		help = "Path the the reverse read",
+		dest = "reverse"
+	)
+	parser.add_argument(
+		"-u", "--unpaired",
+		action = "append",
+		help = "Path(s) to the unpaired reads.",
+		dest = "unpaired"
+	)
+	parser.add_argument(
+		"-p", "--parent-folder",
+		action = 'store',
+		help = "Path to the output folder.",
+		dest = 'parent_folder'
+	)
+	args = parser.parse_args()
+
+	Spades(args.forward, args.reverse, *args.unpaired, parent_folder = args.parent_folder)
+

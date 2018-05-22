@@ -1,15 +1,7 @@
 from pathlib import Path
-from dataclasses import dataclass, asdict
-from typing import Dict
-import os
-
+from dataclasses import dataclass
+import argparse
 import subprocess
-
-
-def checkdir(path):
-	if isinstance(path, str): path = Path(path)
-	if not path.exists(): path.mkdir()
-	return path
 
 
 @dataclass
@@ -28,7 +20,6 @@ class ProkkaOutput:
 	tsv: Path
 
 	def exists(self):
-
 		return self.gff.exists()
 
 
@@ -83,10 +74,23 @@ class Prokka:
 
 
 if __name__ == "__main__":
-	base_folder = Path.home() / "projects" / "Achromobacter_Valvano"
+	parser = argparse.ArgumentParser(
+		description = "Assembly annotation."
 
-	contigs1 = base_folder / "9271_AC036_1_trimmed_spades_output" / "contigs.fasta"
-	#contigs2 = base_folder / "9272_AC036CR-0_1_trimmed_spades_output" / "contigs.fasta"
+	)
 
-	Prokka(contigs1, parent_folder = base_folder, prefix = "9271_AC036_1_trimmed")
-	#Prokka(contigs2, parent_folder = base_folder, prefix = "9272_AC036CR-0_1_trimmed")
+	parser.add_argument(
+		"-s", "--sample",
+		action = 'store',
+		help = "Path to the sample contigs.",
+		dest = "sample"
+	)
+	parser.add_argument(
+		"-p", "--parent-folder",
+		action = "store",
+		help = "Path to the parent folder.",
+		dest = 'parent_folder'
+	)
+	args = parser.parse_args()
+
+	Prokka(genome = args.sample, parent_folder = args.parent_folder)

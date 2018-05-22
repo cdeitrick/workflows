@@ -1,6 +1,6 @@
 from pathlib import Path
 import subprocess
-
+from typing import List
 
 class Terminal:
 	def __init__(self, command, output_folder: Path, expected_output: Path):
@@ -11,7 +11,7 @@ class Terminal:
 
 		process = subprocess.run(command, stdout = subprocess.PIPE, stderr = subprocess.PIPE, encoding = "UTF-8")
 
-		command_path.write_text(' '.join(map(str(command))))
+		command_path.write_text(' '.join(map(str,command)))
 		stdout_path.write_text(process.stdout)
 		stderr_path.write_text(process.stderr)
 
@@ -27,7 +27,7 @@ class Workflow:
 
 		process = subprocess.run(command, stdout = subprocess.PIPE, stderr = subprocess.PIPE, encoding = "UTF-8")
 
-		command_path.write_text(' '.join(map(str(command))))
+		command_path.write_text(' '.join(map(str,command)))
 		stdout_path.write_text(process.stdout)
 		stderr_path.write_text(process.stderr)
 
