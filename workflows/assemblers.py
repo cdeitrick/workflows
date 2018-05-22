@@ -65,8 +65,8 @@ class Spades:
 		output_folder = kwargs.get("output_folder")
 		if not output_folder:
 			parent_folder = kwargs['parent_folder']
-			parent_folder = checkdir(parent_folder / "spades_output")
-			output_folder = checkdir(parent_folder / "{}_spades_output".format(forward.stem))
+			output_folder = checkdir(parent_folder / "spades_output")
+
 
 		spades_command_path = output_folder / "spades_command.txt"
 		spades_stdout_path = output_folder / "spades_stdout.txt"

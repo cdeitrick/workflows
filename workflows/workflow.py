@@ -34,7 +34,7 @@ class Sample:
 def collect_moreira_samples():
 	base_name = "P148"
 	base_folder = Path.home() / "projects" / "moreira_por"
-	isolate_folder = base_folder / "IST-Leonilde" / "Seq.Vaughn" / "Clinical_isolates_{}".format(base_name)
+	isolate_folder = base_folder / "isolates" / "Clinical_isolates_{}".format(base_name)
 	samples = list()
 	for index in range(1, 100):
 		isolate_name = "{}-{}".format(base_name, index)
