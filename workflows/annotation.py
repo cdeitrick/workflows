@@ -43,8 +43,9 @@ class Prokka:
 		output_folder = kwargs.get("output_folder")
 		if not output_folder:
 			parent_folder = kwargs['parent_folder']
-			output_folder = checkdir(parent_folder / "prokka_output")  # Don't make the folder
-			output_folder = output_folder / prefix
+			output_folder = parent_folder / "prokka_output"  # Don't make the folder
+
+		print("Saving prokka output to ", output_folder)
 
 		stdout_path = output_folder / "prokka_stdout.txt"
 		stderr_path = output_folder / "prokka_stderr.txt"
@@ -63,9 +64,7 @@ class Prokka:
 		stdout_path.write_text(prokka_process.stdout)
 		stderr_path.write_text(prokka_process.stderr)
 
-		# os.system(prokka_command)
-
-		basename = output_folder / prefix
+		basename = output_folder / "{}_prokka".format(prefix)
 		self.output = ProkkaOutput(
 			gff = basename.with_suffix(".gff"),
 			gbk = basename.with_suffix(".gbk"),
@@ -84,9 +83,8 @@ class Prokka:
 	@classmethod
 	def from_spades(cls, spades_output, **kwargs):
 		sample = spades_output.output_contigs
-		parent_folder = kwargs.get('parent_folder', sample.parent.parent)
-
-		return cls(sample, parent_folder = parent_folder)
+		kwargs['parent_folder'] = kwargs.get('parent_folder', sample.parent.parent)
+		return cls(sample, **kwargs)
 
 
 if __name__ == "__main__":
