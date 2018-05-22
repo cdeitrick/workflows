@@ -90,7 +90,7 @@ def iterate_assemblies(sample:Sample):
 		urev= trimmed_reads.output.reverse_unpaired
 		spades = assemblers.Spades(fwd, rev, ufwd, urev, kmer = kmer_option, output_folder = output_folder)
 
-if __name__ == "__main__":
+def main():
 	debug = False
 	if debug:
 		output_folder = Path.home() / "projects" / "moreira_por" / "workflow_output"
@@ -107,3 +107,5 @@ if __name__ == "__main__":
 			reverse = isolate_folder / "P148-1_2.clip1.fastq",
 			folder = base_folder / "P148-1"
 		)
+if __name__ == "__main__":
+	main()
