@@ -28,6 +28,8 @@ class Spades:
 	----------
 	forward, reverse, forward_unpaired, reverse_unpaired:Path
 		The reads to assemble
+	parent_folder:Path
+	output_folder:Path
 	Usage
 	-----
 		Spades(fwd, rev, ufwd, rev, parent_folder = parent_folder)
@@ -41,6 +43,10 @@ class Spades:
 	"""
 
 	def __init__(self, forward: Path, reverse: Path, forward_unpaired: Path, reverse_unpaired: Path, **kwargs):
+
+		spades_program = kwargs.get('spades', 'spades.py')
+		spades_kmer_length = kwargs.get('kmers', '21,33,55,71')
+
 		output_folder = kwargs.get("output_folder")
 		if not output_folder:
 			parent_folder = kwargs['parent_folder']
@@ -51,11 +57,11 @@ class Spades:
 		spades_stderr_path = output_folder / "spades_stderr.txt"
 
 		command = [
-			"spades.py",
+			spades_program,
 			"-t", str(THREADS),
 			"--careful",
 			# 21,33,55,77,91
-			"-k", '21,33,55,71',  # "15,21,25,31", #Must be odd values
+			"-k", spades_kmer_length,  # "15,21,25,31", #Must be odd values
 			"--pe1-1", forward,
 			"--pe1-2", reverse,
 			"--pe1-s", forward_unpaired,
@@ -112,11 +118,4 @@ class SpadesWorkflow:
 		workflow = Workflow('spades', command, output_folder)
 
 if __name__ == "__main__":
-	base_folder = Path.home() / "projects" / "Achromobacter_Valvano" / "Achromobacter-Valvano"
-	ref = TrimmomaticOutput(
-		base_folder / "9271_AC036_1_trimmed.fastq",
-		base_folder / "9271_AC036_2_trimmed.fastq",
-		base_folder / "9271_AC036_U1_trimmed.fastq",
-		base_folder / "9271_AC036_U2_trimmed.fastq"
-	)
-	Spades.from_trimmomatic(ref)
+	pass

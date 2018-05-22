@@ -66,7 +66,7 @@ def assemble_workflow(samples: List[Sample]):
 
 def iterate_assemblies(sample:Sample):
 	"""
-		Generates a number of de nove assemblies with different k-mer sizes.
+		Generates a number of de novo assemblies with different k-mer sizes.
 	Parameters
 	----------
 	sample
@@ -76,10 +76,38 @@ def iterate_assemblies(sample:Sample):
 
 	"""
 
-if __name__ == "__main__":
+	fastqc_report = read_quality.FastQC.from_sample(sample)
 
-	output_folder = Path.home() / "projects" / "moreira_por" / "workflow_output"
-	moreira_samples = collect_moreira_samples(output_folder)
-	if not output_folder.exists():
-		output_folder.mkdir()
-	assemble_workflow(moreira_samples)
+	trimmed_reads = read_quality.Trimmomatic.from_sample(sample)
+
+	kmer_options = [
+		"11,21,33",
+		"21,33,43,55,67",
+		"21,33,43,55,67,77",
+		"21,33,43,55,67,77,87,99",
+		"21,33,43,55,67,77,99",
+	]
+	for kmer_option in kmer_options:
+		output_folder = Path.home() / "projects" / "spades_output_{}".format(kmer_option)
+		fwd = trimmed_reads.output.forward
+		rev = trimmed_reads.output.reverse
+		ufwd= trimmed_reads.output.forward_unpaired
+		urev= trimmed_reads.output.reverse_unpaired
+		spades = assemblers.Spades(fwd, rev, ufwd, urev, kmer = kmer_option, output_folder = output_folder)
+
+if __name__ == "__main__":
+	debug = False
+	if debug:
+		output_folder = Path.home() / "projects" / "moreira_por" / "workflow_output"
+		moreira_samples = collect_moreira_samples(output_folder)
+		if not output_folder.exists():
+			output_folder.mkdir()
+		assemble_workflow(moreira_samples)
+	else:
+		base_path = Path.home() / "projects"
+		sample = Sample(
+			name = "P148-1",
+			forward = "",
+			reverse = "",
+			folder = ""
+		)
