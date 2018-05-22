@@ -39,6 +39,7 @@ def collect_moreira_samples():
 		forward = isolate_folder / "{}_1.clip1.fastq".format(isolate_name)
 		reverse = isolate_folder / "{}_2.clip1.fastq".format(isolate_name)
 		sample = Sample(isolate_name, forward, reverse)
+		print(sample.exists(), sample)
 		if sample.exists():
 			samples.append(sample)
 		else:
@@ -57,7 +58,8 @@ def assemble_workflow(output_folder:Path, samples:List[Sample]):
 
 
 if __name__ == "__main__":
-	moreira_samples = list(collect_moreira_samples())
+	moreira_samples = collect_moreira_samples()
+	print("collected {} samples".format(len(moreira_samples)))
 	for s in moreira_samples:
 		print(s.exists(), s.name)
 	output_folder = Path.home() / "projects" / "moreira_por" / "workflow_output"
