@@ -43,6 +43,7 @@ def collect_moreira_samples():
 			samples.append(sample)
 		else:
 			break
+	return samples
 
 
 def assemble_workflow(output_folder:Path, samples:List[Sample]):
