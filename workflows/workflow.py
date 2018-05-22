@@ -22,24 +22,27 @@ except:
 @dataclass
 class Sample:
 	name: str
-	forward: str
-	reverse: str
+	forward: Path
+	reverse: Path
+
+	def exists(self):
+		return self.forward.exists() and self.reverse.exists()
 
 def collect_moreira_samples():
 	base_name = "P148"
 	base_folder = Path.home() / "projects" / "moreira_por"
 	isolate_folder = base_folder / "IST-Leonilde" / "Seq.Vaughn" / "Clinical_isolates_{}".format(base_name)
-
+	samples = list()
 	for index in range(100):
 		isolate_name = "{}-{}".format(base_name, index)
 
 		forward = isolate_folder / "{}_1.clip1.fastq".format(isolate_name)
 		reverse = isolate_folder / "{}_2.clip1.fastq".format(isolate_name)
-		if not forward.exists() or not reverse.exists():
-			break
+		sample = Sample(isolate_name, forward, reverse)
+		if sample.exists():
+			samples.append(sample)
 		else:
-			sample = Sample(isolate_name, forward, reverse)
-			yield sample
+			break
 
 
 def assemble_workflow(output_folder:Path, samples:List[Sample]):
@@ -54,6 +57,8 @@ def assemble_workflow(output_folder:Path, samples:List[Sample]):
 
 if __name__ == "__main__":
 	moreira_samples = list(collect_moreira_samples())
+	for s in moreira_samples:
+		print(s.exists(), s.name)
 	output_folder = Path.home() / "projects" / "moreira_por" / "workflow_output"
 	if not output_folder.exists():
 		output_folder.mkdir()
