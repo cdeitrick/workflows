@@ -1,7 +1,6 @@
 from pathlib import Path
 import subprocess
 from dataclasses import dataclass
-from pprint import pprint
 
 THREADS = "24"
 @dataclass
@@ -55,8 +54,7 @@ class Breseq:
 		ufwd = sample.forward_unpaired
 		urev = sample.reverse_unpaired
 
-		parent_folder = fwd.parent.parent
-		return cls(reference, fwd, rev)
+		return cls(reference, fwd, rev, ufwd, urev)
 
 	@classmethod
 	def from_list(cls, reference, reads):
