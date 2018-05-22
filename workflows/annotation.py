@@ -57,6 +57,7 @@ class Prokka:
 			"--prefix", prefix,
 			genome
 		]
+		print(prokka_command)
 
 		prokka_process = subprocess.run(prokka_command, stdout = subprocess.PIPE, stderr = subprocess.PIPE,
 										encoding = "UTF-8")

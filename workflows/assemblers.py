@@ -95,6 +95,7 @@ class Spades:
 			output_contigs = output_folder / "contigs.fasta",
 			output_graph = output_folder / "assembly_graph.fastg"
 		)
+		print("Spades Output Exists: ", self.output.output_contigs.exists())
 
 	@classmethod
 	def from_trimmomatic(cls, sample: TrimmomaticOutput, **kwargs):
