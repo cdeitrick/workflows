@@ -60,8 +60,7 @@ def assemble_workflow(output_folder: Path, samples: List[Sample]):
 		print("trimmomatic output: ", trimmed_reads.output.exists())
 		spades_output = assemblers.Spades.from_trimmomatic(trimmed_reads.output, parent_folder = sample_folder)
 		print("spades output: ", spades_output.output.exists())
-		prokka_output = annotation.Prokka.from_spades(spades_output.output, parent_folder = sample_folder)
-		break
+		prokka_output = annotation.Prokka.from_spades(spades_output.output, parent_folder = sample_folder, prefix = sample.name)
 
 
 if __name__ == "__main__":

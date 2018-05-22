@@ -27,14 +27,9 @@ class ProkkaOutput:
 	txt: Path
 	tsv: Path
 
-	def __post_init__(self):
-		data: Dict[str, Path] = asdict(self)
-		is_valid = all(i.exists() for i in data.values())
-		if not is_valid:
-			for key, value in data.items():
-				print(key, value.exists(), value)
+	def exists(self):
 
-			raise FileNotFoundError("Some of Prokka's output files are missing.")
+		return self.gff.exists()
 
 
 class Prokka:
@@ -57,7 +52,6 @@ class Prokka:
 			"--prefix", prefix,
 			genome
 		]
-		print(prokka_command)
 
 		prokka_process = subprocess.run(prokka_command, stdout = subprocess.PIPE, stderr = subprocess.PIPE,
 										encoding = "UTF-8")
@@ -65,7 +59,7 @@ class Prokka:
 		stdout_path.write_text(prokka_process.stdout)
 		stderr_path.write_text(prokka_process.stderr)
 
-		basename = output_folder / "{}_prokka".format(prefix)
+		basename = output_folder / prefix
 		self.output = ProkkaOutput(
 			gff = basename.with_suffix(".gff"),
 			gbk = basename.with_suffix(".gbk"),
