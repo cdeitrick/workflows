@@ -104,10 +104,8 @@ class Spades:
 		rev = sample.reverse
 		ufwd = sample.forward_unpaired
 		urev = sample.reverse_unpaired
-		if 'parent_folder' not in kwargs:
-			parent_folder = fwd.parent.parent
-		else:
-			parent_folder = kwargs.get('parent_folder')
+
+		kwargs['parent_folder'] = kwargs.get('parent_folder', fwd.parent.parent)
 
 		return cls(fwd, rev, ufwd, urev, parent_folder = parent_folder, **kwargs)
 
@@ -187,6 +185,8 @@ class Trimmomatic:
 			forward_output_unpaired,
 			reverse_output_unpaired
 		)
+
+		print("Trimomatic Output Exists: ", self.output.exists())
 
 	@classmethod
 	def from_sample(cls, output_folder:Path, sample)->'Trimmomatic':
