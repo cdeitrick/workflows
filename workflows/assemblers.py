@@ -20,20 +20,18 @@ class SpadesOutput:
 
 @dataclass
 class TrimmomaticOutput:
-	output_folder: Path
 	forward: Path
 	reverse: Path
 	forward_unpaired: Path
 	reverse_unpaired: Path
 
 	def exists(self):
-		of = self.output_folder.exists()
 		f = self.forward.exists()
 		r = self.reverse.exists()
 		fu = self.forward_unpaired.exists()
 		ru = self.reverse_unpaired.exists()
 
-		return of and f and r and fu and ru
+		return f and r and fu and ru
 
 
 @dataclass
@@ -79,7 +77,7 @@ class Spades:
 			"-t", str(THREADS),
 			"--careful",
 			#21,33,55,77,91
-			"-k", "15,21,25,31", #Must be odd values
+			"-k", '21,33,55,77'#"15,21,25,31", #Must be odd values
 			"--pe1-1", forward,
 			"--pe1-2", reverse,
 			"--pe1-s", forward_unpaired,
@@ -140,9 +138,8 @@ class Trimmomatic:
 		prefix = kwargs.get('prefix', forward.stem)
 		output_folder = kwargs.get("output_folder")
 		if not output_folder:
-			parent_folder = kwargs['parent_folder']
+			parent_folder = checkdir(kwargs['parent_folder'])
 			output_folder = checkdir(parent_folder / "trimmomatic_output")
-			output_folder = checkdir(output_folder / prefix)
 
 		#prefix = checkdir(output_folder / kwargs.get('prefix', forward.stem))
 
@@ -183,7 +180,6 @@ class Trimmomatic:
 		stderr_path.write_text(process.stderr)
 
 		self.output = TrimmomaticOutput(
-			output_folder,
 			forward_output,
 			reverse_output,
 			forward_output_unpaired,

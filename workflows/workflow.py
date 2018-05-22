@@ -4,6 +4,7 @@ import sys
 
 sys.path.append(str(Path(__file__).parent))
 from dataclasses import dataclass
+
 try:
 	from . import assemblers
 	from . import annotation
@@ -19,6 +20,7 @@ except:
 
 """
 
+
 @dataclass
 class Sample:
 	name: str
@@ -27,6 +29,7 @@ class Sample:
 
 	def exists(self):
 		return self.forward.exists() and self.reverse.exists()
+
 
 def collect_moreira_samples():
 	base_name = "P148"
@@ -47,14 +50,14 @@ def collect_moreira_samples():
 	return samples
 
 
-def assemble_workflow(output_folder:Path, samples:List[Sample]):
-
+def assemble_workflow(output_folder: Path, samples: List[Sample]):
 	# Assemble each sample into reads.
 
 	for sample in samples:
-		trimmed_reads = assemblers.Trimmomatic.from_sample(output_folder, sample)
-		spades_output = assemblers.Spades.from_trimmomatic(trimmed_reads.output, parent_folder = output_folder)
-		prokka_output = annotation.Prokka.from_spades(spades_output.output)
+		sample_folder = output_folder / sample.name
+		trimmed_reads = assemblers.Trimmomatic.from_sample(sample_folder, sample)
+		spades_output = assemblers.Spades.from_trimmomatic(trimmed_reads.output, parent_folder = sample_folder)
+		prokka_output = annotation.Prokka.from_spades(spades_output.output, parent_folder = sample_folder)
 
 
 if __name__ == "__main__":

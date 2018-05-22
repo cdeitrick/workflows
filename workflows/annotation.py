@@ -82,11 +82,11 @@ class Prokka:
 		)
 
 	@classmethod
-	def from_spades(cls, spades_output):
+	def from_spades(cls, spades_output, **kwargs):
 		sample = spades_output.output_contigs
-		output_folder = spades_output.output_folder.parent
+		parent_folder = kwargs.get('parent_folder', sample.parent.parent)
 
-		return cls(sample, parent_folder = output_folder)
+		return cls(sample, parent_folder = parent_folder)
 
 
 if __name__ == "__main__":
