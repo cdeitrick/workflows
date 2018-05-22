@@ -5,17 +5,12 @@ import sys
 sys.path.append(str(Path(__file__).parent))
 from dataclasses import dataclass
 
-try:
-	from . import assemblers
-	from . import annotation
-	from . import variant_callers
-	from . import read_quality
 
-except:
-	import assemblers
-	import annotation
-	import variant_callers
-	import read_quality
+from . import assemblers
+from . import annotation
+from . import variant_callers
+from . import read_quality
+
 
 """
 	Assemblers -> Annotation -> Breseq
@@ -106,10 +101,9 @@ if __name__ == "__main__":
 	else:
 		base_folder = Path.home() / "projects" / "moreira_por"
 		isolate_folder = base_folder / "isolates" / "Clinical_isolates_{}".format("P148-1")
-		base_path = Path.home() / "projects"
 		sample = Sample(
 			name = "P148-1",
 			forward = isolate_folder / "P148-1_1.clip1.fastq",
 			reverse = isolate_folder / "P148-1_2.clip1.fastq",
-			folder = Path.home() / "Documents" / "projects"/ "P148-1"
+			folder = base_folder / "P148-1"
 		)
