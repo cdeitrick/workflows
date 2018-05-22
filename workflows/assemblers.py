@@ -144,9 +144,6 @@ class Trimmomatic:
 			parent_folder = checkdir(kwargs['parent_folder'])
 			output_folder = checkdir(parent_folder / "trimmomatic_output")
 
-		#prefix = checkdir(output_folder / kwargs.get('prefix', forward.stem))
-
-
 		stdout_path = output_folder / "trimmomatic_stdout.txt"
 		stderr_path = output_folder / "trimmomatic_stderr.txt"
 		command_path = output_folder / "trimmomatic_command.txt"

@@ -42,7 +42,6 @@ def collect_moreira_samples():
 		forward = isolate_folder / "{}_1.clip1.fastq".format(isolate_name)
 		reverse = isolate_folder / "{}_2.clip1.fastq".format(isolate_name)
 		sample = Sample(isolate_name, forward, reverse)
-		print(sample.exists(), sample)
 		if sample.exists():
 			samples.append(sample)
 		else:
