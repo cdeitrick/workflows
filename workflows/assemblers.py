@@ -116,6 +116,8 @@ class Trimmomatic:
 		----------
 		forward, reverse:Path
 			The reads to trim.
+		prefix: str
+			prefix of the resulting files.
 		Attributes
 		----------
 		output: TrimmomaticOutput
@@ -135,12 +137,14 @@ class Trimmomatic:
 				trimmomatic_stdout.txt
 	"""
 	def __init__(self, forward: Path, reverse: Path, **kwargs):
+		prefix = kwargs.get('prefix', forward.stem)
 		output_folder = kwargs.get("output_folder")
 		if not output_folder:
 			parent_folder = kwargs['parent_folder']
 			output_folder = checkdir(parent_folder / "trimmomatic_output")
+			output_folder = checkdir(output_folder / prefix)
 
-		prefix = checkdir(output_folder / kwargs.get('prefix', forward.stem))
+		#prefix = checkdir(output_folder / kwargs.get('prefix', forward.stem))
 
 
 		stdout_path = prefix / "trimmomatic_stdout.txt"
@@ -149,11 +153,11 @@ class Trimmomatic:
 
 		self.options = kwargs.get("options", TrimmomaticOptions())
 
-		forward_output = prefix.with_suffix('.trimmed.paired.fastq')
-		reverse_output = prefix.with_suffix('.trimmed.paired.fastq')
-		forward_output_unpaired = prefix.with_suffix('.trimmed.unpaired.fastq')
-		reverse_output_unpaired = prefix.with_suffix('.trimmed.unpaired.fastq')
-		log_file = prefix.with_suffix(".trimmomatic_log.txt")
+		forward_output = output_folder / '{}.trimmed.paired.fastq'.format(prefix)
+		reverse_output = output_folder / '{}.trimmed.paired.fastq'.format(prefix)
+		forward_output_unpaired = output_folder / '{}.trimmed.unpaired.fastq'.format(prefix)
+		reverse_output_unpaired = output_folder / '{}.trimmed.unpaired.fastq'.format(prefix)
+		log_file = output_folder / "{}.trimmomatic_log.txt".format(prefix)
 
 		command = [
 			"trimmomatic", "PE",
