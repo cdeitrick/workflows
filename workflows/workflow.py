@@ -33,7 +33,7 @@ def collect_moreira_samples():
 	base_folder = Path.home() / "projects" / "moreira_por"
 	isolate_folder = base_folder / "IST-Leonilde" / "Seq.Vaughn" / "Clinical_isolates_{}".format(base_name)
 	samples = list()
-	for index in range(100):
+	for index in range(1, 100):
 		isolate_name = "{}-{}".format(base_name, index)
 
 		forward = isolate_folder / "{}_1.clip1.fastq".format(isolate_name)
