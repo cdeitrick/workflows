@@ -147,9 +147,9 @@ class Trimmomatic:
 		#prefix = checkdir(output_folder / kwargs.get('prefix', forward.stem))
 
 
-		stdout_path = prefix / "trimmomatic_stdout.txt"
-		stderr_path = prefix / "trimmomatic_stderr.txt"
-		command_path = prefix / "trimmomatic_command.txt"
+		stdout_path = output_folder / "trimmomatic_stdout.txt"
+		stderr_path = output_folder / "trimmomatic_stderr.txt"
+		command_path = output_folder / "trimmomatic_command.txt"
 
 		self.options = kwargs.get("options", TrimmomaticOptions())
 

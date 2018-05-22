@@ -60,8 +60,6 @@ def assemble_workflow(output_folder:Path, samples:List[Sample]):
 if __name__ == "__main__":
 	moreira_samples = collect_moreira_samples()
 	print("collected {} samples".format(len(moreira_samples)))
-	for s in moreira_samples:
-		print(s.exists(), s.name)
 	output_folder = Path.home() / "projects" / "moreira_por" / "workflow_output"
 	if not output_folder.exists():
 		output_folder.mkdir()
