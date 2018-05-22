@@ -80,7 +80,7 @@ class Spades:
 			"-t", str(THREADS),
 			"--careful",
 			#21,33,55,77,91
-			"-k", '21,33,55,77'#"15,21,25,31", #Must be odd values
+			"-k", '21,33,55,77',#"15,21,25,31", #Must be odd values
 			"--pe1-1", forward,
 			"--pe1-2", reverse,
 			"--pe1-s", forward_unpaired,
