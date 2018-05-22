@@ -153,10 +153,10 @@ class Trimmomatic:
 
 		self.options = kwargs.get("options", TrimmomaticOptions())
 
-		forward_output = output_folder / '{}.trimmed.paired.fastq'.format(prefix)
-		reverse_output = output_folder / '{}.trimmed.paired.fastq'.format(prefix)
-		forward_output_unpaired = output_folder / '{}.trimmed.unpaired.fastq'.format(prefix)
-		reverse_output_unpaired = output_folder / '{}.trimmed.unpaired.fastq'.format(prefix)
+		forward_output = output_folder / '{}.forward.trimmed.paired.fastq'.format(prefix)
+		reverse_output = output_folder / '{}.reverse.trimmed.paired.fastq'.format(prefix)
+		forward_output_unpaired = output_folder / '{}.forward.trimmed.unpaired.fastq'.format(prefix)
+		reverse_output_unpaired = output_folder / '{}.reverse.trimmed.unpaired.fastq'.format(prefix)
 		log_file = output_folder / "{}.trimmomatic_log.txt".format(prefix)
 
 		command = [
