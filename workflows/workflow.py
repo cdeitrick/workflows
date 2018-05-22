@@ -54,10 +54,15 @@ def assemble_workflow(output_folder: Path, samples: List[Sample]):
 	# Assemble each sample into reads.
 
 	for sample in samples:
+		print("sample ", sample.name)
 		sample_folder = output_folder / sample.name
+
 		trimmed_reads = assemblers.Trimmomatic.from_sample(sample_folder, sample)
+		print("trimmomatic output: ", trimmed_reads.output.exists())
 		spades_output = assemblers.Spades.from_trimmomatic(trimmed_reads.output, parent_folder = sample_folder)
+		print("spades output: ", spades_output.output.exists())
 		prokka_output = annotation.Prokka.from_spades(spades_output.output, parent_folder = sample_folder)
+		break
 
 
 if __name__ == "__main__":

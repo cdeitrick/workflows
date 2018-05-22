@@ -17,6 +17,9 @@ class SpadesOutput:
 	output_contigs: Path
 	output_graph: Path
 
+	def exists(self):
+		return self.output_contigs.exists()
+
 
 @dataclass
 class TrimmomaticOutput:
@@ -95,7 +98,6 @@ class Spades:
 			output_contigs = output_folder / "contigs.fasta",
 			output_graph = output_folder / "assembly_graph.fastg"
 		)
-		print("Spades Output Exists: ", self.output.output_contigs.exists())
 
 	@classmethod
 	def from_trimmomatic(cls, sample: TrimmomaticOutput, **kwargs):
@@ -186,8 +188,6 @@ class Trimmomatic:
 			forward_output_unpaired,
 			reverse_output_unpaired
 		)
-
-		print("Trimomatic Output Exists: ", self.output.exists())
 
 	@classmethod
 	def from_sample(cls, output_folder:Path, sample)->'Trimmomatic':
