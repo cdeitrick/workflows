@@ -2,7 +2,11 @@ from pathlib import Path
 from dataclasses import dataclass
 from typing import Union
 import subprocess
-from .common import Sample, checkdir
+try:
+	from .common import Sample, checkdir
+except:
+	import common.Sample as Sample
+	import common.checkdir as checkdir
 import argparse
 
 THREADS = 16
