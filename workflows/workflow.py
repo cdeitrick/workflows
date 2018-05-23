@@ -42,6 +42,7 @@ def collect_moreira_samples(base_name: str, output_folder: Path):
 
 
 def moreria_workflow(patient_name: str, output_folder: Path, reference: Optional[Path] = None):
+	common.checkdir(output_folder)
 	samples = collect_moreira_samples(patient_name, output_folder)
 
 	if reference is None or not reference.exists():
