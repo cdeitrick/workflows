@@ -2,7 +2,13 @@ from pathlib import Path
 import subprocess
 from dataclasses import dataclass
 
+try:
+	from . import common
+except:
+	import common
 THREADS = "24"
+
+
 @dataclass
 class BreseqOutput:
 	folder: Path
@@ -22,25 +28,15 @@ class Breseq:
 	-----
 
 	"""
+
 	def __init__(self, reference: Path, *reads, **kwargs):
 		prefix = reads[0].stem
-		output_folder = kwargs.get("output_folder")
-		if not output_folder:
-			parent_folder = kwargs['parent_folder']
-			output_folder = parent_folder / "breseq_output"
-			if not output_folder.exists():
-				output_folder.mkdir()
+		output_folder = common.get_output_folder("breseq", **kwargs)
+
 		output_folder = output_folder / prefix
-		stdout_path = output_folder / "breseq_stdout.txt"
-		stderr_path = output_folder / "breseq_stderr.txt"
-		command_path = output_folder / "breseq_command.txt"
 
-		command = ["srun","-T", THREADS, "breseq", "-j", THREADS, "-o", output_folder, "-r", reference] + list(reads)
-		process = subprocess.run(command, stdout = subprocess.PIPE, stderr = subprocess.PIPE, encoding = "UTF-8")
-
-		command_path.write_text(' '.join(map(str, command)))
-		stdout_path.write_text(process.stdout)
-		stderr_path.write_text(process.stderr)
+		command = ["breseq", "-j", THREADS, "-o", output_folder, "-r", reference] + list(reads)
+		self.process = common.run_command("breseq", command, output_folder)
 
 		self.output = BreseqOutput(
 			output_folder,
@@ -67,15 +63,15 @@ if __name__ == "__main__":
 	reads_1 = [
 		base_folder / "Achromobacter-Valvano" / "9271_AC036_1_trimmed.fastq",
 		base_folder / "Achromobacter-Valvano" / "9271_AC036_2_trimmed.fastq",
-		#base_folder / "Achromobacter-Valvano" / "9271_AC036_U1_trimmed.fastq",
-		#base_folder / "Achromobacter-Valvano" / "9271_AC036_U2_trimmed.fastq"
+		# base_folder / "Achromobacter-Valvano" / "9271_AC036_U1_trimmed.fastq",
+		# base_folder / "Achromobacter-Valvano" / "9271_AC036_U2_trimmed.fastq"
 	]
 
 	reads_2 = [
 		base_folder / "Achromobacter-Valvano" / "9272_AC036CR-0_1_trimmed.fastq",
 		base_folder / "Achromobacter-Valvano" / "9272_AC036CR-0_2_trimmed.fastq",
-		#base_folder / "Achromobacter-Valvano" / "9272_AC036CR-0_U1_trimmed.fastq",
-		#base_folder / "Achromobacter-Valvano" / "9272_AC036CR-0_U2_trimmed.fastq"
+		# base_folder / "Achromobacter-Valvano" / "9272_AC036CR-0_U1_trimmed.fastq",
+		# base_folder / "Achromobacter-Valvano" / "9272_AC036CR-0_U2_trimmed.fastq"
 	]
 
 	Breseq(reference, *reads_1, parent_folder = base_folder)

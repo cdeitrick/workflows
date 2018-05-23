@@ -1,8 +1,12 @@
 from pathlib import Path
 from dataclasses import dataclass
 import argparse
-import subprocess
 
+
+try:
+	from . import common
+except:
+	import common
 
 @dataclass
 class ProkkaOutput:
@@ -26,30 +30,8 @@ class ProkkaOutput:
 class Prokka:
 	def __init__(self, genome: Path, **kwargs):
 		prefix = kwargs.get('prefix', genome.stem)
-		output_folder = kwargs.get("output_folder")
-		if not output_folder:
-			parent_folder = kwargs['parent_folder']
-			output_folder = parent_folder / "prokka_output"  # Don't make the folder
 
-		print("Saving prokka output to ", output_folder)
-
-		stdout_path = output_folder / "prokka_stdout.txt"
-		stderr_path = output_folder / "prokka_stderr.txt"
-		command_path = output_folder / "prokka_command.txt"
-
-		prokka_command = [
-			"prokka",
-			"--outdir", output_folder,
-			"--prefix", prefix,
-			genome
-		]
-
-		prokka_process = subprocess.run(prokka_command, stdout = subprocess.PIPE, stderr = subprocess.PIPE,
-										encoding = "UTF-8")
-		command_path.write_text(' '.join(map(str, prokka_command)))
-		stdout_path.write_text(prokka_process.stdout)
-		stderr_path.write_text(prokka_process.stderr)
-
+		output_folder = common.get_output_folder("prokka", make_dirs = False, **kwargs)
 		basename = output_folder / prefix
 		self.output = ProkkaOutput(
 			gff = basename.with_suffix(".gff"),
@@ -65,6 +47,15 @@ class Prokka:
 			txt = basename.with_suffix(".txt"),
 			tsv = basename.with_suffix(".tsv")
 		)
+
+		prokka_command = [
+			"prokka",
+			"--outdir", output_folder,
+			"--prefix", prefix,
+			genome
+		]
+		self.process = common.run_command("prokka", prokka_command, output_folder)
+
 
 	@classmethod
 	def from_spades(cls, spades_output, **kwargs):

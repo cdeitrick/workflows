@@ -1,18 +1,15 @@
 from pathlib import Path
 from dataclasses import dataclass
-from typing import Union
+from typing import Union, List
 import subprocess
 
 try:
-	from .common import Sample, checkdir
+	from . import common
 except:
 	import sys
 
 	sys.path.append(str(Path(__file__).parent))
 	import common
-
-	Sample = common.Sample
-	checkdir = common.checkdir
 
 import argparse
 
@@ -46,30 +43,22 @@ class TrimmomaticOptions:
 	threads: int = THREADS
 
 
-
+@dataclass
+class FastQCOutput:
+	folder:Path
+	reports:List[Path]
 
 class FastQC:
 	def __init__(self, *reads, **kwargs):
 
-		output_folder = kwargs.get("output_folder")
-		if not output_folder:
-			parent_folder = checkdir(kwargs['parent_folder'])
-			output_folder = checkdir(parent_folder / "fastqc_output")
+		output_folder = common.get_output_folder("fastqc", **kwargs)
 
-		stdout_path = output_folder / "fastqc_stdout.txt"
-		stderr_path = output_folder / "fastqc_stderr.txt"
-		command_path = output_folder / "fastqc_command.txt"
-
-		fastqc_command = [
+		self.fastqc_command = [
 			"fastqc",
 			"--outdir", output_folder
 		] + list(reads)
 
-		process = subprocess.run(fastqc_command, stdout = subprocess.PIPE, stderr = subprocess.PIPE, encoding = "UTF-8")
-
-		command_path.write_text(' '.join(map(str, fastqc_command)))
-		stdout_path.write_text(process.stdout)
-		stderr_path.write_text(process.stderr)
+		self.process = common.run_command("fastqc", self.fastqc_command, output_folder)
 
 	@classmethod
 	def from_sample(cls, sample):
@@ -78,7 +67,7 @@ class FastQC:
 	@classmethod
 	def from_trimmomatic(cls, sample:TrimmomaticOutput):
 		reads = [sample.forward, sample.reverse, sample.forward_unpaired, sample.reverse_unpaired]
-		return cls(*reads, output_folder = checkdir(sample.forward.parent.parent / "fastqc_trimmomatic"))
+		return cls(*reads, output_folder = common.checkdir(sample.forward.parent.parent / "fastqc_trimmomatic"))
 
 
 class Trimmomatic:
@@ -110,24 +99,23 @@ class Trimmomatic:
 
 	def __init__(self, forward: Path, reverse: Path, **kwargs):
 		prefix = kwargs.get('prefix', forward.stem)
-		output_folder = kwargs.get("output_folder")
-		if not output_folder:
-			parent_folder = checkdir(kwargs['parent_folder'])
-			output_folder = checkdir(parent_folder / "trimmomatic_output")
+		self.output_folder = common.get_output_folder("trimmomatic", **kwargs)
 
-		stdout_path = output_folder / "trimmomatic_stdout.txt"
-		stderr_path = output_folder / "trimmomatic_stderr.txt"
-		command_path = output_folder / "trimmomatic_command.txt"
 
 		self.options = kwargs.get("options", TrimmomaticOptions())
 
-		forward_output = output_folder / '{}.forward.trimmed.paired.fastq'.format(prefix)
-		reverse_output = output_folder / '{}.reverse.trimmed.paired.fastq'.format(prefix)
-		forward_output_unpaired = output_folder / '{}.forward.trimmed.unpaired.fastq'.format(prefix)
-		reverse_output_unpaired = output_folder / '{}.reverse.trimmed.unpaired.fastq'.format(prefix)
-		log_file = output_folder / "{}.trimmomatic_log.txt".format(prefix)
-
-		command = [
+		forward_output = self.output_folder / '{}.forward.trimmed.paired.fastq'.format(prefix)
+		reverse_output = self.output_folder / '{}.reverse.trimmed.paired.fastq'.format(prefix)
+		forward_output_unpaired = self.output_folder / '{}.forward.trimmed.unpaired.fastq'.format(prefix)
+		reverse_output_unpaired = self.output_folder / '{}.reverse.trimmed.unpaired.fastq'.format(prefix)
+		log_file = self.output_folder / "{}.trimmomatic_log.txt".format(prefix)
+		self.output = TrimmomaticOutput(
+			forward_output,
+			reverse_output,
+			forward_output_unpaired,
+			reverse_output_unpaired
+		)
+		self.command = [
 			"trimmomatic", "PE",
 			"-threads", str(self.options.threads),
 			"-phred33",
@@ -144,18 +132,9 @@ class Trimmomatic:
 			"MINLEN:{}".format(self.options.minimum_length)
 		]
 
-		process = subprocess.run(command, stdout = subprocess.PIPE, stderr = subprocess.PIPE, encoding = "UTF-8")
+		self.process = common.run_command("trimmomatic", self.command, self.output_folder)
 
-		command_path.write_text(' '.join(map(str, command)))
-		stdout_path.write_text(process.stdout)
-		stderr_path.write_text(process.stderr)
 
-		self.output = TrimmomaticOutput(
-			forward_output,
-			reverse_output,
-			forward_output_unpaired,
-			reverse_output_unpaired
-		)
 
 	@classmethod
 	def from_sample(cls, sample) -> 'Trimmomatic':

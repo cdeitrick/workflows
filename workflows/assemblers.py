@@ -6,16 +6,13 @@ import argparse
 
 try:
 	from .read_quality import TrimmomaticOutput
-	from .Terminal import Workflow
 	from .common import checkdir
+	from . import common
 except:
 	import read_quality
-	import Terminal
 	import common
 
 	TrimmomaticOutput = read_quality.TrimmomaticOutput
-	Workflow = Terminal.Workflow
-	checkdir = common.checkdir
 
 THREADS = 16
 
@@ -29,8 +26,7 @@ class SpadesOutput:
 	def exists(self):
 		return self.output_contigs.exists()
 
-
-class Spades:
+class SpadesWorkflow:
 	"""
 	Parameters
 	----------
@@ -54,14 +50,13 @@ class Spades:
 		spades_program = kwargs.get('spades', 'spades.py')
 		spades_kmer_length = kwargs.get('kmers', '21,33,55,71')
 
-		output_folder = kwargs.get("output_folder")
-		if not output_folder:
-			parent_folder = kwargs['parent_folder']
-			output_folder = checkdir(parent_folder / "spades_output")
+		output_folder = common.get_output_folder("spades", **kwargs)
 
-		spades_command_path = output_folder / "spades_command.txt"
-		spades_stdout_path = output_folder / "spades_stdout.txt"
-		spades_stderr_path = output_folder / "spades_stderr.txt"
+		self.output = SpadesOutput(
+			output_folder = output_folder,
+			output_contigs = output_folder / "contigs.fasta",
+			output_graph = output_folder / "assembly_graph.fastg"
+		)
 
 		command = [
 			spades_program,
@@ -75,17 +70,7 @@ class Spades:
 			"-o", output_folder
 		]
 
-		process = subprocess.run(command, stdout = subprocess.PIPE, stderr = subprocess.PIPE, encoding = "UTF-8")
-
-		spades_command_path.write_text(' '.join(map(str, command)))
-		spades_stdout_path.write_text(process.stdout)
-		spades_stderr_path.write_text(process.stderr)
-
-		self.output = SpadesOutput(
-			output_folder = output_folder,
-			output_contigs = output_folder / "contigs.fasta",
-			output_graph = output_folder / "assembly_graph.fastg"
-		)
+		common.run_command("spades", command, output_folder)
 
 	@classmethod
 	def from_trimmomatic(cls, sample: TrimmomaticOutput, **kwargs):
@@ -109,32 +94,6 @@ class Bandage:
 			bandage_program,
 			"image", assembly_graph, assembly_graph.with_suffix('.fastg.png')
 		]
-
-class SpadesWorkflow:
-	def __init__(self, forward: Path, reverse: Path, forward_unpaired: Path, reverse_unpaired: Path, **kwargs):
-		output_folder = kwargs['parent_folder'] / "spades_output"
-
-		command = [
-			"spades.py",
-			"-t", str(THREADS),
-			"--careful",
-			# 21,33,55,77,91
-			"-k", '21,33,55,71',  # "15,21,25,31", #Must be odd values
-			"--pe1-1", forward,
-			"--pe1-2", reverse,
-			"--pe1-s", forward_unpaired,
-			"--pe1-s", reverse_unpaired,
-			"-o", output_folder
-		]
-
-		expected_output = SpadesOutput(
-			output_folder = output_folder,
-			output_contigs = output_folder / "contigs.fasta",
-			output_graph = output_folder / "assembly_graph.fastg"
-		)
-
-		workflow = Workflow('spades', command, output_folder)
-
 
 if __name__ == "__main__":
 	parser = argparse.ArgumentParser(
@@ -174,4 +133,4 @@ if __name__ == "__main__":
 	)
 	args = parser.parse_args()
 
-	Spades(args.forward, args.reverse, *args.unpaired, parent_folder = args.parent_folder)
+	SpadesWorkflow(args.forward, args.reverse, *args.unpaired, parent_folder = args.parent_folder)
