@@ -104,7 +104,7 @@ def main():
 			output_folder.mkdir()
 		assemble_workflow(moreira_samples)
 	else:
-		sample_name = "P342"
+		sample_name = "P342-1"
 		base_folder = Path.home() / "projects" / "moreira_por"
 		isolate_folder = base_folder / "isolates" / "Clinical_isolates_{}".format(sample_name)
 		sample = Sample(
