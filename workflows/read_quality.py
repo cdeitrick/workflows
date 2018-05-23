@@ -78,7 +78,7 @@ class FastQC:
 	@classmethod
 	def from_trimmomatic(cls, sample:TrimmomaticOutput):
 		reads = [sample.forward, sample.reverse, sample.forward_unpaired, sample.reverse_unpaired]
-		return cls(*reads, output_folder = sample.forward.parent.parent / "fastqc_trimmomatic")
+		return cls(*reads, output_folder = checkdir(sample.forward.parent.parent / "fastqc_trimmomatic"))
 
 
 class Trimmomatic:
