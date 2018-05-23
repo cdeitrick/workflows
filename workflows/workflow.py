@@ -88,6 +88,7 @@ def iterate_assemblies(sample:Sample):
 		         "43,55,67,77",
 		            "55,67,77,87,99",
 		               "67,77,87,99,113",
+		"11,21,33,43,55,67,77,87,99,113"
 	]
 	for kmer_option in kmer_options:
 		output_folder = Path.home() / "projects" / "spades_output_{}".format(kmer_option)
@@ -95,7 +96,7 @@ def iterate_assemblies(sample:Sample):
 		rev = trimmed_reads.output.reverse
 		ufwd= trimmed_reads.output.forward_unpaired
 		urev= trimmed_reads.output.reverse_unpaired
-		spades = assemblers.Spades(fwd, rev, ufwd, urev, kmer = kmer_option, output_folder = output_folder)
+		spades = assemblers.Spades(fwd, rev, ufwd, urev, kmers = kmer_option, output_folder = output_folder)
 
 def main():
 	debug = False
