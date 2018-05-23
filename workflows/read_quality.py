@@ -8,8 +8,9 @@ try:
 except:
 	import sys
 	sys.path.append(str(Path(__file__).parent))
-	import common.Sample as Sample
-	import common.checkdir as checkdir
+	import common
+	Sample = common.Sample
+	checkdir = common.checkdir
 
 
 import argparse
