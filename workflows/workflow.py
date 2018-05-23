@@ -72,7 +72,6 @@ def iterate_assemblies(sample:Sample):
 	"""
 
 	fastqc_report = read_quality.FastQC.from_sample(sample)
-
 	trimmed_reads = read_quality.Trimmomatic.from_sample(sample)
 
 	kmer_options = [
@@ -80,7 +79,7 @@ def iterate_assemblies(sample:Sample):
 		"21,33,43,55,67",
 		"21,33,43,55,67,77",
 		"21,33,43,55,67,77,87,99",
-		"21,33,43,55,67,77,99",
+		"21,33,43,55,67,77,87,99,113",
 	]
 	for kmer_option in kmer_options:
 		output_folder = Path.home() / "projects" / "spades_output_{}".format(kmer_option)
@@ -99,13 +98,14 @@ def main():
 			output_folder.mkdir()
 		assemble_workflow(moreira_samples)
 	else:
+		sample_name = "P342"
 		base_folder = Path.home() / "projects" / "moreira_por"
-		isolate_folder = base_folder / "isolates" / "Clinical_isolates_{}".format("P148-1")
+		isolate_folder = base_folder / "isolates" / "Clinical_isolates_{}".format(sample_name)
 		sample = Sample(
-			name = "P148-1",
-			forward = isolate_folder / "P148-1_1.clip1.fastq",
-			reverse = isolate_folder / "P148-1_2.clip1.fastq",
-			folder = base_folder / "P148-1"
+			name = sample_name,
+			forward = isolate_folder / "{}_1.clip1.fastq".format(sample_name),
+			reverse = isolate_folder / "{}_2.clip1.fastq".format(sample_name),
+			folder = base_folder / sample_name
 		)
 		iterate_assemblies(sample)
 if __name__ == "__main__":
