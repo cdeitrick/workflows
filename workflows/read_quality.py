@@ -55,6 +55,7 @@ class FastQC:
 		command_path = output_folder / "fastqc_command.txt"
 
 		fastqc_command = [
+			"fastqc",
 			"--outdir", output_folder,
 			forward, reverse
 		]
