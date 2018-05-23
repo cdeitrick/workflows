@@ -2,11 +2,16 @@ from pathlib import Path
 from dataclasses import dataclass
 from typing import Union
 import subprocess
+
 try:
 	from .common import Sample, checkdir
 except:
+	import sys
+	sys.path.append(str(Path(__file__).parent))
 	import common.Sample as Sample
 	import common.checkdir as checkdir
+
+
 import argparse
 
 THREADS = 16
