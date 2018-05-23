@@ -1,10 +1,17 @@
 from pathlib import Path
 from dataclasses import dataclass
 import subprocess
-from .read_quality import TrimmomaticOutput
+
+
 from .Terminal import Workflow
 from .common import checkdir
 import argparse
+
+try:
+	from .read_quality import TrimmomaticOutput
+except:
+	import read_quality.TrimmomaticOutput as TrimmomaticOutput
+
 THREADS = 16
 
 
