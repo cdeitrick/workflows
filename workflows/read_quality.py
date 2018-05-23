@@ -1,7 +1,6 @@
 from pathlib import Path
 from dataclasses import dataclass
 from typing import Union, List
-import subprocess
 
 try:
 	from . import common
@@ -173,7 +172,7 @@ if __name__ == "__main__":
 	)
 	args = parser.parse_args()
 
-	sample = Sample(
+	sample = common.Sample(
 		name = "name",
 		forward = args.forward,
 		reverse = args.reverse,

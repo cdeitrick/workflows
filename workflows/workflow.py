@@ -3,7 +3,6 @@ from typing import List, Optional
 import sys
 
 sys.path.append(str(Path(__file__).parent))
-from dataclasses import dataclass
 
 try:
 	from . import assemblers
@@ -76,7 +75,7 @@ def assemble_workflow(samples: List[common.Sample],**kwargs) -> List[annotation.
 		trimmed_reads = read_quality.Trimmomatic.from_sample(sample)
 		read_quality.FastQC.from_trimmomatic(trimmed_reads.output)
 
-		spades_output = assemblers.Spades.from_trimmomatic(trimmed_reads.output, parent_folder = sample.folder, **kwargs)
+		spades_output = assemblers.SpadesWorkflow.from_trimmomatic(trimmed_reads.output, parent_folder = sample.folder, **kwargs)
 
 		prokka_output = annotation.Prokka.from_spades(spades_output.output, parent_folder = sample.folder,
 													  prefix = sample.name)
@@ -114,7 +113,7 @@ def iterate_assemblies(sample: common.Sample):
 		rev = trimmed_reads.output.reverse
 		ufwd = trimmed_reads.output.forward_unpaired
 		urev = trimmed_reads.output.reverse_unpaired
-		spades = assemblers.Spades(fwd, rev, ufwd, urev, kmers = kmer_option, output_folder = output_folder)
+		spades = assemblers.SpadesWorkflow(fwd, rev, ufwd, urev, kmers = kmer_option, output_folder = output_folder)
 
 
 def main():
