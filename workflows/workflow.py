@@ -10,11 +10,13 @@ try:
 	from . import annotation
 	from . import variant_callers
 	from . import read_quality
+	from . import common
 except:
 	import assemblers
 	import annotation
 	import variant_callers
 	import read_quality
+	import common
 
 """
 	Assemblers -> Annotation -> Breseq
@@ -109,7 +111,7 @@ def main():
 			name = sample_name,
 			forward = isolate_folder / "{}_1.clip1.fastq".format(sample_name),
 			reverse = isolate_folder / "{}_2.clip1.fastq".format(sample_name),
-			folder = base_folder / sample_name
+			folder = common.checkdir(base_folder / sample_name)
 		)
 		iterate_assemblies(sample)
 if __name__ == "__main__":
