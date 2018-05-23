@@ -5,12 +5,16 @@ import sys
 sys.path.append(str(Path(__file__).parent))
 from dataclasses import dataclass
 
-
-from . import assemblers
-from . import annotation
-from . import variant_callers
-from . import read_quality
-
+try:
+	from . import assemblers
+	from . import annotation
+	from . import variant_callers
+	from . import read_quality
+except:
+	import assemblers
+	import annotation
+	import variant_callers
+	import read_quality
 
 """
 	Assemblers -> Annotation -> Breseq
