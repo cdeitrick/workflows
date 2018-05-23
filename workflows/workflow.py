@@ -106,7 +106,7 @@ def main():
 	else:
 		sample_name = "P342-1"
 		base_folder = Path.home() / "projects" / "moreira_por"
-		isolate_folder = base_folder / "isolates" / "Clinical_isolates_{}".format(sample_name)
+		isolate_folder = base_folder / "isolates" / "Clinical_isolates_{}".format(sample_name.split('-')[0])
 		sample = Sample(
 			name = sample_name,
 			forward = isolate_folder / "{}_1.clip1.fastq".format(sample_name),
