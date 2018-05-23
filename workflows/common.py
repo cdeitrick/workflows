@@ -1,6 +1,6 @@
 import subprocess
 from pathlib import Path
-from typing import Any, List
+from typing import Any, List,Tuple, Optional
 
 from dataclasses import dataclass
 
@@ -22,8 +22,13 @@ class Sample:
 		return self.forward.exists() and self.reverse.exists()
 
 
-srun_command = ["srun", "--threads", "16", "--mail-user=cld100@pitt.edu", "--mail-type=all"]
+def get_srun_command(threads:Optional = None)->List[Any]:
 
+	srun_command = ["srun"]
+	if threads:
+		srun_command += ["-t", threads]
+	srun_command += ["--mail-user=cld100@pitt.edu", "--mail-type=all"]
+	return srun_command
 
 def get_output_folder(name: str, make_dirs: bool = True, **kwargs) -> Path:
 	"""
@@ -48,13 +53,7 @@ def get_output_folder(name: str, make_dirs: bool = True, **kwargs) -> Path:
 	return output_folder
 
 
-def clean_command_arguments(command: List[Any]) -> List[str]:
-	command = srun_command + command
-	command = list(map(str, command))
-	return command
-
-
-def run_command(program_name: str, command: List[Any], output_folder: Path) -> subprocess.CompletedProcess:
+def run_command(program_name: str, command: List[Any], output_folder: Path, threads:Tuple[str,int] = None) -> subprocess.CompletedProcess:
 	"""
 		Runs a program's command. Arguments are used to generate additional files containing the stdout, stderr,and
 		command used to run the program.
@@ -63,14 +62,28 @@ def run_command(program_name: str, command: List[Any], output_folder: Path) -> s
 	program_name
 	command
 	output_folder
+	threads: Tuple[str,int]
+		Used to indicate the number of threads srun should use.
+		It should ba a tuple of the program's threads flag and the number of threads.
+		ex. ('--threads', 8)
+		ex. ('-j', 16)
 
 	Returns
 	-------
 	subprocess.CompletedProcess
 	"""
 
-	command = clean_command_arguments(command)
+	if threads:
+		num_threads = threads[1]
+		command = command[:1] + [*threads] + command[1:]
+	else:
+		num_threads = None
+
+	command = get_srun_command(num_threads) + command
+	command = list(map(str, command))
+
 	print(command)
+
 	process = subprocess.run(command, stdout = subprocess.PIPE, stderr = subprocess.PIPE, encoding = "UTF-8")
 
 	stdout_path = output_folder / "{}_stdout.txt".format(program_name)

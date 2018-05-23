@@ -6,7 +6,6 @@ try:
 	from . import common
 except:
 	import common
-THREADS = "24"
 
 
 @dataclass
@@ -35,7 +34,12 @@ class Breseq:
 
 		output_folder = output_folder / prefix
 
-		command = ["breseq", "-j", THREADS, "-o", output_folder, "-r", reference] + list(reads)
+		command = [
+			"breseq",
+			#"-j", THREADS,
+			"-o", output_folder,
+			"-r", reference
+		] + list(reads)
 		self.process = common.run_command("breseq", command, output_folder)
 
 		self.output = BreseqOutput(

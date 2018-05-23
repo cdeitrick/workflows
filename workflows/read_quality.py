@@ -116,7 +116,7 @@ class Trimmomatic:
 		)
 		self.command = [
 			"trimmomatic", "PE",
-			"-threads", str(self.options.threads),
+			#"-threads", str(self.options.threads),
 			"-phred33",
 			"-trimlog", log_file,
 			# "name", self.options.job_name,
