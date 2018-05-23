@@ -70,6 +70,7 @@ def run_command(program_name: str, command: List[Any], output_folder: Path) -> s
 	"""
 
 	command = clean_command_arguments(command)
+	print(command)
 	process = subprocess.run(command, stdout = subprocess.PIPE, stderr = subprocess.PIPE, encoding = "UTF-8")
 
 	stdout_path = output_folder / "{}_stdout.txt".format(program_name)
