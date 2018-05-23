@@ -13,9 +13,6 @@ except:
 
 	TrimmomaticOutput = read_quality.TrimmomaticOutput
 
-THREADS = 16
-
-
 @dataclass
 class SpadesOutput:
 	output_folder: Path  # Folder where all spades output should be.
@@ -60,7 +57,7 @@ class SpadesWorkflow:
 
 		command = [
 			spades_program,
-			"-t", str(THREADS),
+			#"-t", str(THREADS),
 			"--careful",
 			"-k", spades_kmer_length,  # "15,21,25,31", #Must be odd values and less than 128
 			"--pe1-1", forward,
