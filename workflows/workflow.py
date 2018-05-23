@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import List
+from typing import List, Optional
 import sys
 
 sys.path.append(str(Path(__file__).parent))
@@ -24,18 +24,7 @@ except:
 """
 
 
-@dataclass
-class Sample:
-	name: str
-	forward: Path
-	reverse: Path
-	folder:Path
-	def exists(self):
-		return self.forward.exists() and self.reverse.exists()
-
-
-def collect_moreira_samples(output_folder:Path):
-	base_name = "P148"
+def collect_moreira_samples(base_name: str, output_folder: Path):
 	base_folder = Path.home() / "projects" / "moreira_por"
 	isolate_folder = base_folder / "isolates" / "Clinical_isolates_{}".format(base_name)
 	samples = list()
@@ -44,7 +33,7 @@ def collect_moreira_samples(output_folder:Path):
 
 		forward = isolate_folder / "{}_1.clip1.fastq".format(isolate_name)
 		reverse = isolate_folder / "{}_2.clip1.fastq".format(isolate_name)
-		sample = Sample(isolate_name, forward, reverse, output_folder / isolate_name)
+		sample = common.Sample(isolate_name, forward, reverse, output_folder / isolate_name)
 		if sample.exists():
 			samples.append(sample)
 		else:
@@ -52,21 +41,45 @@ def collect_moreira_samples(output_folder:Path):
 	return samples
 
 
-def assemble_workflow(samples: List[Sample]):
-	# Assemble each sample into reads.
+def moreria_workflow(patient_name: str, output_folder: Path, reference: Optional[Path] = None):
+	samples = collect_moreira_samples(patient_name, output_folder)
 
+	if reference is None or not reference.exists():
+		print("reference does not exist. Using {} instead.", samples[0].name)
+		reference_assembly = assemble_workflow(samples[:1], kmers = "11,21,33,43,55,67,77,87,99,113,127")[0]
+		reference = reference_assembly.gff
+
+	for sample in samples:
+		variant_call_workflow(reference, sample)
+
+
+def variant_call_workflow(reference: Path, sample: common.Sample, ):
+	read_quality.FastQC.from_sample(sample)
+	trim = read_quality.Trimmomatic.from_sample(sample)
+	read_quality.FastQC.from_trimmomatic(trim.output)
+
+	variant_callers.Breseq.from_trimmomatic(reference, trim.output)
+
+
+def assemble_workflow(samples: List[common.Sample],**kwargs) -> List[annotation.ProkkaOutput]:
+	# Assemble each sample into reads.
+	output_files = list()
 	for sample in samples:
 		print("sample ", sample.name)
 
 		read_quality.FastQC.from_sample(sample)
 		trimmed_reads = read_quality.Trimmomatic.from_sample(sample)
 		read_quality.FastQC.from_trimmomatic(trimmed_reads.output)
-		print("trimmomatic output: ", trimmed_reads.output.exists())
-		spades_output = assemblers.Spades.from_trimmomatic(trimmed_reads.output, parent_folder = sample.folder)
-		print("spades output: ", spades_output.output.exists())
-		prokka_output = annotation.Prokka.from_spades(spades_output.output,parent_folder = sample.folder, prefix = sample.name)
 
-def iterate_assemblies(sample:Sample):
+		spades_output = assemblers.Spades.from_trimmomatic(trimmed_reads.output, parent_folder = sample.folder, **kwargs)
+
+		prokka_output = annotation.Prokka.from_spades(spades_output.output, parent_folder = sample.folder,
+													  prefix = sample.name)
+		output_files.append(prokka_output)
+	return output_files
+
+
+def iterate_assemblies(sample: common.Sample):
 	"""
 		Generates a number of de novo assemblies with different k-mer sizes.
 	Parameters
@@ -84,38 +97,27 @@ def iterate_assemblies(sample:Sample):
 
 	kmer_options = [
 		"11,21,33,43",
-		      "33,43,55,67",
-		         "43,55,67,77",
-		            "55,67,77,87,99",
-		               "67,77,87,99,113",
-		"11,21,33,43,55,67,77,87,99,113"
+		"33,43,55,67",
+		"43,55,67,77",
+		"55,67,77,87,99",
+		"67,77,87,99,113",
+		"11,21,33,43,55,67,77,87,99,113,127"
 	]
 	for kmer_option in kmer_options:
 		output_folder = Path.home() / "projects" / "spades_output_{}".format(kmer_option)
 		fwd = trimmed_reads.output.forward
 		rev = trimmed_reads.output.reverse
-		ufwd= trimmed_reads.output.forward_unpaired
-		urev= trimmed_reads.output.reverse_unpaired
+		ufwd = trimmed_reads.output.forward_unpaired
+		urev = trimmed_reads.output.reverse_unpaired
 		spades = assemblers.Spades(fwd, rev, ufwd, urev, kmers = kmer_option, output_folder = output_folder)
 
+
 def main():
-	debug = False
-	if debug:
-		output_folder = Path.home() / "projects" / "moreira_por" / "workflow_output"
-		moreira_samples = collect_moreira_samples(output_folder)
-		if not output_folder.exists():
-			output_folder.mkdir()
-		assemble_workflow(moreira_samples)
-	else:
-		sample_name = "P342-1"
-		base_folder = Path.home() / "projects" / "moreira_por"
-		isolate_folder = base_folder / "isolates" / "Clinical_isolates_{}".format(sample_name.split('-')[0])
-		sample = Sample(
-			name = sample_name,
-			forward = isolate_folder / "{}_1.clip1.fastq".format(sample_name),
-			reverse = isolate_folder / "{}_2.clip1.fastq".format(sample_name),
-			folder = common.checkdir(base_folder / sample_name)
-		)
-		iterate_assemblies(sample)
+	project = Path.home() / "projects" / "moreira_por"
+	moreira_output_folder = common.checkdir(project / "variant_calls")
+	moreira_reference = None
+	moreria_workflow("P148", moreira_output_folder, reference = moreira_reference)
+
+
 if __name__ == "__main__":
 	main()

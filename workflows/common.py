@@ -15,6 +15,8 @@ class Sample:
 	forward: Path
 	reverse: Path
 	folder: Path
+	def exists(self):
+		return self.forward.exists() and self.reverse.exists()
 
 
 if __name__ == "__main__":
