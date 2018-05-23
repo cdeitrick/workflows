@@ -48,7 +48,7 @@ class TrimmomaticOptions:
 class FastQC:
 	def __init__(self, forward: Path, reverse: Path, **kwargs):
 		parent_folder = kwargs['parent_folder']
-		output_folder = parent_folder / "fastqc_output"
+		output_folder = checkdir(parent_folder / "fastqc_output")
 
 		stdout_path = output_folder / "fastqc_stdout.txt"
 		stderr_path = output_folder / "fastqc_stderr.txt"
