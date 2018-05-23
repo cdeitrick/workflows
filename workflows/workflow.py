@@ -50,6 +50,10 @@ def moreria_workflow(patient_name: str, output_folder: Path, reference: Optional
 		reference = reference_assembly.gff
 
 	for sample in samples:
+		print("calling variants from ", sample.name)
+		print("\tforward read: ", sample.forward)
+		print("\treverse read: ", sample.reverse)
+		print("\toutput folder: ", sample.folder)
 		variant_call_workflow(reference, sample)
 
 
