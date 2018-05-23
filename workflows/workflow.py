@@ -58,8 +58,9 @@ def assemble_workflow(samples: List[Sample]):
 	for sample in samples:
 		print("sample ", sample.name)
 
-		fastqc_report = read_quality.FastQC.from_sample(sample)
+		read_quality.FastQC.from_sample(sample)
 		trimmed_reads = read_quality.Trimmomatic.from_sample(sample)
+		read_quality.FastQC.from_trimmomatic(trimmed_reads.output)
 		print("trimmomatic output: ", trimmed_reads.output.exists())
 		spades_output = assemblers.Spades.from_trimmomatic(trimmed_reads.output, parent_folder = sample.folder)
 		print("spades output: ", spades_output.output.exists())
@@ -79,13 +80,14 @@ def iterate_assemblies(sample:Sample):
 
 	fastqc_report = read_quality.FastQC.from_sample(sample)
 	trimmed_reads = read_quality.Trimmomatic.from_sample(sample)
+	fastqc_trimmed_report = read_quality.FastQC.from_trimmomatic(trimmed_reads.output)
 
 	kmer_options = [
-		"11,21,33",
-		"21,33,43,55,67",
-		"21,33,43,55,67,77",
-		"21,33,43,55,67,77,87,99",
-		"21,33,43,55,67,77,87,99,113",
+		"11,21,33,43",
+		      "33,43,55,67",
+		         "43,55,67,77",
+		            "55,67,77,87,99",
+		               "67,77,87,99,113",
 	]
 	for kmer_option in kmer_options:
 		output_folder = Path.home() / "projects" / "spades_output_{}".format(kmer_option)

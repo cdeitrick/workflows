@@ -2,9 +2,6 @@ from pathlib import Path
 from dataclasses import dataclass
 import subprocess
 
-
-
-
 import argparse
 
 try:
@@ -25,7 +22,7 @@ THREADS = 16
 
 @dataclass
 class SpadesOutput:
-	output_folder:Path # Folder where all spades output should be.
+	output_folder: Path  # Folder where all spades output should be.
 	output_contigs: Path
 	output_graph: Path
 
@@ -54,7 +51,6 @@ class Spades:
 	"""
 
 	def __init__(self, forward: Path, reverse: Path, forward_unpaired: Path, reverse_unpaired: Path, **kwargs):
-
 		spades_program = kwargs.get('spades', 'spades.py')
 		spades_kmer_length = kwargs.get('kmers', '21,33,55,71')
 
@@ -102,6 +98,18 @@ class Spades:
 
 		return cls(fwd, rev, ufwd, urev, **kwargs)
 
+class Bandage:
+	def __init__(self, assembly_graph:Path):
+		bandage_program = "bandage"
+		info_command = [
+			bandage_program,
+			"info", assembly_graph
+		]
+		image_command = [
+			bandage_program,
+			"image", assembly_graph, assembly_graph.with_suffix('.fastg.png')
+		]
+
 class SpadesWorkflow:
 	def __init__(self, forward: Path, reverse: Path, forward_unpaired: Path, reverse_unpaired: Path, **kwargs):
 		output_folder = kwargs['parent_folder'] / "spades_output"
@@ -126,7 +134,6 @@ class SpadesWorkflow:
 		)
 
 		workflow = Workflow('spades', command, output_folder)
-
 
 
 if __name__ == "__main__":
@@ -168,4 +175,3 @@ if __name__ == "__main__":
 	args = parser.parse_args()
 
 	Spades(args.forward, args.reverse, *args.unpaired, parent_folder = args.parent_folder)
-

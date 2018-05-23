@@ -7,11 +7,12 @@ try:
 	from .common import Sample, checkdir
 except:
 	import sys
+
 	sys.path.append(str(Path(__file__).parent))
 	import common
+
 	Sample = common.Sample
 	checkdir = common.checkdir
-
 
 import argparse
 
@@ -45,10 +46,15 @@ class TrimmomaticOptions:
 	threads: int = THREADS
 
 
+
+
 class FastQC:
-	def __init__(self, forward: Path, reverse: Path, **kwargs):
-		parent_folder = kwargs['parent_folder']
-		output_folder = checkdir(parent_folder / "fastqc_output")
+	def __init__(self, *reads, **kwargs):
+
+		output_folder = kwargs.get("output_folder")
+		if not output_folder:
+			parent_folder = checkdir(kwargs['parent_folder'])
+			output_folder = checkdir(parent_folder / "fastqc_output")
 
 		stdout_path = output_folder / "fastqc_stdout.txt"
 		stderr_path = output_folder / "fastqc_stderr.txt"
@@ -56,9 +62,8 @@ class FastQC:
 
 		fastqc_command = [
 			"fastqc",
-			"--outdir", output_folder,
-			forward, reverse
-		]
+			"--outdir", output_folder
+		] + list(reads)
 
 		process = subprocess.run(fastqc_command, stdout = subprocess.PIPE, stderr = subprocess.PIPE, encoding = "UTF-8")
 
@@ -69,6 +74,11 @@ class FastQC:
 	@classmethod
 	def from_sample(cls, sample):
 		return cls(sample.forward, sample.reverse, parent_folder = sample.folder)
+
+	@classmethod
+	def from_trimmomatic(cls, sample:TrimmomaticOutput):
+		reads = [sample.forward, sample.reverse, sample.forward_unpaired, sample.reverse_unpaired]
+		return cls(*reads, output_folder = sample.forward.parent.parent / "fastqc_trimmomatic")
 
 
 class Trimmomatic:
