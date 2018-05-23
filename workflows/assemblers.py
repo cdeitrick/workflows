@@ -3,14 +3,18 @@ from dataclasses import dataclass
 import subprocess
 
 
-from .Terminal import Workflow
-from .common import checkdir
+
+
 import argparse
 
 try:
 	from .read_quality import TrimmomaticOutput
+	from .Terminal import Workflow
+	from .common import checkdir
 except:
 	import read_quality.TrimmomaticOutput as TrimmomaticOutput
+	import Terminal.Workflow as Workflow
+	import common.checkdir as checkdir
 
 THREADS = 16
 
