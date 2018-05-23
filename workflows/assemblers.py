@@ -12,9 +12,13 @@ try:
 	from .Terminal import Workflow
 	from .common import checkdir
 except:
-	import read_quality.TrimmomaticOutput as TrimmomaticOutput
-	import Terminal.Workflow as Workflow
-	import common.checkdir as checkdir
+	import read_quality
+	import Terminal
+	import common
+
+	TrimmomaticOutput = read_quality.TrimmomaticOutput
+	Workflow = Terminal.Workflow
+	checkdir = common.checkdir
 
 THREADS = 16
 
