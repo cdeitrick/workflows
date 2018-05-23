@@ -1,12 +1,13 @@
-from pathlib import Path
-from dataclasses import dataclass
 import argparse
+from pathlib import Path
 
+from dataclasses import dataclass
 
 try:
 	from . import common
 except:
 	import common
+
 
 @dataclass
 class ProkkaOutput:
@@ -55,7 +56,6 @@ class Prokka:
 			genome
 		]
 		self.process = common.run_command("prokka", prokka_command, output_folder)
-
 
 	@classmethod
 	def from_spades(cls, spades_output, **kwargs):

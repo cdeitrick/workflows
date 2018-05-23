@@ -1,7 +1,7 @@
-from pathlib import Path
-from dataclasses import dataclass
-
 import argparse
+from pathlib import Path
+
+from dataclasses import dataclass
 
 try:
 	from .read_quality import TrimmomaticOutput
@@ -24,6 +24,7 @@ class SpadesOutput:
 
 	def exists(self):
 		return self.output_contigs.exists()
+
 
 class SpadesWorkflow:
 	"""
@@ -82,8 +83,9 @@ class SpadesWorkflow:
 
 		return cls(fwd, rev, ufwd, urev, **kwargs)
 
+
 class Bandage:
-	def __init__(self, assembly_graph:Path):
+	def __init__(self, assembly_graph: Path):
 		bandage_program = "bandage"
 		info_command = [
 			bandage_program,
@@ -93,6 +95,7 @@ class Bandage:
 			bandage_program,
 			"image", assembly_graph, assembly_graph.with_suffix('.fastg.png')
 		]
+
 
 if __name__ == "__main__":
 	parser = argparse.ArgumentParser(

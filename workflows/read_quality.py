@@ -1,6 +1,7 @@
 from pathlib import Path
+from typing import List, Union
+
 from dataclasses import dataclass
-from typing import Union, List
 
 try:
 	from . import common
@@ -44,18 +45,18 @@ class TrimmomaticOptions:
 
 @dataclass
 class FastQCOutput:
-	folder:Path
-	reports:List[Path]
+	folder: Path
+	reports: List[Path]
+
 
 class FastQC:
 	def __init__(self, *reads, **kwargs):
-
 		output_folder = common.get_output_folder("fastqc", **kwargs)
 
 		self.fastqc_command = [
-			"fastqc",
-			"--outdir", output_folder
-		] + list(reads)
+								  "fastqc",
+								  "--outdir", output_folder
+							  ] + list(reads)
 
 		self.process = common.run_command("fastqc", self.fastqc_command, output_folder)
 
@@ -64,7 +65,7 @@ class FastQC:
 		return cls(sample.forward, sample.reverse, parent_folder = sample.folder)
 
 	@classmethod
-	def from_trimmomatic(cls, sample:TrimmomaticOutput):
+	def from_trimmomatic(cls, sample: TrimmomaticOutput):
 		reads = [sample.forward, sample.reverse, sample.forward_unpaired, sample.reverse_unpaired]
 		return cls(*reads, output_folder = common.checkdir(sample.forward.parent.parent / "fastqc_trimmomatic"))
 
@@ -100,7 +101,6 @@ class Trimmomatic:
 		prefix = kwargs.get('prefix', forward.stem)
 		self.output_folder = common.get_output_folder("trimmomatic", **kwargs)
 
-
 		self.options = kwargs.get("options", TrimmomaticOptions())
 
 		forward_output = self.output_folder / '{}.forward.trimmed.paired.fastq'.format(prefix)
@@ -132,8 +132,6 @@ class Trimmomatic:
 		]
 
 		self.process = common.run_command("trimmomatic", self.command, self.output_folder)
-
-
 
 	@classmethod
 	def from_sample(cls, sample) -> 'Trimmomatic':

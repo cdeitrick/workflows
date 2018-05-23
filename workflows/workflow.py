@@ -1,6 +1,6 @@
+import sys
 from pathlib import Path
 from typing import List, Optional
-import sys
 
 sys.path.append(str(Path(__file__).parent))
 
@@ -67,7 +67,7 @@ def variant_call_workflow(reference: Path, sample: common.Sample):
 	variant_callers.Breseq.from_trimmomatic(reference, trim.output)
 
 
-def assemble_workflow(samples: List[common.Sample],**kwargs) -> List[annotation.ProkkaOutput]:
+def assemble_workflow(samples: List[common.Sample], **kwargs) -> List[annotation.ProkkaOutput]:
 	# Assemble each sample into reads.
 	output_files = list()
 	for sample in samples:
@@ -79,7 +79,8 @@ def assemble_workflow(samples: List[common.Sample],**kwargs) -> List[annotation.
 		trimmed_reads = read_quality.Trimmomatic.from_sample(sample)
 		read_quality.FastQC.from_trimmomatic(trimmed_reads.output)
 
-		spades_output = assemblers.SpadesWorkflow.from_trimmomatic(trimmed_reads.output, parent_folder = sample.folder, **kwargs)
+		spades_output = assemblers.SpadesWorkflow.from_trimmomatic(trimmed_reads.output, parent_folder = sample.folder,
+																   **kwargs)
 
 		prokka_output = annotation.Prokka.from_spades(spades_output.output, parent_folder = sample.folder,
 													  prefix = sample.name)
