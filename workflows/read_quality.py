@@ -106,6 +106,7 @@ class Trimmomatic:
 	"""
 
 	def __init__(self, forward: Path, reverse: Path, **kwargs):
+		trimmomatic_threads = kwargs.get('threads')
 		prefix = kwargs.get('prefix', forward.stem)
 		self.output_folder = common.get_output_folder("trimmomatic", **kwargs)
 
@@ -139,11 +140,15 @@ class Trimmomatic:
 			"MINLEN:{}".format(self.options.minimum_length)
 		]
 		if not self.output.exists():
-			self.process = common.run_command("trimmomatic", self.command, self.output_folder)
+			if trimmomatic_threads:
+				trimmomatic_threads = ('-threads',trimmomatic_threads)
+			self.process = common.run_command("trimmomatic", self.command, self.output_folder,threads = trimmomatic_threads)
 
 	@classmethod
-	def from_sample(cls, sample) -> 'Trimmomatic':
-		return cls(sample.forward, sample.reverse, parent_folder = sample.folder, prefix = sample.name)
+	def from_sample(cls, sample, **kwargs) -> 'Trimmomatic':
+		if 'parent_folder' not in kwargs:
+			kwargs['parent_folder'] = sample.folder
+		return cls(sample.forward, sample.reverse, prefix = sample.name, **kwargs)
 
 
 if __name__ == "__main__":

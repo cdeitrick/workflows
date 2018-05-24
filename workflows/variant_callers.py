@@ -32,6 +32,7 @@ class Breseq:
 	"""
 
 	def __init__(self, reference: Path, *reads, **kwargs):
+		breseq_threads = kwargs.get('threads')
 		prefix = reads[0].stem
 		output_folder = common.get_output_folder("breseq", **kwargs)
 
@@ -50,20 +51,24 @@ class Breseq:
 		)
 
 		if not self.output.exists():
-			self.process = common.run_command("breseq", command, output_folder)
+			if breseq_threads:
+				breseq_threads = ("-j", breseq_threads)
+			self.process = common.run_command("breseq", command, output_folder, threads = breseq_threads)
 
 
 
 	@classmethod
-	def from_trimmomatic(cls, reference: Path, sample):
+	def from_trimmomatic(cls, reference: Path, sample, **kwargs):
 		fwd = sample.forward
 		rev = sample.reverse
 		ufwd = sample.forward_unpaired
 		urev = sample.reverse_unpaired
 
 		parent_folder = fwd.parent.parent
+		if 'parent_folder' not in kwargs:
+			kwargs['parent_folder'] = parent_folder
 
-		return cls(reference, fwd, rev, ufwd, urev, parent_folder = parent_folder)
+		return cls(reference, fwd, rev, ufwd, urev, **kwargs)
 
 	@classmethod
 	def from_list(cls, reference, reads):

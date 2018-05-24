@@ -46,6 +46,7 @@ class SpadesWorkflow:
 	def __init__(self, forward: Path, reverse: Path, forward_unpaired: Path, reverse_unpaired: Path, **kwargs):
 		spades_program = kwargs.get('spades', 'spades.py')
 		spades_kmer_length = kwargs.get('kmers', '21,33,55,71')
+		spades_threads = kwargs.get('threads')
 
 		output_folder = common.get_output_folder("spades", **kwargs)
 
@@ -67,7 +68,9 @@ class SpadesWorkflow:
 			"-o", output_folder
 		]
 		if not self.output.exists():
-			common.run_command("spades", command, output_folder)
+			if spades_threads:
+				spades_threads = ('-t', spades_threads)
+			common.run_command("spades", command, output_folder, threads = spades_threads)
 
 	@classmethod
 	def from_trimmomatic(cls, sample: TrimmomaticOutput, **kwargs):
