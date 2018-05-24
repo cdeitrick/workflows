@@ -1,7 +1,7 @@
 import subprocess
 from pathlib import Path
-from typing import Any, List,Tuple, Optional
-
+from typing import Any, List, Optional, Tuple
+from datetime import datetime
 from dataclasses import dataclass
 
 
@@ -22,13 +22,13 @@ class Sample:
 		return self.forward.exists() and self.reverse.exists()
 
 
-def get_srun_command(threads:Optional = None)->List[Any]:
-
+def get_srun_command(threads: Optional = None) -> List[Any]:
 	srun_command = ["srun"]
 	if threads:
 		srun_command += ["-t", threads]
 	srun_command += ["--mail-user=cld100@pitt.edu", "--mail-type=all"]
 	return srun_command
+
 
 def get_output_folder(name: str, make_dirs: bool = True, **kwargs) -> Path:
 	"""
@@ -53,7 +53,8 @@ def get_output_folder(name: str, make_dirs: bool = True, **kwargs) -> Path:
 	return output_folder
 
 
-def run_command(program_name: str, command: List[Any], output_folder: Path, threads:Tuple[str,int] = None) -> subprocess.CompletedProcess:
+def run_command(program_name: str, command: List[Any], output_folder: Path,
+				threads: Tuple[str, int] = None) -> subprocess.CompletedProcess:
 	"""
 		Runs a program's command. Arguments are used to generate additional files containing the stdout, stderr,and
 		command used to run the program.
@@ -89,17 +90,23 @@ def run_command(program_name: str, command: List[Any], output_folder: Path, thre
 	output_folder_already_exists = output_folder.exists()
 	if output_folder_already_exists:
 		command_path.write_text(' '.join(command))
-
+	start_datetime = datetime.now()
 	process = subprocess.run(command, stdout = subprocess.PIPE, stderr = subprocess.PIPE, encoding = "UTF-8")
+	end_datetime = datetime.now()
+	duration = end_datetime - start_datetime
+
+	command_string = "{}\n\nstart: {}\nend: {}\nduration: {}\n".format(
+		' '.join(command), start_datetime, end_datetime, duration
+	)
 
 	try:
-		command_path.write_text(' '.join(command))
+		command_path.write_text(' '.join(command_string))
 		stdout_path.write_text(process.stdout)
 		stderr_path.write_text(process.stderr)
 	except FileNotFoundError as exception:
 		Path(__file__).with_name('debug_stdout.txt').write_text(process.stdout)
 		Path(__file__).with_name('debug_stderr.txt').write_text(process.stderr)
-		Path(__file__).with_name('debug_command.txt').write_text(' '.join(command))
+		Path(__file__).with_name('debug_command.txt').write_text(' '.join(command_string))
 		raise exception
 	return process
 
