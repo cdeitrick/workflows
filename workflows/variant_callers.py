@@ -61,7 +61,9 @@ class Breseq:
 		ufwd = sample.forward_unpaired
 		urev = sample.reverse_unpaired
 
-		return cls(reference, fwd, rev, ufwd, urev)
+		parent_folder = fwd.parent.parent
+
+		return cls(reference, fwd, rev, ufwd, urev, parent_folder = parent_folder)
 
 	@classmethod
 	def from_list(cls, reference, reads):
