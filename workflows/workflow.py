@@ -1,9 +1,8 @@
+import sys
 from pathlib import Path
 from typing import List, Optional
-import sys
 
 sys.path.append(str(Path(__file__).parent))
-from dataclasses import dataclass
 
 try:
 	from . import assemblers
@@ -43,22 +42,25 @@ def collect_moreira_samples(base_name: str, output_folder: Path):
 
 def moreria_workflow(patient_name: str, output_folder: Path, reference: Optional[Path] = None):
 	common.checkdir(output_folder)
+	print("Output Folder: ", output_folder)
 	samples = collect_moreira_samples(patient_name, output_folder)
 
 	if reference is None or not reference.exists():
-		print("reference does not exist. Using {} instead.", samples[0].name)
+		print("reference does not exist. Using {} instead.".format(samples[0].name))
 		reference_assembly = assemble_workflow(samples[:1], kmers = "11,21,33,43,55,67,77,87,99,113,127")[0]
 		reference = reference_assembly.gff
 
 	for sample in samples:
 		print("calling variants from ", sample.name)
+		print("\treference: ", reference)
 		print("\tforward read: ", sample.forward)
 		print("\treverse read: ", sample.reverse)
 		print("\toutput folder: ", sample.folder)
 		variant_call_workflow(reference, sample)
 
 
-def variant_call_workflow(reference: Path, sample: common.Sample, ):
+def variant_call_workflow(reference: Path, sample: common.Sample):
+	common.checkdir(sample.folder)
 	read_quality.FastQC.from_sample(sample)
 	trim = read_quality.Trimmomatic.from_sample(sample)
 	read_quality.FastQC.from_trimmomatic(trim.output)
@@ -66,21 +68,24 @@ def variant_call_workflow(reference: Path, sample: common.Sample, ):
 	variant_callers.Breseq.from_trimmomatic(reference, trim.output)
 
 
-def assemble_workflow(samples: List[common.Sample],**kwargs) -> List[annotation.ProkkaOutput]:
+def assemble_workflow(samples: List[common.Sample], **kwargs) -> List[annotation.ProkkaOutput]:
 	# Assemble each sample into reads.
 	output_files = list()
 	for sample in samples:
-		print("sample ", sample.name)
+		print("Assemble Workflow Sample: ", sample.name)
+		print("Output Folder: ", sample.folder)
+		common.checkdir(sample.folder)
 
 		read_quality.FastQC.from_sample(sample)
 		trimmed_reads = read_quality.Trimmomatic.from_sample(sample)
 		read_quality.FastQC.from_trimmomatic(trimmed_reads.output)
 
-		spades_output = assemblers.Spades.from_trimmomatic(trimmed_reads.output, parent_folder = sample.folder, **kwargs)
+		spades_output = assemblers.SpadesWorkflow.from_trimmomatic(trimmed_reads.output, parent_folder = sample.folder,
+																   **kwargs)
 
 		prokka_output = annotation.Prokka.from_spades(spades_output.output, parent_folder = sample.folder,
 													  prefix = sample.name)
-		output_files.append(prokka_output)
+		output_files.append(prokka_output.output)
 	return output_files
 
 
@@ -114,7 +119,7 @@ def iterate_assemblies(sample: common.Sample):
 		rev = trimmed_reads.output.reverse
 		ufwd = trimmed_reads.output.forward_unpaired
 		urev = trimmed_reads.output.reverse_unpaired
-		spades = assemblers.Spades(fwd, rev, ufwd, urev, kmers = kmer_option, output_folder = output_folder)
+		spades = assemblers.SpadesWorkflow(fwd, rev, ufwd, urev, kmers = kmer_option, output_folder = output_folder)
 
 
 def main():

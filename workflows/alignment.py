@@ -1,15 +1,14 @@
 from pathlib import Path
+
 from dataclasses import dataclass
-import subprocess
+
+try:
+	from . import common
+except:
+	import common
 
 mummer_path = Path("/opt") / "mummer" / "MUMmer4.0" / "bin"
 nucmer_path = mummer_path / "nucmer"
-
-
-def checkdir(path):
-	if isinstance(path, str): path = Path(path)
-	if not path.exists(): path.mkdir()
-	return path
 
 
 @dataclass
@@ -36,23 +35,13 @@ class Abacas:
 	abacas_path = Path("/opt") / "abacas" / "abacas.1.3.1.pl"
 
 	def __init__(self, reference: Path, query: Path, **kwargs):
-		output_folder = kwargs.get("output_folder")
-		if not output_folder:
-			parent_folder = kwargs['parent_folder']
-			output_folder = checkdir(parent_folder / "abacas_output")
+		output_folder = common.get_output_folder("abacas", **kwargs)
 		prefix = output_folder / query.stem
-
-		stdout_path = output_folder / "abacas_stdout.txt"
-		stderr_path = output_folder / "abacas_stderr.txt"
-		command_path = output_folder / "abacas_command.txt"
 
 		command = ["perl", self.abacas_path, '-r', reference, "-q", query, "-o", prefix, '-p',
 				   "nucmer"]  # "-p", nucmer_path,
 
-		process = subprocess.run(command, stdout = subprocess.PIPE, stderr = subprocess.PIPE, encoding = "UTF-8")
-		command_path.write_text(' '.join(map(str, command)))
-		stdout_path.write_text(process.stdout)
-		stderr_path.write_text(process.stderr)
+		self.process = common.run_command("abacas", command, output_folder)
 
 	@classmethod
 	def from_spades(cls, spades_output):
