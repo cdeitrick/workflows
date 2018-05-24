@@ -25,7 +25,7 @@ class Sample:
 def get_srun_command(threads: Optional = None) -> List[Any]:
 	srun_command = ["srun"]
 	if threads:
-		srun_command += ["-t", threads]
+		srun_command += ["--threads", threads]
 	srun_command += ["--mail-user=cld100@pitt.edu", "--mail-type=end,fail"]
 	return srun_command
 
