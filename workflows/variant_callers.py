@@ -13,6 +13,9 @@ class BreseqOutput:
 	folder: Path
 	index: Path
 
+	def exists(self):
+		return self.index.exists()
+
 
 class Breseq:
 	"""
@@ -40,12 +43,16 @@ class Breseq:
 			"-o", output_folder,
 			"-r", reference
 		] + list(reads)
-		self.process = common.run_command("breseq", command, output_folder)
 
 		self.output = BreseqOutput(
 			output_folder,
 			output_folder / "index.html"
 		)
+
+		if not self.output.exists():
+			self.process = common.run_command("breseq", command, output_folder)
+
+
 
 	@classmethod
 	def from_trimmomatic(cls, reference: Path, sample):

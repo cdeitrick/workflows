@@ -66,8 +66,8 @@ class SpadesWorkflow:
 			"--pe1-s", reverse_unpaired,
 			"-o", output_folder
 		]
-
-		common.run_command("spades", command, output_folder)
+		if not self.output.exists():
+			common.run_command("spades", command, output_folder)
 
 	@classmethod
 	def from_trimmomatic(cls, sample: TrimmomaticOutput, **kwargs):

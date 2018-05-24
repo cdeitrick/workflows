@@ -130,8 +130,8 @@ class Trimmomatic:
 			"SLIDINGWINDOW:{}".format(self.options.window),
 			"MINLEN:{}".format(self.options.minimum_length)
 		]
-
-		self.process = common.run_command("trimmomatic", self.command, self.output_folder)
+		if not self.output.exists():
+			self.process = common.run_command("trimmomatic", self.command, self.output_folder)
 
 	@classmethod
 	def from_sample(cls, sample) -> 'Trimmomatic':

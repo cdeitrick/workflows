@@ -55,7 +55,8 @@ class Prokka:
 			"--prefix", prefix,
 			genome
 		]
-		self.process = common.run_command("prokka", prokka_command, output_folder)
+		if not self.output.exists():
+			self.process = common.run_command("prokka", prokka_command, output_folder)
 
 	@classmethod
 	def from_spades(cls, spades_output, **kwargs):

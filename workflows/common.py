@@ -82,13 +82,15 @@ def run_command(program_name: str, command: List[Any], output_folder: Path, thre
 	command = get_srun_command(num_threads) + command
 	command = list(map(str, command))
 
-	print(command)
-
-	process = subprocess.run(command, stdout = subprocess.PIPE, stderr = subprocess.PIPE, encoding = "UTF-8")
-
 	stdout_path = output_folder / "{}_stdout.txt".format(program_name)
 	stderr_path = output_folder / "{}_stderr.txt".format(program_name)
 	command_path = output_folder / "{}_command.txt".format(program_name)
+
+	output_folder_already_exists = output_folder.exists()
+	if output_folder_already_exists:
+		command_path.write_text(' '.join(command))
+
+	process = subprocess.run(command, stdout = subprocess.PIPE, stderr = subprocess.PIPE, encoding = "UTF-8")
 
 	command_path.write_text(' '.join(command))
 	stdout_path.write_text(process.stdout)
