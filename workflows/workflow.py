@@ -61,13 +61,20 @@ def moreria_workflow(patient_name: str, output_folder: Path, reference: Optional
 
 
 def variant_call_workflow(reference: Path, sample: common.Sample, **kwargs):
+	kwargs['parent_folder'] = sample.folder
 	threads = kwargs.get('threads', 16)
 	common.checkdir(sample.folder)
+	trim_reads = False
 	read_quality.FastQC.from_sample(sample)
-	trim = read_quality.Trimmomatic.from_sample(sample, threads = threads)
-	read_quality.FastQC.from_trimmomatic(trim.output)
+	if trim_reads:
+		read_quality.FastQC.from_sample(sample)
+		trim = read_quality.Trimmomatic.from_sample(sample, threads = threads)
+		read_quality.FastQC.from_trimmomatic(trim.output)
 
-	variant_callers.Breseq.from_trimmomatic(reference, trim.output, threads = threads)
+		variant_callers.Breseq.from_trimmomatic(reference, trim.output, threads = threads)
+	else:
+		reads = [sample.forward, sample.reverse]
+		variant_callers.Breseq.from_list(reference, reads, **kwargs)
 
 
 def assemble_workflow(samples: List[common.Sample], **kwargs) -> List[annotation.ProkkaOutput]:

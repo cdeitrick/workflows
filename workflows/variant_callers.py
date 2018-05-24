@@ -71,8 +71,9 @@ class Breseq:
 		return cls(reference, fwd, rev, ufwd, urev, **kwargs)
 
 	@classmethod
-	def from_list(cls, reference, reads):
-		return cls(reference, *reads)
+	def from_list(cls, reference, reads, **kwargs):
+		kwargs['parent_folder'] = kwargs.get('parent_folder', reads[0].parent.parent)
+		return cls(reference, *reads, **kwargs)
 
 
 if __name__ == "__main__":
