@@ -84,7 +84,7 @@ def assemble_workflow(samples: List[common.Sample], **kwargs) -> List[annotation
 
 		prokka_output = annotation.Prokka.from_spades(spades_output.output, parent_folder = sample.folder,
 													  prefix = sample.name)
-		output_files.append(prokka_output)
+		output_files.append(prokka_output.output)
 	return output_files
 
 
