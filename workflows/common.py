@@ -92,10 +92,15 @@ def run_command(program_name: str, command: List[Any], output_folder: Path, thre
 
 	process = subprocess.run(command, stdout = subprocess.PIPE, stderr = subprocess.PIPE, encoding = "UTF-8")
 
-	command_path.write_text(' '.join(command))
-	stdout_path.write_text(process.stdout)
-	stderr_path.write_text(process.stderr)
-
+	try:
+		command_path.write_text(' '.join(command))
+		stdout_path.write_text(process.stdout)
+		stderr_path.write_text(process.stderr)
+	except FileNotFoundError as exception:
+		Path(__file__).with_name('debug_stdout.txt').write_text(process.stdout)
+		Path(__file__).with_name('debug_stderr.txt').write_text(process.stderr)
+		Path(__file__).with_name('debug_command.txt').write_text(' '.join(command))
+		raise exception
 	return process
 
 
