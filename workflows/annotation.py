@@ -2,7 +2,7 @@ import argparse
 from pathlib import Path
 
 from dataclasses import dataclass
-
+import subprocess
 try:
 	from . import common
 except:
@@ -55,8 +55,11 @@ class Prokka:
 			"--prefix", prefix,
 			genome
 		]
+
 		if not self.output.exists():
+			subprocess.run(['module', 'load', 'prokka'])
 			self.process = common.run_command("prokka", prokka_command, output_folder)
+			subprocess.run(['module', 'unload', 'prokka'])
 
 	@classmethod
 	def from_spades(cls, spades_output, **kwargs):

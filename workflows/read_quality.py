@@ -47,6 +47,8 @@ class TrimmomaticOptions:
 class FastQCOutput:
 	folder: Path
 	reports: List[Path]
+	def exists(self):
+		return all(i.exists() for i in self.reports)
 
 
 class FastQC:
@@ -54,11 +56,17 @@ class FastQC:
 		output_folder = common.get_output_folder("fastqc", **kwargs)
 
 		self.fastqc_command = [
-								  "fastqc",
-								  "--outdir", output_folder
-							  ] + list(reads)
+			"fastqc",
+			"--outdir", output_folder
+		] + list(reads)
 
-		self.process = common.run_command("fastqc", self.fastqc_command, output_folder)
+		self.output = FastQCOutput(
+			output_folder,
+			[output_folder / (i.name+'.html') for i in reads]
+		)
+
+		if not self.output.exists():
+			self.process = common.run_command("fastqc", self.fastqc_command, output_folder)
 
 	@classmethod
 	def from_sample(cls, sample):
@@ -116,7 +124,7 @@ class Trimmomatic:
 		)
 		self.command = [
 			"trimmomatic", "PE",
-			#"-threads", str(self.options.threads),
+			# "-threads", str(self.options.threads),
 			"-phred33",
 			"-trimlog", log_file,
 			# "name", self.options.job_name,
