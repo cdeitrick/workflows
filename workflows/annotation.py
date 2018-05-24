@@ -57,9 +57,9 @@ class Prokka:
 		]
 
 		if not self.output.exists():
-			subprocess.run(['module', 'load', 'prokka'])
+			#subprocess.run(['module', 'load', 'prokka'])
 			self.process = common.run_command("prokka", prokka_command, output_folder)
-			subprocess.run(['module', 'unload', 'prokka'])
+			#subprocess.run(['module', 'unload', 'prokka'])
 
 	@classmethod
 	def from_spades(cls, spades_output, **kwargs):
