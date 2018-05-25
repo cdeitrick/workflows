@@ -54,7 +54,7 @@ def get_output_folder(name: str, make_dirs: bool = True, **kwargs) -> Path:
 
 
 def run_command(program_name: str, command: List[Any], output_folder: Path,
-				threads: Tuple[str, int] = None) -> subprocess.CompletedProcess:
+				threads: Tuple[str, int] = None, use_srun:bool = True) -> subprocess.CompletedProcess:
 	"""
 		Runs a program's command. Arguments are used to generate additional files containing the stdout, stderr,and
 		command used to run the program.
@@ -68,6 +68,8 @@ def run_command(program_name: str, command: List[Any], output_folder: Path,
 		It should ba a tuple of the program's threads flag and the number of threads.
 		ex. ('--threads', 8)
 		ex. ('-j', 16)
+	use_srun: bool; default False
+		Whether to run the command with srun.
 
 	Returns
 	-------
@@ -79,8 +81,8 @@ def run_command(program_name: str, command: List[Any], output_folder: Path,
 		command = command[:1] + [*threads] + command[1:]
 	else:
 		num_threads = None
-
-	command = get_srun_command(num_threads) + command
+	if use_srun:
+		command = get_srun_command(num_threads) + command
 	command = list(map(str, command))
 
 	stdout_path = output_folder / "{}_stdout.txt".format(program_name)

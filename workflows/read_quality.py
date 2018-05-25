@@ -12,7 +12,7 @@ except:
 	import common
 
 import argparse
-import subprocess
+
 THREADS = 16
 
 
@@ -47,6 +47,7 @@ class TrimmomaticOptions:
 class FastQCOutput:
 	folder: Path
 	reports: List[Path]
+
 	def exists(self):
 		return all(i.exists() for i in self.reports)
 
@@ -56,17 +57,17 @@ class FastQC:
 		output_folder = common.get_output_folder("fastqc", **kwargs)
 
 		self.fastqc_command = [
-			"fastqc",
-			"--outdir", output_folder
-		] + list(reads)
+								  "fastqc",
+								  "--outdir", output_folder
+							  ] + list(reads)
 
 		self.output = FastQCOutput(
 			output_folder,
-			[output_folder / (i.name+'.html') for i in reads]
+			[output_folder / (i.name + '.html') for i in reads]
 		)
 
 		if not self.output.exists():
-			self.process = common.run_command("fastqc", self.fastqc_command, output_folder)
+			self.process = common.run_command("fastqc", self.fastqc_command, output_folder, use_srun = False)
 
 	@classmethod
 	def from_sample(cls, sample):
@@ -141,8 +142,9 @@ class Trimmomatic:
 		]
 		if not self.output.exists():
 			if trimmomatic_threads:
-				trimmomatic_threads = ('-threads',trimmomatic_threads)
-			self.process = common.run_command("trimmomatic", self.command, self.output_folder,threads = trimmomatic_threads)
+				trimmomatic_threads = ('-threads', trimmomatic_threads)
+			self.process = common.run_command("trimmomatic", self.command, self.output_folder,
+				threads = trimmomatic_threads)
 
 	@classmethod
 	def from_sample(cls, sample, **kwargs) -> 'Trimmomatic':
