@@ -81,7 +81,7 @@ def assemble_workflow(samples: List[common.Sample], **kwargs) -> List[annotation
 	# Assemble each sample into reads.
 
 	kwargs['threads'] = kwargs.get('threads', 16)
-	trim_reads = kwargs.get('trim_reads', True)
+
 	output_files = list()
 	for sample in samples:
 		print("Assemble Workflow Sample: ", sample.name)
@@ -89,14 +89,12 @@ def assemble_workflow(samples: List[common.Sample], **kwargs) -> List[annotation
 		common.checkdir(sample.folder)
 
 		read_quality.FastQC.from_sample(sample)
-		if trim_reads:
-			trimmed_reads = read_quality.Trimmomatic.from_sample(sample, **kwargs)
-			read_quality.FastQC.from_trimmomatic(trimmed_reads.output)
 
-			spades_output = assemblers.SpadesWorkflow.from_trimmomatic(trimmed_reads.output, parent_folder = sample.folder,
-																   **kwargs)
-		else:
-			spades_output = assemblers.SpadesWorkflow.from_sample(sample)
+		trimmed_reads = read_quality.Trimmomatic.from_sample(sample, **kwargs)
+		read_quality.FastQC.from_trimmomatic(trimmed_reads.output)
+
+		spades_output = assemblers.SpadesWorkflow.from_trimmomatic(trimmed_reads.output, parent_folder = sample.folder,
+															   **kwargs)
 
 		prokka_output = annotation.Prokka.from_spades(spades_output.output, parent_folder = sample.folder,
 													  prefix = sample.name, **kwargs)
