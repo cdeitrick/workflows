@@ -137,7 +137,7 @@ def iterate_assemblies(sample: common.Sample):
 
 def main():
 	project = Path.home() / "projects" / "moreira_por"
-	moreira_output_folder = common.checkdir(project / "variant_calls_untrimmed_reference")
+	moreira_output_folder = common.checkdir(project / "variant_calls")
 	moreira_reference = None
 	moreria_workflow("P148", moreira_output_folder, reference = moreira_reference)
 
