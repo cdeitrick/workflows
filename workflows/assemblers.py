@@ -43,7 +43,7 @@ class SpadesWorkflow:
 		Spades.from_trimmomatic(trimmomatic_output, parent_folder = parent_folder)
 	"""
 
-	def __init__(self, forward: Path, reverse: Path, forward_unpaired: Path, reverse_unpaired: Path, **kwargs):
+	def __init__(self, forward: Path, reverse: Path, *unpaired_reads,  **kwargs):
 		spades_program = kwargs.get('spades', 'spades.py')
 		spades_kmer_length = kwargs.get('kmers', '21,33,55,71')
 		spades_threads = kwargs.get('threads')
@@ -63,10 +63,12 @@ class SpadesWorkflow:
 			"-k", spades_kmer_length,  # "15,21,25,31", #Must be odd values and less than 128
 			"--pe1-1", forward,
 			"--pe1-2", reverse,
-			"--pe1-s", forward_unpaired,
-			"--pe1-s", reverse_unpaired,
+			#"--pe1-s", forward_unpaired,
+			#"--pe1-s", reverse_unpaired,
 			"-o", output_folder
 		]
+		for up_read in unpaired_reads:
+			command += ['--pe1-s', up_read]
 		if not self.output.exists():
 			if spades_threads:
 				spades_threads = ('-t', spades_threads)
@@ -82,6 +84,11 @@ class SpadesWorkflow:
 		kwargs['parent_folder'] = kwargs.get('parent_folder', fwd.parent.parent)
 
 		return cls(fwd, rev, ufwd, urev, **kwargs)
+
+	@classmethod
+	def from_sample(cls, sample, **kwargs):
+		kwargs['parent_folder'] = kwargs.get('parent_folder', sample.folder)
+		return cls(sample.forward, sample.reverse, **kwargs)
 
 
 class Bandage:

@@ -48,7 +48,7 @@ def moreria_workflow(patient_name: str, output_folder: Path, reference: Optional
 
 	if reference is None or not reference.exists():
 		print("reference does not exist. Using {} instead.".format(samples[0].name))
-		reference_assembly = assemble_workflow(samples[:1], kmers = "11,21,33,43,55,67,77,87,99,113,127", threads = threads)[0]
+		reference_assembly = assemble_workflow(samples[:1], kmers = "11,21,33,43,55,67,77,87,99,113,127", threads = threads, trim_reads = False)[0]
 		reference = reference_assembly.gff
 
 	for sample in samples:
@@ -58,6 +58,7 @@ def moreria_workflow(patient_name: str, output_folder: Path, reference: Optional
 		print("\treverse read: ", sample.reverse)
 		print("\toutput folder: ", sample.folder)
 		variant_call_workflow(reference, sample, threads = threads)
+		break
 
 
 def variant_call_workflow(reference: Path, sample: common.Sample, **kwargs):
@@ -80,6 +81,7 @@ def assemble_workflow(samples: List[common.Sample], **kwargs) -> List[annotation
 	# Assemble each sample into reads.
 
 	kwargs['threads'] = kwargs.get('threads', 16)
+	trim_reads = kwargs.get('trim_reads', True)
 	output_files = list()
 	for sample in samples:
 		print("Assemble Workflow Sample: ", sample.name)
@@ -87,11 +89,14 @@ def assemble_workflow(samples: List[common.Sample], **kwargs) -> List[annotation
 		common.checkdir(sample.folder)
 
 		read_quality.FastQC.from_sample(sample)
-		trimmed_reads = read_quality.Trimmomatic.from_sample(sample, **kwargs)
-		read_quality.FastQC.from_trimmomatic(trimmed_reads.output)
+		if trim_reads:
+			trimmed_reads = read_quality.Trimmomatic.from_sample(sample, **kwargs)
+			read_quality.FastQC.from_trimmomatic(trimmed_reads.output)
 
-		spades_output = assemblers.SpadesWorkflow.from_trimmomatic(trimmed_reads.output, parent_folder = sample.folder,
+			spades_output = assemblers.SpadesWorkflow.from_trimmomatic(trimmed_reads.output, parent_folder = sample.folder,
 																   **kwargs)
+		else:
+			spades_output = assemblers.SpadesWorkflow.from_sample(sample)
 
 		prokka_output = annotation.Prokka.from_spades(spades_output.output, parent_folder = sample.folder,
 													  prefix = sample.name, **kwargs)
@@ -134,7 +139,7 @@ def iterate_assemblies(sample: common.Sample):
 
 def main():
 	project = Path.home() / "projects" / "moreira_por"
-	moreira_output_folder = common.checkdir(project / "variant_calls_untrimmed")
+	moreira_output_folder = common.checkdir(project / "variant_calls_untrimmed_reference")
 	moreira_reference = None
 	moreria_workflow("P148", moreira_output_folder, reference = moreira_reference)
 
