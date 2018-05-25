@@ -58,7 +58,6 @@ def moreria_workflow(patient_name: str, output_folder: Path, reference: Optional
 		print("\treverse read: ", sample.reverse)
 		print("\toutput folder: ", sample.folder)
 		variant_call_workflow(reference, sample, threads = threads)
-		break
 
 
 def variant_call_workflow(reference: Path, sample: common.Sample, **kwargs):
