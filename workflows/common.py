@@ -102,13 +102,13 @@ def run_command(program_name: str, command: List[Any], output_folder: Path,
 	)
 
 	try:
-		command_path.write_text(' '.join(command_string))
+		command_path.write_text(command_string)
 		stdout_path.write_text(process.stdout)
 		stderr_path.write_text(process.stderr)
 	except FileNotFoundError as exception:
 		Path(__file__).with_name('debug_stdout.txt').write_text(process.stdout)
 		Path(__file__).with_name('debug_stderr.txt').write_text(process.stderr)
-		Path(__file__).with_name('debug_command.txt').write_text(' '.join(command_string))
+		Path(__file__).with_name('debug_command.txt').write_text(command_string)
 		raise exception
 	return process
 
