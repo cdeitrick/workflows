@@ -145,8 +145,10 @@ def get_environment_details():
 	import subprocess
 	environment_details_path = Path(__file__).with_name('last_run_environment.txt')
 	command = ['module', 'list']
-	process = subprocess.run(command, stdout = subprocess.PIPE, stderr = subprocess.PIPE, encoding = 'utf-8')
-	environment_details_path.write_text(process.stdout)
+	#process = subprocess.run(command, stdout = subprocess.PIPE, stderr = subprocess.PIPE, encoding = 'utf-8')
+	#environment_details_path.write_text(process.stdout)
+	import os
+	os.system(' '.join(command) + ' > ' + str(environment_details_path))
 
 
 if __name__ == "__main__":
