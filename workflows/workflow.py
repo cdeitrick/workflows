@@ -156,5 +156,4 @@ def get_environment_details():
 
 
 if __name__ == "__main__":
-	get_environment_details()
-	#main()
+	main()
