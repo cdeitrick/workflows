@@ -150,6 +150,8 @@ def get_environment_details():
 	import os
 	command = "module list | > {}".format(environment_details_path.absolute())
 	print(command)
+	import sys
+	print(sys.path)
 	os.system(command)
 
 
