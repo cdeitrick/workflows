@@ -148,7 +148,9 @@ def get_environment_details():
 	#process = subprocess.run(command, stdout = subprocess.PIPE, stderr = subprocess.PIPE, encoding = 'utf-8')
 	#environment_details_path.write_text(process.stdout)
 	import os
-	os.system(' '.join(command) + ' > ' + str(environment_details_path))
+	command = "module list > {}".format(environment_details_path.absolute())
+	print(command)
+	os.system(command)
 
 
 if __name__ == "__main__":
