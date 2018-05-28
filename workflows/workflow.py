@@ -44,6 +44,7 @@ def moreria_workflow(patient_name: str, output_folder: Path, reference: Optional
 	threads = kwargs.get('threads', 16)
 	common.checkdir(output_folder)
 	print("Output Folder: ", output_folder)
+	print("Reference: ", reference.exists()if reference is not None else False, reference)
 	samples = collect_moreira_samples(patient_name, output_folder)
 
 	if reference is None or not reference.exists():
@@ -138,7 +139,7 @@ def iterate_assemblies(sample: common.Sample):
 def main():
 	project = Path.home() / "projects" / "moreira_por"
 	moreira_output_folder = common.checkdir(project / "variant_calls")
-	moreira_reference = project / "polished_contigss.fasta"
+	moreira_reference = project / "polished_contigs.fasta"
 	moreria_workflow("P148", moreira_output_folder, reference = moreira_reference)
 
 def get_environment_details():
