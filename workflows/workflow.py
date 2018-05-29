@@ -59,7 +59,6 @@ def moreria_workflow(patient_name: str, output_folder: Path, reference: Optional
 		print("\treverse read: ", sample.reverse)
 		print("\toutput folder: ", sample.folder)
 		variant_call_workflow(reference, sample, threads = threads)
-		break
 
 
 
@@ -140,8 +139,8 @@ def iterate_assemblies(sample: common.Sample):
 def main():
 	project = Path.home() / "projects" / "moreira_por"
 	moreira_output_folder = common.checkdir(project / "variant_calls")
-	moreira_reference = project / "polished_contigs.fasta"
-	moreria_workflow("P148", moreira_output_folder, reference = None)
+	moreira_reference = project / "variant_calls" / "P148-1" / "prokka_output" / "P148-1.gff"
+	moreria_workflow("P148", moreira_output_folder, reference = moreira_reference)
 
 def get_environment_details():
 	import subprocess
