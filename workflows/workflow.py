@@ -138,7 +138,7 @@ def iterate_assemblies(sample: common.Sample):
 
 
 def main():
-	patient_name = "P342"
+	patient_name = "P148"
 	project = Path.home() / "projects" / "moreira_por"
 	moreira_output_folder = common.checkdir(project / "variant_calls")
 	moreira_reference = project / "variant_calls" / "{}-1".format(patient_name) / "prokka_output" / "{}-1.gff".format(patient_name)

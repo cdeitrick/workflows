@@ -54,7 +54,7 @@ class Prokka:
 			"--outdir", output_folder,
 			"--prefix", prefix,
 			"--genus", "burkholderia",
-			"--species", "multivorans"
+			"--species", "multivorans",
 			genome
 		]
 
