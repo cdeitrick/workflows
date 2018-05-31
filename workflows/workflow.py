@@ -53,6 +53,7 @@ def moreria_workflow(patient_name: str, output_folder: Path, reference: Optional
 		reference = reference_assembly.gff
 
 	for sample in samples:
+		break
 		print("calling variants from ", sample.name)
 		print("\treference: ", reference)
 		print("\tforward read: ", sample.forward)
@@ -137,10 +138,11 @@ def iterate_assemblies(sample: common.Sample):
 
 
 def main():
+	patient_name = "P342"
 	project = Path.home() / "projects" / "moreira_por"
 	moreira_output_folder = common.checkdir(project / "variant_calls")
-	moreira_reference = project / "variant_calls" / "P148-1" / "prokka_output" / "P148-1.gff"
-	moreria_workflow("P148", moreira_output_folder, reference = moreira_reference)
+	moreira_reference = project / "variant_calls" / "{}-1".format(patient_name) / "prokka_output" / "{}-1.gff".format(patient_name)
+	moreria_workflow(patient_name, moreira_output_folder, reference = moreira_reference)
 
 def get_environment_details():
 	import subprocess
