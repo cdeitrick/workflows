@@ -67,7 +67,7 @@ def variant_call_workflow(reference: Path, sample: common.Sample, **kwargs):
 	kwargs['parent_folder'] = sample.folder
 	threads = kwargs.get('threads', 16)
 	common.checkdir(sample.folder)
-	trim_reads = False
+	trim_reads = True
 	read_quality.FastQC.from_sample(sample)
 	if trim_reads:
 		trim = read_quality.Trimmomatic.from_sample(sample, threads = threads)
@@ -140,8 +140,9 @@ def iterate_assemblies(sample: common.Sample):
 def main():
 	patient_name = "P148"
 	project = Path.home() / "projects" / "moreira_por"
-	moreira_output_folder = common.checkdir(project / "variant_calls")
+	moreira_output_folder = common.checkdir(project / "variant_calls_17616")
 	moreira_reference = project / "variant_calls" / "{}-1".format(patient_name) / "prokka_output" / "{}-1.gff".format(patient_name)
+	moreira_reference = project / "references" / "GCA_000010545.1_ASM1054v1_genomic.gff"
 	moreria_workflow(patient_name, moreira_output_folder, reference = moreira_reference)
 
 def get_environment_details():
