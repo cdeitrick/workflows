@@ -51,9 +51,9 @@ def moreria_workflow(patient_name: str, output_folder: Path, reference: Optional
 		print("reference does not exist. Using {} instead.".format(samples[0].name))
 		reference_assembly = assemble_workflow(samples[:1], kmers = "11,21,33,43,55,67,77,87,99,113,127", threads = threads, trim_reads = False)[0]
 		reference = reference_assembly.gff
-
+	_breakpoint = Path.home() / "_breakpoint_file.txt"
 	for sample in samples:
-		break
+		if not _breakpoint.exists(): break
 		print("calling variants from ", sample.name)
 		print("\treference: ", reference)
 		print("\tforward read: ", sample.forward)
