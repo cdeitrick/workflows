@@ -75,7 +75,7 @@ def variant_call_workflow(reference: Path, sample: common.Sample, **kwargs):
 	trim = read_quality.Trimmomatic.from_sample(sample, threads = threads)
 	read_quality.FastQC.from_trimmomatic(trim.output)
 
-	variant_callers.Breseq.from_trimmomatic(reference, trim.output, threads = threads, **kwargs)
+	variant_callers.Breseq.from_trimmomatic(reference, trim.output, threads = threads)
 
 
 
