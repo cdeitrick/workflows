@@ -140,7 +140,7 @@ def iterate_assemblies(sample: common.Sample):
 def main():
 	patient_name = "P342"
 	project = Path.home() / "projects" / "moreira_por"
-	moreira_output_folder = common.checkdir(project / "variant_calls_" + patient_name)
+	moreira_output_folder = common.checkdir(project / "variant_calls_{}".format(patient_name))
 	moreira_reference = project / "variant_calls" / "{}-1".format(patient_name) / "prokka_output" / "{}-1.gff".format(patient_name)
 	moreira_reference = project / "references" / "GCA_000010545.1_ASM1054v1_cds_from_genomic.fna"
 	moreria_workflow(patient_name, moreira_output_folder, reference = moreira_reference)
