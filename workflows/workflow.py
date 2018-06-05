@@ -35,6 +35,12 @@ parser.add_argument(
 	dest = 'reference',
 	default = None
 )
+parser.add_argument(
+	'-f',
+	help = 'whether to run the full workflow',
+	action = 'store_true',
+	dest = 'run_all'
+)
 
 def collect_moreira_samples(base_name: str, output_folder: Path):
 	base_folder = Path.home() / "projects" / "moreira_por"
@@ -55,6 +61,11 @@ def collect_moreira_samples(base_name: str, output_folder: Path):
 
 def moreria_workflow(patient_name: str, output_folder: Path, reference: Optional[Path] = None, **kwargs):
 	threads = kwargs.get('threads', 16)
+	if 'run_all' in kwargs:
+		run_all = kwargs['run_all']
+		del kwargs['run_all']
+	else:
+		run_all = False
 	common.checkdir(output_folder)
 	print("Output Folder: ", output_folder)
 	print("Reference: ", reference.exists()if reference is not None else False, reference)
@@ -67,10 +78,10 @@ def moreria_workflow(patient_name: str, output_folder: Path, reference: Optional
 		reference_assembly = assemble_workflow(samples[:1], kmers = "11,21,33,43,55,67,77,87,99,113,127", threads = threads, trim_reads = False)[0]
 		reference = reference_assembly.gff
 		print("Reference File: ", reference.exists(), reference)
-		
+
 	_breakpoint = Path.home() / "_breakpoint_file.txt"
 	for sample in samples:
-		if not _breakpoint.exists(): break
+		if not _breakpoint.exists() or not run_all: break
 		print("calling variants from {} (started at {})".format(sample.name, datetime.datetime.now().isoformat()))
 		print("\treference: ", reference)
 		print("\tforward read: ", sample.forward)
@@ -162,7 +173,7 @@ def main():
 	moreira_reference = project / "variant_calls" / "{}-1".format(patient_name) / "prokka_output" / "{}-1.gff".format(patient_name)
 	#moreira_reference = project / "references" / "GCA_000010545.1_ASM1054v1_cds_from_genomic.fna"
 	moreira_reference = args.reference
-	moreria_workflow(patient_name, moreira_output_folder, reference = moreira_reference)
+	moreria_workflow(patient_name, moreira_output_folder, reference = moreira_reference, run_all = args.run_all)
 
 def get_environment_details():
 	import subprocess
