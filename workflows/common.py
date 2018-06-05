@@ -78,17 +78,17 @@ def run_command(program_name: str, command: List[Any], output_folder: Path,
 
 	if threads:
 		num_threads = threads[1]
-		#command = command[:1] + [*threads] + command[1:]
+		command = command[:1] + [*threads] + command[1:]
 	else:
 		num_threads = None
 	if use_srun:
 		command = get_srun_command(num_threads) + command
-	command = list(map(str, command))
+
 
 	stdout_path = output_folder / "{}_stdout.txt".format(program_name)
 	stderr_path = output_folder / "{}_stderr.txt".format(program_name)
 	command_path = output_folder / "{}_command.txt".format(program_name)
-
+	command = list(map(str, command))
 	output_folder_already_exists = output_folder.exists()
 	if output_folder_already_exists:
 		command_path.write_text(' '.join(command))

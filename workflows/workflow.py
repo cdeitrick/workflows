@@ -46,7 +46,9 @@ def moreria_workflow(patient_name: str, output_folder: Path, reference: Optional
 	print("Output Folder: ", output_folder)
 	print("Reference: ", reference.exists()if reference is not None else False, reference)
 	samples = collect_moreira_samples(patient_name, output_folder)
-
+	print("Found Samples: ")
+	for i in samples:
+		print("\t", i)
 	if reference is None or not reference.exists():
 		print("reference does not exist. Using {} instead.".format(samples[0].name))
 		reference_assembly = assemble_workflow(samples[:1], kmers = "11,21,33,43,55,67,77,87,99,113,127", threads = threads, trim_reads = False)[0]
@@ -67,16 +69,14 @@ def variant_call_workflow(reference: Path, sample: common.Sample, **kwargs):
 	kwargs['parent_folder'] = sample.folder
 	threads = kwargs.get('threads', 16)
 	common.checkdir(sample.folder)
-	trim_reads = True
-	read_quality.FastQC.from_sample(sample)
-	if trim_reads:
-		trim = read_quality.Trimmomatic.from_sample(sample, threads = threads)
-		read_quality.FastQC.from_trimmomatic(trim.output)
 
-		variant_callers.Breseq.from_trimmomatic(reference, trim.output, threads = threads)
-	else:
-		reads = [sample.forward, sample.reverse]
-		variant_callers.Breseq.from_list(reference, reads, **kwargs)
+	read_quality.FastQC.from_sample(sample)
+
+	trim = read_quality.Trimmomatic.from_sample(sample, threads = threads)
+	read_quality.FastQC.from_trimmomatic(trim.output)
+
+	variant_callers.Breseq.from_trimmomatic(reference, trim.output, threads = threads, **kwargs)
+
 
 
 def assemble_workflow(samples: List[common.Sample], **kwargs) -> List[annotation.ProkkaOutput]:
@@ -116,9 +116,9 @@ def iterate_assemblies(sample: common.Sample):
 
 	"""
 
-	fastqc_report = read_quality.FastQC.from_sample(sample)
+	read_quality.FastQC.from_sample(sample)
 	trimmed_reads = read_quality.Trimmomatic.from_sample(sample)
-	fastqc_trimmed_report = read_quality.FastQC.from_trimmomatic(trimmed_reads.output)
+	read_quality.FastQC.from_trimmomatic(trimmed_reads.output)
 
 	kmer_options = [
 		"11,21,33,43",
@@ -138,9 +138,9 @@ def iterate_assemblies(sample: common.Sample):
 
 
 def main():
-	patient_name = "P148"
+	patient_name = "P342"
 	project = Path.home() / "projects" / "moreira_por"
-	moreira_output_folder = common.checkdir(project / "variant_calls_17616")
+	moreira_output_folder = common.checkdir(project / "variant_calls_" + patient_name)
 	moreira_reference = project / "variant_calls" / "{}-1".format(patient_name) / "prokka_output" / "{}-1.gff".format(patient_name)
 	moreira_reference = project / "references" / "GCA_000010545.1_ASM1054v1_cds_from_genomic.fna"
 	moreria_workflow(patient_name, moreira_output_folder, reference = moreira_reference)
