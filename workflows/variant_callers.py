@@ -69,7 +69,12 @@ class Breseq:
 			kwargs['parent_folder'] = parent_folder
 
 		return cls(reference, fwd, rev, ufwd, urev, **kwargs)
-
+	@classmethod
+	def from_sample(cls, reference:Path, sample, **kwargs):
+		parent_folder = sample.folder
+		if 'parent_folder' not in kwargs:
+			kwargs['parent_folder'] = parent_folder
+		return cls(reference, sample.forward, sample.reverse, **kwargs)
 	@classmethod
 	def from_list(cls, reference, reads, **kwargs):
 		kwargs['parent_folder'] = kwargs.get('parent_folder', reads[0].parent.parent)
