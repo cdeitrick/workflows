@@ -46,7 +46,7 @@ class SpadesWorkflow:
 	def __init__(self, forward: Path, reverse: Path, *unpaired_reads,  **kwargs):
 		spades_program = kwargs.get('spades', 'spades.py')
 		spades_kmer_length = kwargs.get('kmers', '21,33,55,71')
-		spades_threads = kwargs.get('threads')
+		spades_threads = kwargs.get('threads', 16)
 
 		output_folder = common.get_output_folder("spades", **kwargs)
 
@@ -82,8 +82,8 @@ class SpadesWorkflow:
 		urev = sample.reverse_unpaired
 
 		kwargs['parent_folder'] = kwargs.get('parent_folder', fwd.parent.parent)
-
-		return cls(fwd, rev, ufwd, urev, **kwargs)
+		#Don't use the unpaired reverse reads.
+		return cls(fwd, rev, ufwd, **kwargs)
 
 	@classmethod
 	def from_sample(cls, sample, **kwargs):

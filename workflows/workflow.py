@@ -1,9 +1,9 @@
 import sys
 from pathlib import Path
 from typing import List, Optional
-
+import datetime
 sys.path.append(str(Path(__file__).parent))
-
+import argparse
 try:
 	from . import assemblers
 	from . import annotation
@@ -21,7 +21,20 @@ except:
 	Assemblers -> Annotation -> Breseq
 
 """
-
+parser = argparse.ArgumentParser()
+parser.add_argument(
+	'-n',
+	help = 'sample name',
+	action = 'store',
+	dest = 'sample_name'
+)
+parser.add_argument(
+	'-r',
+	help = 'reference',
+	action = 'store',
+	dest = 'reference',
+	default = None
+)
 
 def collect_moreira_samples(base_name: str, output_folder: Path):
 	base_folder = Path.home() / "projects" / "moreira_por"
@@ -53,10 +66,12 @@ def moreria_workflow(patient_name: str, output_folder: Path, reference: Optional
 		print("reference does not exist. Using {} instead.".format(samples[0].name))
 		reference_assembly = assemble_workflow(samples[:1], kmers = "11,21,33,43,55,67,77,87,99,113,127", threads = threads, trim_reads = False)[0]
 		reference = reference_assembly.gff
+		print("Reference File: ", reference.exists(), reference)
+		
 	_breakpoint = Path.home() / "_breakpoint_file.txt"
 	for sample in samples:
 		if not _breakpoint.exists(): break
-		print("calling variants from ", sample.name)
+		print("calling variants from {} (started at {})".format(sample.name, datetime.datetime.now().isoformat()))
 		print("\treference: ", reference)
 		print("\tforward read: ", sample.forward)
 		print("\treverse read: ", sample.reverse)
@@ -140,12 +155,13 @@ def iterate_assemblies(sample: common.Sample):
 
 
 def main():
-	patient_name = "P342"
+	args = parser.parse_args()
+	patient_name = args.sample_name
 	project = Path.home() / "projects" / "moreira_por"
-	moreira_output_folder = common.checkdir(project / "variant_calls_{}".format(patient_name))
+	moreira_output_folder = common.checkdir(project / "variant_calls_trimmed_{}".format(patient_name))
 	moreira_reference = project / "variant_calls" / "{}-1".format(patient_name) / "prokka_output" / "{}-1.gff".format(patient_name)
 	#moreira_reference = project / "references" / "GCA_000010545.1_ASM1054v1_cds_from_genomic.fna"
-	moreira_reference = None
+	moreira_reference = args.reference
 	moreria_workflow(patient_name, moreira_output_folder, reference = moreira_reference)
 
 def get_environment_details():
