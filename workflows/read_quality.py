@@ -125,7 +125,7 @@ class Trimmomatic:
 			reverse_output_unpaired
 		)
 		self.command = [
-			"trimmomatic", "PE",
+			"trimmomatic PE",
 			# "-threads", str(self.options.threads),
 			"-phred33",
 			"-trimlog", log_file,
