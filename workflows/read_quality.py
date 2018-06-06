@@ -125,7 +125,7 @@ class Trimmomatic:
 			reverse_output_unpaired
 		)
 		self.command = [
-			"trimmomatic PE",
+			"trimmomatic", "PE",
 			# "-threads", str(self.options.threads),
 			"-phred33",
 			"-trimlog", log_file,
@@ -142,7 +142,7 @@ class Trimmomatic:
 		]
 		if not self.output.exists():
 			if trimmomatic_threads:
-				trimmomatic_threads = ('-threads', trimmomatic_threads)
+				trimmomatic_threads = None #('-threads', trimmomatic_threads)
 			self.process = common.run_command("trimmomatic", self.command, self.output_folder,
 				threads = trimmomatic_threads)
 
