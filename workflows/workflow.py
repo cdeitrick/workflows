@@ -95,7 +95,7 @@ def variant_call_workflow(reference: Path, sample: common.Sample, **kwargs):
 	kwargs['parent_folder'] = sample.folder
 	kwargs['threads'] = kwargs.get('threads', 16)
 	common.checkdir(sample.folder)
-	trim_reads = False
+	trim_reads = True
 	read_quality.FastQC.from_sample(sample)
 	if trim_reads:
 		trim = read_quality.Trimmomatic.from_sample(sample, **kwargs)
