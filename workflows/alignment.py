@@ -39,7 +39,7 @@ class Abacas:
 		prefix = output_folder / query.stem
 
 		command = ["perl", self.abacas_path, '-r', reference, "-q", query, "-o", prefix, '-p',
-				   "nucmer"]  # "-p", nucmer_path,
+			"nucmer"]  # "-p", nucmer_path,
 
 		self.process = common.run_command("abacas", command, output_folder)
 

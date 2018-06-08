@@ -71,8 +71,7 @@ def moreria_workflow(patient_name: str, output_folder: Path, reference: Optional
 	print("Reference: ", reference.exists()if reference is not None else False, reference)
 	samples = collect_moreira_samples(patient_name, output_folder)
 	print("Found Samples: ")
-	for i in samples:
-		print("\t", i)
+
 	if reference is None or not reference.exists():
 		print("reference does not exist. Using {} instead.".format(samples[0].name))
 		reference_assembly = assemble_workflow(samples[:1], kmers = "11,21,33,43,55,67,77,87,99,113,127", threads = threads, trim_reads = False)[0]
@@ -169,7 +168,7 @@ def main():
 	args = parser.parse_args()
 	patient_name = args.sample_name
 	project = Path.home() / "projects" / "moreira_por"
-	moreira_output_folder = common.checkdir(project / "variant_calls_{}_20180607".format(patient_name))
+	moreira_output_folder = common.checkdir(project / "variant_calls_{}".format(patient_name))
 	moreira_reference = project / "variant_calls" / "{}-1".format(patient_name) / "prokka_output" / "{}-1.gff".format(patient_name)
 	#moreira_reference = project / "references" / "GCA_000010545.1_ASM1054v1_cds_from_genomic.fna"
 	moreira_reference = args.reference
