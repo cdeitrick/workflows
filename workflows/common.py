@@ -94,8 +94,8 @@ def run_command(program_name: str, command: List[Any], output_folder: Path,
 		try:
 			command_path.write_text(' '.join(command))
 		except FileNotFoundError as exception:
-			Path(__file__).with_name('debug_command.txt').write_text(' '.join(command))
-			raise exception
+			#Path(__file__).with_name('debug_command.txt').write_text(' '.join(command))
+			print("Cannot write to ", command_path)
 	start_datetime = datetime.now()
 	process = subprocess.run(command, stdout = subprocess.PIPE, stderr = subprocess.PIPE, encoding = "UTF-8")
 	end_datetime = datetime.now()
