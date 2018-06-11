@@ -39,11 +39,11 @@ class Breseq:
 		output_folder = output_folder / prefix
 
 		command = [
-			"breseq",
-			#"-j", THREADS,
-			"-o", output_folder,
-			"-r", reference
-		] + list(reads)
+					  "breseq",
+					  # "-j", THREADS,
+					  "-o", output_folder,
+					  "-r", reference
+				  ] + list(reads)
 
 		self.output = BreseqOutput(
 			output_folder,
@@ -54,8 +54,6 @@ class Breseq:
 			if breseq_threads:
 				breseq_threads = ("-j", breseq_threads)
 			self.process = common.run_command("breseq", command, output_folder, threads = breseq_threads)
-
-
 
 	@classmethod
 	def from_trimmomatic(cls, reference: Path, sample, **kwargs):
@@ -69,12 +67,14 @@ class Breseq:
 			kwargs['parent_folder'] = parent_folder
 		# Don't use the unpaired reverse read (forward should be fine). It is generally very low quality.
 		return cls(reference, fwd, rev, ufwd, **kwargs)
+
 	@classmethod
-	def from_sample(cls, reference:Path, sample, **kwargs):
+	def from_sample(cls, reference: Path, sample, **kwargs):
 		parent_folder = sample.folder
 		if 'parent_folder' not in kwargs:
 			kwargs['parent_folder'] = parent_folder
 		return cls(reference, sample.forward, sample.reverse, **kwargs)
+
 	@classmethod
 	def from_list(cls, reference, reads, **kwargs):
 		kwargs['parent_folder'] = kwargs.get('parent_folder', reads[0].parent.parent)
