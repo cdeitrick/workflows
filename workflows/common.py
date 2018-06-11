@@ -91,7 +91,11 @@ def run_command(program_name: str, command: List[Any], output_folder: Path,
 	command = list(map(str, command))
 	output_folder_already_exists = output_folder.exists()
 	if output_folder_already_exists:
-		command_path.write_text(' '.join(command))
+		try:
+			command_path.write_text(' '.join(command))
+		except FileNotFoundError as exception:
+			Path(__file__).with_name('debug_command.txt').write_text(' '.join(command))
+			raise exception
 	start_datetime = datetime.now()
 	process = subprocess.run(command, stdout = subprocess.PIPE, stderr = subprocess.PIPE, encoding = "UTF-8")
 	end_datetime = datetime.now()
