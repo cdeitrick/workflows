@@ -96,6 +96,7 @@ def dmux_workflow(reference:Path, dmux_folder:Path, output_folder:Path):
 	dmux_samples = list(i for i in dmux_folder.iterdir() if (i.suffix == '.gz'))
 	dmux_samples = filter(lambda s: s.stem.split('_')[3] not in {'I1', 'I2'}, dmux_samples)
 	groups = groupby(dmux_samples, lambda s: '_'.join(s.stem.split('_')[:2]))
+	print(len(groups))
 	index = 0
 	for stem, samples in groups.items():
 		index += 1
@@ -179,6 +180,10 @@ def main():
 	reference = Path("/home/vclocal/ref/Staphylococcus_aureus_Newman.gbk")
 	dmux_folder = Path("/home/dmux/180906/SkaarLab/")
 	output_folder = Path("/home/dmux/workflow/")
+
+	print(reference.exists(), reference)
+
+
 	if not output_folder.exists(): output_folder.mkdir()
 
 	dmux_workflow(reference, dmux_folder, output_folder)
