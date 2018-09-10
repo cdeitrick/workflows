@@ -99,10 +99,12 @@ def dmux_workflow(reference:Path, dmux_folder:Path, output_folder:Path):
 
 	groups = groupby(dmux_samples, lambda s: '_'.join(s.stem.split('_')[:3]))
 
-	print(len(groups))
-	index = 0
-	for stem, samples in sorted(groups.items()):
-		index += 1
+
+	start_index = 0
+	end_index = start_index + 10
+	for index, element in enumerate(groups.items()):
+		if not start_index <= index < end_index: continue
+		stem, samples = element
 		print("Processing {} ({} of {})".format(stem, index, len(groups)))
 		forward_read = [i for i in samples if i.stem.split('_')[3] == 'R1'][0]
 		reverse_read = [i for i in samples if i.stem.split('_')[3] == 'R2'][0]
