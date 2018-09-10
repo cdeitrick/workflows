@@ -93,7 +93,7 @@ def variant_call_workflow(reference: Path, sample: common.Sample, **kwargs):
 
 def dmux_workflow(reference:Path, dmux_folder:Path, output_folder:Path):
 
-	dmux_samples = list(i for i in dmux_folder.iterdir() if (i.suffix == '.gz'))
+	dmux_samples = list(i for i in dmux_folder.glob("**/*") if (i.suffix == '.gz'))
 	dmux_samples = filter(lambda s: s.stem.split('_')[3] not in {'I1', 'I2'}, dmux_samples)
 	groups = groupby(dmux_samples, lambda s: '_'.join(s.stem.split('_')[:2]))
 	print(len(groups))
