@@ -63,8 +63,6 @@ class SpadesWorkflow:
 			"-k", spades_kmer_length,  # "15,21,25,31", #Must be odd values and less than 128
 			"--pe1-1", forward,
 			"--pe1-2", reverse,
-			#"--pe1-s", forward_unpaired,
-			#"--pe1-s", reverse_unpaired,
 			"-o", output_folder
 		]
 		for up_read in unpaired_reads:

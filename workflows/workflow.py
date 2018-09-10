@@ -1,6 +1,6 @@
 import sys
 from pathlib import Path
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
 
 sys.path.append(str(Path(__file__).parent))
 
@@ -21,9 +21,17 @@ except:
 	Assemblers -> Annotation -> Breseq
 
 """
+def groupby(collection, by)->Dict[Any,List[Any]]:
+	groups = dict()
+	for element in collection:
+		key = by(element)
+		if key in groups:
+			groups[key].append(element)
+		else:
+			groups[key] = [element]
+	return groups
 
-
-def collect_moreira_samples(base_name: str, output_folder: Path):
+def collect_samples(base_name: str, output_folder: Path):
 	base_folder = Path.home() / "projects" / "moreira_por"
 	isolate_folder = base_folder / "isolates" / "Clinical_isolates_{}".format(base_name)
 	samples = list()
@@ -40,15 +48,12 @@ def collect_moreira_samples(base_name: str, output_folder: Path):
 	return samples
 
 
-def moreria_workflow(patient_name: str, output_folder: Path, reference: Optional[Path] = None, **kwargs):
+def project_workflow(patient_name: str, output_folder: Path, reference: Optional[Path] = None, **kwargs):
 	threads = kwargs.get('threads', 16)
 	common.checkdir(output_folder)
-	print("Output Folder: ", output_folder)
 	print("Reference: ", reference.exists()if reference is not None else False, reference)
-	samples = collect_moreira_samples(patient_name, output_folder)
-	print("Found Samples: ")
-	for i in samples:
-		print("\t", i)
+	samples = collect_samples(patient_name, output_folder)
+
 	if reference is None or not reference.exists():
 		print("reference does not exist. Using {} instead.".format(samples[0].name))
 		reference_assembly = assemble_workflow(samples[:1], kmers = "11,21,33,43,55,67,77,87,99,113,127", threads = threads, trim_reads = False)[0]
@@ -78,6 +83,24 @@ def variant_call_workflow(reference: Path, sample: common.Sample, **kwargs):
 		variant_callers.Breseq.from_trimmomatic(reference, trim.output, threads = threads)
 	else:
 		variant_callers.Breseq.from_sample(reference, sample, **kwargs)
+
+def dmux_workflow(reference:Path, dmux_folder:Path, output_folder:Path):
+
+	dmux_samples = list(i for i in dmux_folder.iterdir() if (i.suffix == '.gz'))
+	dmux_samples = filter(lambda s: s.stem.split('_')[3] not in {'I1', 'I2'}, dmux_samples)
+	groups = groupby(dmux_samples, lambda s: '_'.join(s.stem.split('_')[:2]))
+
+	for stem, samples in groups.items():
+		forward_read = [i for i in samples if i.stem.split('_')[3] == 'R1'][0]
+		reverse_read = [i for i in samples if i.stem.split('_')[3] == 'R2'][0]
+		sample = common.Sample(
+			name = stem,
+			forward = forward_read,
+			reverse = reverse_read
+		)
+
+		trimmomatic_output = read_quality.Trimmomatic.from_sample(sample)
+		variant_callers.Breseq.from_trimmomatic(reference, trimmomatic_output)
 
 
 
@@ -146,7 +169,7 @@ def main():
 	moreira_reference = project / "variant_calls" / "{}-1".format(patient_name) / "prokka_output" / "{}-1.gff".format(patient_name)
 	#moreira_reference = project / "references" / "GCA_000010545.1_ASM1054v1_cds_from_genomic.fna"
 	moreira_reference = None
-	moreria_workflow(patient_name, moreira_output_folder, reference = moreira_reference)
+	project_workflow(patient_name, moreira_output_folder, reference = moreira_reference)
 
 def get_environment_details():
 	import subprocess
