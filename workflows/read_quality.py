@@ -34,10 +34,13 @@ class TrimmomaticOutput:
 
 @dataclass
 class TrimmomaticOptions:
-	leading: int = 20
-	trailing: int = 20
-	window: str = "4:20"
-	minimum_length: int = 70
+	#leading: int = 20
+	#trailing: int = 20
+	leading: int = 3
+	trailing: int = 3
+	window: str = "4:15"
+	#minimum_length: int = 70
+	minimum_length: int = 36
 	clip: Union[str, Path] = Path("/opt/trimmomatic/Trimmomatic-0.36/adapters/NexteraPE-PE.fa")
 	job_name: str = "trimmomatic"
 	threads: int = THREADS
@@ -142,7 +145,7 @@ class Trimmomatic:
 		]
 		if not self.output.exists():
 			if trimmomatic_threads:
-				trimmomatic_threads = ('-threads', trimmomatic_threads)
+				trimmomatic_threads = None #('-threads', trimmomatic_threads)
 			self.process = common.run_command("trimmomatic", self.command, self.output_folder,
 				threads = trimmomatic_threads)
 

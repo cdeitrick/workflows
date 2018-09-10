@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import List, Optional, Dict, Any
 
 sys.path.append(str(Path(__file__).parent))
-
+import argparse
 try:
 	from . import assemblers
 	from . import annotation
@@ -50,6 +50,11 @@ def collect_samples(base_name: str, output_folder: Path):
 
 def project_workflow(patient_name: str, output_folder: Path, reference: Optional[Path] = None, **kwargs):
 	threads = kwargs.get('threads', 16)
+	if 'run_all' in kwargs:
+		run_all = kwargs['run_all']
+		del kwargs['run_all']
+	else:
+		run_all = False
 	common.checkdir(output_folder)
 	print("Reference: ", reference.exists()if reference is not None else False, reference)
 	samples = collect_samples(patient_name, output_folder)
@@ -58,10 +63,12 @@ def project_workflow(patient_name: str, output_folder: Path, reference: Optional
 		print("reference does not exist. Using {} instead.".format(samples[0].name))
 		reference_assembly = assemble_workflow(samples[:1], kmers = "11,21,33,43,55,67,77,87,99,113,127", threads = threads, trim_reads = False)[0]
 		reference = reference_assembly.gff
+		print("Reference File: ", reference.exists(), reference)
+
 	_breakpoint = Path.home() / "_breakpoint_file.txt"
 	for sample in samples:
-		if not _breakpoint.exists(): break
-		print("calling variants from ", sample.name)
+		if not _breakpoint.exists() or not run_all: break
+		print("calling variants from {} (started at {})".format(sample.name, datetime.datetime.now().isoformat()))
 		print("\treference: ", reference)
 		print("\tforward read: ", sample.forward)
 		print("\treverse read: ", sample.reverse)
@@ -74,13 +81,13 @@ def variant_call_workflow(reference: Path, sample: common.Sample, **kwargs):
 	kwargs['parent_folder'] = sample.folder
 	kwargs['threads'] = kwargs.get('threads', 16)
 	common.checkdir(sample.folder)
-	trim_reads = False
+	trim_reads = True
 	read_quality.FastQC.from_sample(sample)
 	if trim_reads:
-		trim = read_quality.Trimmomatic.from_sample(sample, threads = threads)
+		trim = read_quality.Trimmomatic.from_sample(sample, **kwargs)
 		read_quality.FastQC.from_trimmomatic(trim.output)
 
-		variant_callers.Breseq.from_trimmomatic(reference, trim.output, threads = threads)
+		variant_callers.Breseq.from_trimmomatic(reference, trim.output, **kwargs)
 	else:
 		variant_callers.Breseq.from_sample(reference, sample, **kwargs)
 
