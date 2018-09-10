@@ -89,18 +89,24 @@ def dmux_workflow(reference:Path, dmux_folder:Path, output_folder:Path):
 	dmux_samples = list(i for i in dmux_folder.iterdir() if (i.suffix == '.gz'))
 	dmux_samples = filter(lambda s: s.stem.split('_')[3] not in {'I1', 'I2'}, dmux_samples)
 	groups = groupby(dmux_samples, lambda s: '_'.join(s.stem.split('_')[:2]))
-
+	index = 0
 	for stem, samples in groups.items():
+		index += 1
+		print("Processing {} ({} of {})".format(stem, index, len(groups)))
 		forward_read = [i for i in samples if i.stem.split('_')[3] == 'R1'][0]
 		reverse_read = [i for i in samples if i.stem.split('_')[3] == 'R2'][0]
 		sample = common.Sample(
 			name = stem,
 			forward = forward_read,
-			reverse = reverse_read
+			reverse = reverse_read,
+			folder = output_folder
 		)
 
 		trimmomatic_output = read_quality.Trimmomatic.from_sample(sample)
 		variant_callers.Breseq.from_trimmomatic(reference, trimmomatic_output)
+
+		if index > 3:
+			break
 
 
 
@@ -163,14 +169,12 @@ def iterate_assemblies(sample: common.Sample):
 
 
 def main():
-	patient_name = "P342"
-	project = Path.home() / "projects" / "moreira_por"
-	moreira_output_folder = common.checkdir(project / "variant_calls_{}".format(patient_name))
-	moreira_reference = project / "variant_calls" / "{}-1".format(patient_name) / "prokka_output" / "{}-1.gff".format(patient_name)
-	#moreira_reference = project / "references" / "GCA_000010545.1_ASM1054v1_cds_from_genomic.fna"
-	moreira_reference = None
-	project_workflow(patient_name, moreira_output_folder, reference = moreira_reference)
+	reference = Path("/home/vclocal/ref/Staphylococcus_aureus_Newman.gbk")
+	dmux_folder = Path("/home/dmux/180906/SkaarLab/")
+	output_folder = Path("/home/dmux/workflow/")
+	if not output_folder.exists(): output_folder.mkdir()
 
+	dmux_workflow(reference, dmux_folder, output_folder)
 def get_environment_details():
 	import subprocess
 	environment_details_path = Path(__file__).with_name('last_run_environment.txt')
