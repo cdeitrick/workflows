@@ -116,8 +116,6 @@ def dmux_workflow(reference:Path, dmux_folder:Path, output_folder:Path):
 		trimmomatic_output = read_quality.Trimmomatic.from_sample(sample)
 		variant_callers.Breseq.from_trimmomatic(reference, trimmomatic_output.output)
 
-		if index > 3:
-			break
 
 
 
