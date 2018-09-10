@@ -81,7 +81,7 @@ def run_command(program_name: str, command: List[Any], output_folder: Path,
 		command = command[:1] + [*threads] + command[1:]
 	else:
 		num_threads = None
-	if use_srun:
+	if use_srun and False:
 		command = get_srun_command(num_threads) + command
 
 
