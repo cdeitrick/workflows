@@ -30,7 +30,7 @@ class Breseq:
 	-----
 
 	"""
-
+	program_location = Path("/home/cld100/breseq-0.33.1/bin/breseq")
 	def __init__(self, reference: Path, *reads, **kwargs):
 		breseq_threads = kwargs.get('threads')
 		prefix = reads[0].stem
@@ -39,7 +39,7 @@ class Breseq:
 		output_folder = output_folder / prefix
 
 		command = [
-					  "breseq",
+					  self.program_location,
 					  # "-j", THREADS,
 					  "-o", output_folder,
 					  "-r", reference
