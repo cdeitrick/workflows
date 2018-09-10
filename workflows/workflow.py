@@ -91,7 +91,7 @@ def variant_call_workflow(reference: Path, sample: common.Sample, **kwargs):
 	else:
 		variant_callers.Breseq.from_sample(reference, sample, **kwargs)
 
-def dmux_workflow(reference:Path, dmux_folder:Path, output_folder:Path):
+def dmux_workflow(reference:Path, dmux_folder:Path, output_folder:Path, args):
 
 	dmux_samples = list(i for i in dmux_folder.glob("**/*") if (i.suffix == '.gz'))
 
@@ -99,9 +99,9 @@ def dmux_workflow(reference:Path, dmux_folder:Path, output_folder:Path):
 
 	groups = groupby(dmux_samples, lambda s: '_'.join(s.stem.split('_')[:3]))
 
-
-	start_index = 0
-	end_index = start_index + 10
+	window = int(args.window)
+	start_index = window * int(args.index)
+	end_index = start_index + window
 	for index, element in enumerate(groups.items()):
 		if not start_index <= index < end_index: continue
 		stem, samples = element
@@ -180,6 +180,17 @@ def iterate_assemblies(sample: common.Sample):
 
 
 def main():
+	import argparse
+	parser = argparse.ArgumentParser()
+	parser.add_argument(
+		'-i',
+		dest = 'index'
+	)
+	parser.add_argument(
+		'-w',
+		dest = 'window'
+	)
+	args = parser.parse_args()
 	reference = Path("/home/vclocal/ref/Staphylococcus_aureus_Newman.gbk")
 	dmux_folder = Path("/home/dmux/180906/SkaarLab/")
 	output_folder = Path("/home/dmux/workflow/")
@@ -189,7 +200,7 @@ def main():
 
 	if not output_folder.exists(): output_folder.mkdir()
 
-	dmux_workflow(reference, dmux_folder, output_folder)
+	dmux_workflow(reference, dmux_folder, output_folder, args)
 def get_environment_details():
 	import subprocess
 	environment_details_path = Path(__file__).with_name('last_run_environment.txt')
