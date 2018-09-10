@@ -109,7 +109,7 @@ class Trimmomatic:
 				trimmomatic_stdout.txt
 	"""
 	#program_location = 'trimmomatic'
-	program_location = "/home/cld100/Trimmomatic-0.38/Trimmomatic-0.38.jar"
+	program_location = "/home/cld100/Trimmomatic-0.38/trimmomatic-0.38.jar"
 	def __init__(self, forward: Path, reverse: Path, **kwargs):
 		trimmomatic_threads = kwargs.get('threads')
 		prefix = kwargs.get('prefix', forward.stem)
