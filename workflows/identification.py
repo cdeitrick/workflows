@@ -36,7 +36,7 @@ class Kraken:
 
 		for index, sample in enumerate(pairs):
 			print("{} of {}".format(index, len(filenames)))
-			
+			print(sample)
 			left, right = sample
 			name = left.stem
 			report_name = name + ".report.txt"
