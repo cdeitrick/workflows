@@ -17,7 +17,7 @@ def groupby(iterable, callable)->Dict[str, List[Path]]:
 
 
 def get_pairs(filenames:List[Path])->List[Tuple[Path,Path]]:
-	groups = groupby(filenames, lambda s: s.name.rpartition('_')[0])
+	groups = groupby(filenames, lambda s: '_'.join(s.name.split('_')[:2]))
 
 	pairs = list(groups.values())
 	return groups
