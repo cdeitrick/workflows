@@ -23,5 +23,23 @@ class Kraken:
 			output_name.write_bytes(process.stdout)
 			error_name.write_bytes(process.stderr)
 
+def generate_parser():
+	import argparse
+	parser = argparse.ArgumentParser()
+	parser.add_argument(
+		"-i", "--input",
+		help = "The input file or folder",
+		dest = 'input'
+	)
+	parser.add_argument(
+		"-o", "--output",
+		help = "The output folder",
+		dest = "output"
+	)
+
+	return parser
 if __name__ == "__main__":
-	pass
+	parser = generate_parser()
+	args = parser.parse_args()
+
+	Kraken(args.input, args.output)
