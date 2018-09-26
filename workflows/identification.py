@@ -34,7 +34,7 @@ class Kraken:
 
 		pairs = get_pairs(filenames)
 		for index, sample in enumerate(pairs):
-			print("{} of {}".format(index, len(filenames)))
+			print("{} of {}".format(index, len(pairs)))
 			#print(sample)
 			try:
 				left, right = filter(lambda s: 'I' not in s.name, sample)
