@@ -5,6 +5,7 @@ import subprocess
 class Kraken:
 	def __init__(self, path: Path, output_folder:Path):
 		path = Path(path)
+		output_folder = Path(output_folder)
 
 		if path.is_dir():
 			filenames  = [f for f in path.glob("**/*") if f.suffix == '.gz']
