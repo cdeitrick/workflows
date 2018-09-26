@@ -33,7 +33,8 @@ class Kraken:
 			filenames = [path]
 
 		pairs = get_pairs(filenames)
-
+		from pprint import pprint
+		pprint(pairs)
 		for index, sample in enumerate(pairs):
 			print("{} of {}".format(index, len(filenames)))
 			print(sample)
