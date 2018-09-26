@@ -20,7 +20,7 @@ def get_pairs(filenames:List[Path])->List[Tuple[Path,Path]]:
 	groups = groupby(filenames, lambda s: '_'.join(s.name.split('_')[:2]))
 
 	pairs = list(groups.values())
-	return groups
+	return pairs
 
 class Kraken:
 	def __init__(self, path: Path, output_folder:Path):
@@ -33,12 +33,10 @@ class Kraken:
 			filenames = [path]
 
 		pairs = get_pairs(filenames)
-		from pprint import pprint
-		pprint(pairs)
 		for index, sample in enumerate(pairs):
 			print("{} of {}".format(index, len(filenames)))
-			print(sample)
-			left, right = sample
+			#print(sample)
+			left, right = filter(lambda s: 'I' not in s.name, sample)
 			name = left.stem
 			report_name = name + ".report.txt"
 			output_name = output_folder / (name + ".kraken.txt")
