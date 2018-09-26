@@ -48,7 +48,6 @@ class Kraken:
 			command = ["kraken2", "--paired", "--db", "kraken_standard_database", "--report", report_name, left, right]
 
 			process = subprocess.run(command, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
-			print(process.stderr)
 			output_name.write_bytes(process.stdout)
 			error_name.write_bytes(process.stderr)
 
