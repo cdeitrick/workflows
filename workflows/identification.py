@@ -36,7 +36,11 @@ class Kraken:
 		for index, sample in enumerate(pairs):
 			print("{} of {}".format(index, len(filenames)))
 			#print(sample)
-			left, right = filter(lambda s: 'I' not in s.name, sample)
+			try:
+				left, right = filter(lambda s: 'I' not in s.name, sample)
+			except ValueError:
+				print("Could not parse ", sample)
+				continue
 			name = left.stem
 			report_name = name + ".report.txt"
 			output_name = output_folder / (name + ".kraken.txt")
@@ -44,7 +48,7 @@ class Kraken:
 			command = ["kraken2", "--paired", "--db", "kraken_standard_database", "--report", report_name, left, right]
 
 			process = subprocess.run(command, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
-
+			print(process.stderr)
 			output_name.write_bytes(process.stdout)
 			error_name.write_bytes(process.stderr)
 
