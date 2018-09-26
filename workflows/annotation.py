@@ -69,7 +69,8 @@ class Prokka:
 		kwargs['parent_folder'] = kwargs.get('parent_folder', sample.parent.parent)
 		return cls(sample, **kwargs)
 
-
+class Kraken:
+	pass
 if __name__ == "__main__":
 	parser = argparse.ArgumentParser(
 		description = "Assembly annotation."
