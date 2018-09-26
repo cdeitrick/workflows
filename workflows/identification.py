@@ -26,6 +26,8 @@ class Kraken:
 	def __init__(self, path: Path, output_folder:Path):
 		path = Path(path)
 		output_folder = Path(output_folder)
+		if not output_folder.exists():
+			output_folder.mkdir()
 
 		if path.is_dir():
 			filenames  = [f for f in path.glob("**/*") if f.suffix == '.gz']
@@ -42,14 +44,16 @@ class Kraken:
 				print("Could not parse ", sample)
 				continue
 			name = left.stem
-			report_name = name + ".report.txt"
-			output_name = output_folder / (name + ".kraken.txt")
-			error_name = output_folder / (name + ".stderr.txt")
-			command = ["kraken2", "--paired", "--db", "kraken_standard_database", "--report", report_name, left, right]
+			output_base = output_folder / name
+			report_filename = output_base.with_suffix(".report.txt")
+			output_filename = output_base.with_suffix(".kraken.txt")
+			error_filename = output_base.with_suffix(".stderr.txt")
+
+			command = ["kraken2", "--paired", "--db", "kraken_standard_database", "--report", report_filename, left, right]
 
 			process = subprocess.run(command, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
-			output_name.write_bytes(process.stdout)
-			error_name.write_bytes(process.stderr)
+			output_filename.write_bytes(process.stdout)
+			error_filename.write_bytes(process.stderr)
 
 class Metaphlan:
 	def __init__(self, path:Path, output:Path):
