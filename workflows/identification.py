@@ -41,7 +41,7 @@ class Kraken:
 			report_name = name + ".report.txt"
 			output_name = output_folder / (name + ".kraken.txt")
 			error_name = output_folder / (name + ".stderr.txt")
-			command = ["kraken2", "--paired", "--db", "kraken_standard_database", "--report", report_name, filename]
+			command = ["kraken2", "--paired", "--db", "kraken_standard_database", "--report", report_name, left, right]
 
 			process = subprocess.run(command, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
 
