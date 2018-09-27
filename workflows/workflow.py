@@ -179,29 +179,6 @@ def iterate_assemblies(sample: common.Sample):
 		spades = assemblers.SpadesWorkflow(fwd, rev, ufwd, urev, kmers = kmer_option, output_folder = output_folder)
 
 
-def main():
-	import argparse
-	parser = argparse.ArgumentParser()
-	parser.add_argument(
-		'-i',
-		dest = 'index'
-	)
-	parser.add_argument(
-		'-w',
-		dest = 'window'
-	)
-	args = parser.parse_args()
-	reference = Path("/home/vclocal/ref/Staphylococcus_aureus_Newman.gbk")
-	dmux_folder = Path("/home/dmux/180906/SkaarLab/")
-	output_folder = Path("/home/dmux/workflow/")
-
-	print(reference.exists(), reference)
-
-
-	if not output_folder.exists(): output_folder.mkdir()
-
-	dmux_workflow(reference, dmux_folder, output_folder, args)
-
 def get_environment_details():
 	import subprocess
 	environment_details_path = Path(__file__).with_name('last_run_environment.txt')
@@ -215,6 +192,17 @@ def get_environment_details():
 	print(sys.path)
 	os.system(command)
 
-
+def define_parser():
+	parser = argparse.ArgumentParser()
+	parser.add_argument(
+		"-i", "--input",
+		help = "A text file containing paths to the input files, with one sample per line. Paired samples should appear on the same line.",
+		dest = "input"
+	)
+	parser.add_argument(
+		"-o", "--output",
+		help = "The output folder.",
+		dest = "output"
+	)
 if __name__ == "__main__":
 	main()

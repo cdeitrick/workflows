@@ -59,7 +59,7 @@ class Kraken:
 			if process.stderr:
 				error_filename.write_bytes(process.stderr)
 
-			krona_command = ["ImportTaxonomy", "-q", "2", "-t", "3", output_filename, "-o", krona_output]
+			krona_command = ["ImportTaxonomy.pl", "-q", "2", "-t", "3", output_filename, "-o", krona_output]
 
 			subprocess.run(krona_command, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
 
