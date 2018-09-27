@@ -44,12 +44,13 @@ class Kraken:
 			except ValueError:
 				print("Could not parse ", sample)
 				continue
+
 			name = left.stem
 			output_base = output_folder / name
 			report_filename = output_base.with_suffix(".report.txt")
 			output_filename = output_base.with_suffix(".kraken.txt")
 			error_filename = output_base.with_suffix(".stderr.txt")
-
+			krona_output = output_base.with_suffix(".krona.html")
 			command = ["kraken2", "--paired", "--db", "kraken_standard_database", "--report", report_filename, left, right]
 
 			process = subprocess.run(command, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
@@ -57,6 +58,10 @@ class Kraken:
 				output_filename.write_bytes(process.stdout)
 			if process.stderr:
 				error_filename.write_bytes(process.stderr)
+
+			krona_command = ["ImportTaxonomy", "-q", "2", "-t", "3", output_filename, "-o", krona_output]
+
+			subprocess.run(krona_command, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
 
 class Metaphlan:
 	def __init__(self, path:Path, output:Path):
