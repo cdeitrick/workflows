@@ -39,7 +39,8 @@ class Kraken:
 			print("{} of {}".format(index, len(pairs)))
 			#print(sample)
 			try:
-				left, right = filter(lambda s: 'I' not in s.name, sample)
+				left = [i for i in sample if 'R1' in i][0]
+				right = [i for i in sample if 'R2' in i][0]
 			except ValueError:
 				print("Could not parse ", sample)
 				continue
