@@ -53,8 +53,10 @@ class Kraken:
 			command = ["kraken2", "--paired", "--db", "kraken_standard_database", "--report", report_filename, left, right]
 
 			process = subprocess.run(command, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
-			output_filename.write_bytes(process.stdout)
-			error_filename.write_bytes(process.stderr)
+			if process.stdout:
+				output_filename.write_bytes(process.stdout)
+			if process.stderr:
+				error_filename.write_bytes(process.stderr)
 
 class Metaphlan:
 	def __init__(self, path:Path, output:Path):

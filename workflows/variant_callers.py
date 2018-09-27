@@ -80,6 +80,8 @@ class Breseq:
 		kwargs['parent_folder'] = kwargs.get('parent_folder', reads[0].parent.parent)
 		return cls(reference, *reads, **kwargs)
 
+def define_parser():
+	pass
 
 if __name__ == "__main__":
 	base_folder = Path.home() / "projects" / "Achromobacter_Valvano"

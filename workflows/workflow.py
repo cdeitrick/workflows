@@ -201,6 +201,7 @@ def main():
 	if not output_folder.exists(): output_folder.mkdir()
 
 	dmux_workflow(reference, dmux_folder, output_folder, args)
+
 def get_environment_details():
 	import subprocess
 	environment_details_path = Path(__file__).with_name('last_run_environment.txt')
