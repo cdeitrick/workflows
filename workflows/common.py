@@ -2,12 +2,13 @@ import argparse
 import subprocess
 from datetime import datetime
 from pathlib import Path
-from typing import Any, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 
 # noinspection PyProtectedMember
 SubparserType = Optional[argparse._SubParsersAction]
+
 
 @dataclass
 class ProgramLocations:
@@ -15,7 +16,20 @@ class ProgramLocations:
 	trimmomatic: str = "trimmomatic"
 	spades: str = 'spades.py'
 	prokka: str = "prokka"
+	bandage: str = "/home/cld100/Bandage-0.8.1/Bandage"
+
+	def get_version_information(self) -> Dict[str, str]:
+		versions = dict()
+		for key, value in asdict(self).items():
+			cmd = [value, '--version']
+			process = subprocess.run(cmd, stdout = subprocess.PIPE)
+			versions[key] = process.stdout
+		return versions
+
+
 programs = ProgramLocations()
+
+
 def checkdir(path):
 	if isinstance(path, str): path = Path(path)
 	if not path.exists(): path.mkdir()
