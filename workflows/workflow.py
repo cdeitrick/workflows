@@ -80,7 +80,7 @@ if __name__ == "__main__":
 	_reverse_read = _sequence_folder / "AU23516_S1_R2_001.fastq.gz"
 	parent_folder = Path.home() / "sample_output"
 	common.checkdir(parent_folder)
-	genum = "Burkholderia"
+	genus = "Burkholderia"
 	species = "cenocepacia"
 
 	workflow(_forward_read, _reverse_read, parent_folder, genus, species)
