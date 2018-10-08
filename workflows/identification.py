@@ -1,6 +1,6 @@
-from pathlib import Path
 import subprocess
-from typing import List, Tuple, Dict
+from pathlib import Path
+from typing import Dict, List, Tuple
 
 
 def groupby(iterable, callable) -> Dict[str, List[Path]]:

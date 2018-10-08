@@ -1,3 +1,4 @@
+import argparse
 from pathlib import Path
 
 from dataclasses import dataclass
@@ -17,6 +18,16 @@ class BreseqOutput:
 		return self.index.exists()
 
 
+@dataclass
+class BreseqOptions:
+	forward: Path
+	reverse: Path
+	unpaired_forward: Path
+	output_folder: Path
+	reference: Path
+	threads: int
+
+
 class Breseq:
 	"""
 	Parameters
@@ -31,19 +42,21 @@ class Breseq:
 
 	"""
 	program_location = Path("/home/cld100/breseq-0.33.1/bin/breseq")
-	def __init__(self, reference: Path, *reads, **kwargs):
-		breseq_threads = kwargs.get('threads')
-		prefix = reads[0].stem
-		output_folder = common.get_output_folder("breseq", **kwargs)
 
-		output_folder = output_folder / prefix
+	def __init__(self, options: BreseqOptions):
+		output_folder = options.output_folder
+		reads = [options.forward, options.reverse]
+		if options.unpaired_forward:
+			reads.append(options.unpaired_forward)
 
 		command = [
-					  self.program_location,
-					  # "-j", THREADS,
-					  "-o", output_folder,
-					  "-r", reference
-				  ] + list(reads)
+			self.program_location,
+			# "-j", THREADS,
+			"-o", options.output_folder,
+			"-r", options.reference
+		]
+
+		command += reads
 
 		self.output = BreseqOutput(
 			output_folder,
@@ -51,8 +64,7 @@ class Breseq:
 		)
 
 		if not self.output.exists():
-			if breseq_threads:
-				breseq_threads = ("-j", breseq_threads)
+			breseq_threads = ("-j", options.threads)
 			self.process = common.run_command("breseq", command, output_folder, threads = breseq_threads)
 
 	@classmethod
@@ -80,8 +92,45 @@ class Breseq:
 		kwargs['parent_folder'] = kwargs.get('parent_folder', reads[0].parent.parent)
 		return cls(reference, *reads, **kwargs)
 
-def define_parser():
-	pass
+
+def get_commandline_parser(subparser: argparse._SubParsersAction = None) -> argparse.ArgumentParser:
+	if subparser:
+		parser = subparser.add_parser("breseq")
+	else:
+		parser = argparse.ArgumentParser("breseq")
+
+	parser.add_argument(
+		"-f", "--forward",
+		help = "The forward reads",
+		dest = "forward"
+	)
+	parser.add_argument(
+		"-r", "--reverse",
+		help = "The reverse reads",
+		dest = "reverse"
+	)
+	parser.add_argument(
+		"-uf", "--unpaired-forward",
+		help = "The unpaired forward reads",
+		dest = "unpaired_forward"
+	)
+	parser.add_argument(
+		"-o", "--output",
+		help = "The output folder",
+		dest = "output_folder"
+	)
+	parser.add_argument(
+		"--reference",
+		help = "The reference sequence, preferably in .gff format.",
+		dest = "reference"
+	)
+	parser.add_argument(
+		"-t", "--threads",
+		help = "The number of threads to use.",
+		dest = 8
+	)
+	return parser
+
 
 if __name__ == "__main__":
 	base_folder = Path.home() / "projects" / "Achromobacter_Valvano"

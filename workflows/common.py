@@ -1,14 +1,23 @@
+import argparse
 import subprocess
+from datetime import datetime
 from pathlib import Path
 from typing import Any, List, Optional, Tuple
-from datetime import datetime
+
 from dataclasses import dataclass
+
+SubparserType = Optional[argparse._SubParsersAction]
 
 
 def checkdir(path):
 	if isinstance(path, str): path = Path(path)
 	if not path.exists(): path.mkdir()
 	return path
+
+
+@dataclass
+class WorkflowOptions:
+	trimmomatic_location: Path
 
 
 @dataclass
@@ -54,7 +63,7 @@ def get_output_folder(name: str, make_dirs: bool = True, **kwargs) -> Path:
 
 
 def run_command(program_name: str, command: List[Any], output_folder: Path,
-				threads: Tuple[str, int] = None, use_srun:bool = True) -> subprocess.CompletedProcess:
+		threads: Tuple[str, int] = None, use_srun: bool = True) -> subprocess.CompletedProcess:
 	"""
 		Runs a program's command. Arguments are used to generate additional files containing the stdout, stderr,and
 		command used to run the program.
@@ -84,7 +93,6 @@ def run_command(program_name: str, command: List[Any], output_folder: Path,
 	if use_srun and False:
 		command = get_srun_command(num_threads) + command
 
-
 	stdout_path = output_folder / "{}_stdout.txt".format(program_name)
 	stderr_path = output_folder / "{}_stderr.txt".format(program_name)
 	command_path = output_folder / "{}_command.txt".format(program_name)
@@ -94,7 +102,7 @@ def run_command(program_name: str, command: List[Any], output_folder: Path,
 		try:
 			command_path.write_text(' '.join(command))
 		except FileNotFoundError as exception:
-			#Path(__file__).with_name('debug_command.txt').write_text(' '.join(command))
+			# Path(__file__).with_name('debug_command.txt').write_text(' '.join(command))
 			print("Cannot write to ", command_path)
 	start_datetime = datetime.now()
 	process = subprocess.run(command, stdout = subprocess.PIPE, stderr = subprocess.PIPE, encoding = "UTF-8")

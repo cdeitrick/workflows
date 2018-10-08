@@ -1,8 +1,6 @@
 import subprocess
 from pathlib import Path
 
-
-
 if __name__ == "__main__":
 	folder = Path(__file__).parent
 	reference = folder / "p148_reference_sketch.msh"
