@@ -24,7 +24,7 @@ except ModuleNotFoundError:
 
 
 def first_common_substring(seqa: str, seqb: str) -> str:
-	for index, element in zip(seqa, seqb):
+	for index, element in enumerate(zip(seqa, seqb)):
 		i, j = element
 		if i != j:
 			return seqa[:index]
