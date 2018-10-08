@@ -69,7 +69,7 @@ def fastqc(output_folder: Path, forward: Path, reverse: Path, unpaired_forward: 
 	)
 
 	if not output.exists():
-		common.run_command("fastqc", fastqc_command, output_folder, use_srun = False)
+		common.run_command(common.programs.fastqc, fastqc_command, output_folder, use_srun = False)
 	return output
 
 
@@ -98,7 +98,6 @@ def trimmomatic(forward: Path, reverse: Path, **kwargs) -> TrimmomaticOutput:
 			trimmomatic_stdout.txt
 	"""
 	# program_location = 'trimmomatic'
-	program_location = "/home/cld100/Trimmomatic-0.38/trimmomatic-0.38.jar"
 
 	trimmomatic_threads = kwargs.get('threads')
 	prefix = kwargs.get('prefix', forward.stem)
@@ -118,7 +117,7 @@ def trimmomatic(forward: Path, reverse: Path, **kwargs) -> TrimmomaticOutput:
 		reverse_output_unpaired
 	)
 	command = [
-		program_location, "PE",
+		common.programs.trimmomatic, "PE",
 		# "-threads", str(self.options.threads),
 		"-phred33",
 		"-trimlog", log_file,

@@ -74,4 +74,10 @@ def workflow(forward_read: Path, reverse_read: Path, parent_folder: Path, genus:
 
 
 if __name__ == "__main__":
-	pass
+	_sequence_folder = Path.home() / "projects" /"lipuma"/"sequences"/"180707"/"LiPumaStrains"/"070818_01"
+
+	_forward_read = _sequence_folder / "AU23516_S1_R1_001.fastq.gz"
+	_reverse_read = _sequence_folder / "AU23516_S1_R2_001.fastq.gz"
+	parent_folder = ""
+	genum = "Burkholderia"
+	species = "multivorans"

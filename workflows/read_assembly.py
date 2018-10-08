@@ -27,7 +27,6 @@ class SpadesOptions:
 	kmers: str = '21,33,55,71'  # A comma-separated list of odd integers less than 128.
 	threads: int = 16
 	careful: bool = True
-	program:str = "spades.py"
 
 @dataclass
 class SpadesOutput:
@@ -63,7 +62,7 @@ def spades(forward_read: Path, reverse_read: Path, unpaired_forward_read: Path, 
 	)
 
 	command = [
-		options.program,
+		common.programs.spades,
 		# "-t", str(THREADS),
 		"--careful",
 		"-k", options.kmers,  # "15,21,25,31", #Must be odd values and less than 128
@@ -81,14 +80,13 @@ def spades(forward_read: Path, reverse_read: Path, unpaired_forward_read: Path, 
 
 
 def bandage(assembly_graph: Path, output_folder: Path) -> BandageOutput:
-	# TODO: Implement bandage.
-	bandage_program = "bandage"
+
 	info_command = [
-		bandage_program,
+		common.programs.bandage,
 		"info", assembly_graph
 	]
 	image_command = [
-		bandage_program,
+		common.programs.bandage,
 		"image", assembly_graph, assembly_graph.with_suffix('.fastg.png')
 	]
 	common.run_command('bandageinfo', info_command, output_folder)

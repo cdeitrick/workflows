@@ -57,7 +57,7 @@ def prokka(genome: Path, output_folder: Path, options: ProkkaOptions, prefix = N
 	)
 
 	prokka_command = [
-		"prokka",
+		common.programs.prokka,
 		"--outdir", output_folder,
 		"--prefix", prefix,
 		"--genus", options.genus,

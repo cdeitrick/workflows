@@ -9,7 +9,13 @@ from dataclasses import dataclass
 # noinspection PyProtectedMember
 SubparserType = Optional[argparse._SubParsersAction]
 
-
+@dataclass
+class ProgramLocations:
+	fastqc: str = "fastqc"
+	trimmomatic: str = "trimmomatic"
+	spades: str = 'spades.py'
+	prokka: str = "prokka"
+programs = ProgramLocations()
 def checkdir(path):
 	if isinstance(path, str): path = Path(path)
 	if not path.exists(): path.mkdir()
