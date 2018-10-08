@@ -142,8 +142,8 @@ def trimmomatic(forward: Path, reverse: Path, **kwargs) -> TrimmomaticOutput:
 
 def workflow(forward: Path, reverse: Path, parent_folder:Path, options: TrimmomaticOptions) -> TrimmomaticOutput:
 	trimmomatic_folder = parent_folder / "trimmomatic"
-	fastqc_folder = parent_folder / "fastqc_untrimmed"
-	fastqc_after = parent_folder / "fastqc_after"
+	fastqc_folder = common.checkdir(parent_folder / "fastqc_untrimmed")
+	fastqc_after = common.checkdir(parent_folder / "fastqc_after")
 	fastqc(fastqc_folder, forward, reverse)
 
 	trimmomatic_output = trimmomatic(forward, reverse, output_folder = trimmomatic_folder, options = options)
