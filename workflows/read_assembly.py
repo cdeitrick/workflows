@@ -4,12 +4,13 @@ from pathlib import Path
 from dataclasses import dataclass
 
 try:
-	from .read_quality import TrimmomaticOutput
-	from .common import checkdir, SubparserType
-	from . import common
+	from workflows.read_quality import TrimmomaticOutput
+	from workflows.common import checkdir, SubparserType
+	from workflows import common
 except ModuleNotFoundError:
 	from read_quality import TrimmomaticOutput
 	import common
+	from common import SubparserType, checkdir
 
 
 @dataclass

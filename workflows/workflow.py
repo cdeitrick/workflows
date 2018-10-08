@@ -5,11 +5,11 @@ from typing import Any, Dict, List
 sys.path.append(str(Path(__file__).parent))
 
 try:
-	from . import read_assembly
-	from . import annotation
-	from . import variant_callers
-	from . import read_quality
-	from . import common
+	from workflows import read_assembly
+	from workflows import annotation
+	from workflows import variant_callers
+	from workflows import read_quality
+	from workflows import common
 except ModuleNotFoundError:
 	import read_assembly
 	import annotation

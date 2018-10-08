@@ -4,9 +4,9 @@ from pathlib import Path
 from dataclasses import dataclass
 
 try:
-	from . import common
-	from .read_assembly import SpadesOutput
-	from .common import SubparserType
+	from workflows import common
+	from workflows.read_assembly import SpadesOutput
+	from workflows.common import SubparserType
 except ModuleNotFoundError:
 	import common
 	from read_assembly import SpadesOutput

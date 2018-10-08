@@ -4,7 +4,7 @@ from typing import List, Union
 from dataclasses import dataclass
 
 try:
-	from . import common
+	from workflows import common
 except ModuleNotFoundError:
 	import common
 
