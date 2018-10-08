@@ -5,13 +5,14 @@ try:
 	from . import annotation
 	from . import read_quality
 	from . import variant_callers
-except:
+except ModuleNotFoundError:
 	import read_assembly
 	import annotation
 	import read_quality
 	import variant_callers
 
 
+# noinspection PyUnusedLocal
 def define_parser():
 	main_parser = argparse.ArgumentParser()
 

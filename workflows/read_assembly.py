@@ -5,13 +5,11 @@ from dataclasses import dataclass
 
 try:
 	from .read_quality import TrimmomaticOutput
-	from .common import checkdir
+	from .common import checkdir, SubparserType
 	from . import common
-except:
-	import read_quality
+except ModuleNotFoundError:
+	from read_quality import TrimmomaticOutput
 	import common
-
-	TrimmomaticOutput = read_quality.TrimmomaticOutput
 
 
 @dataclass
@@ -29,16 +27,7 @@ class SpadesOptions:
 	kmers: str = '21,33,55,71'  # A comma-separated list of odd integers less than 128.
 	threads: int = 16
 	careful: bool = True
-
-	@classmethod
-	def from_trimmomatic(cls, sample: TrimmomaticOutput, **kwargs):
-		fwd = sample.forward
-		rev = sample.reverse
-		ufwd = sample.forward_unpaired
-		urev = sample.reverse_unpaired
-
-		return cls(fwd, rev, ufwd, **kwargs)
-
+	program:str = "spades.py"
 
 @dataclass
 class SpadesOutput:
@@ -46,16 +35,25 @@ class SpadesOutput:
 	contigs: Path
 	assembly_graph: Path
 
+
 	def exists(self):
 		return self.contigs.exists()
 
 
 def spades(forward_read: Path, reverse_read: Path, unpaired_forward_read: Path, output_folder, options: SpadesOptions) -> SpadesOutput:
 	"""
+		Assembles a genome via spades.
 	Parameters
 	----------
-	forward, reverse, forward_unpaired, reverse_unpaired:Path
-		The reads to assemble
+	forward_read: Path
+	reverse_read: Path
+	unpaired_forward_read: Path
+	output_folder: Path
+	options: SpadesOptions
+
+	Returns
+	-------
+	SpadesOutput
 	"""
 
 	output = SpadesOutput(
@@ -65,7 +63,7 @@ def spades(forward_read: Path, reverse_read: Path, unpaired_forward_read: Path, 
 	)
 
 	command = [
-		spades_program,
+		options.program,
 		# "-t", str(THREADS),
 		"--careful",
 		"-k", options.kmers,  # "15,21,25,31", #Must be odd values and less than 128
@@ -82,7 +80,7 @@ def spades(forward_read: Path, reverse_read: Path, unpaired_forward_read: Path, 
 	return output
 
 
-def bandage(assembly_graph: Path) -> BandageOutput:
+def bandage(assembly_graph: Path, output_folder: Path) -> BandageOutput:
 	# TODO: Implement bandage.
 	bandage_program = "bandage"
 	info_command = [
@@ -93,19 +91,23 @@ def bandage(assembly_graph: Path) -> BandageOutput:
 		bandage_program,
 		"image", assembly_graph, assembly_graph.with_suffix('.fastg.png')
 	]
+	common.run_command('bandageinfo', info_command, output_folder)
+	common.run_command('bandageimage', image_command, output_folder)
 	output = BandageOutput()
 	return output
 
 
-def workflow(forward_read: Path, reverse_read: Path, unpaired_forward_read: Path, output_folder: Path, options: SpadesOptions) -> SpadesOutput:
-	spades_output = spades(forward_read, reverse_read, unpaired_forward_read, output_folder, options)
+def workflow(forward_read: Path, reverse_read: Path, unpaired_forward_read: Path, parent_folder: Path, options: SpadesOptions) -> SpadesOutput:
+	spades_folder = parent_folder / "spades"
+	bandage_folder = parent_folder / "bandage"
+	spades_output = spades(forward_read, reverse_read, unpaired_forward_read, spades_folder, options)
 
-	bandage_output = bandage(spades_output.assembly_graph)
+	bandage(spades_output.assembly_graph, bandage_folder)
 
 	return spades_output
 
 
-def get_commandline_parser(subparser: argparse._SubParsersAction = None) -> argparse.ArgumentParser:
+def get_commandline_parser(subparser: SubparserType = None) -> argparse.ArgumentParser:
 	if subparser:
 		assembly_parser = subparser.add_parser('assembly')
 	else:
@@ -150,7 +152,4 @@ def get_commandline_parser(subparser: argparse._SubParsersAction = None) -> argp
 
 
 if __name__ == "__main__":
-	parser = get_commandline_parser()
-	args = parser.parse_args()
-
-	SpadesWorkflow(args.forward, args.reverse, *args.unpaired, parent_folder = args.parent_folder)
+	pass

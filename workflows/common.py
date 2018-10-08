@@ -6,6 +6,7 @@ from typing import Any, List, Optional, Tuple
 
 from dataclasses import dataclass
 
+# noinspection PyProtectedMember
 SubparserType = Optional[argparse._SubParsersAction]
 
 
@@ -101,7 +102,7 @@ def run_command(program_name: str, command: List[Any], output_folder: Path,
 	if output_folder_already_exists:
 		try:
 			command_path.write_text(' '.join(command))
-		except FileNotFoundError as exception:
+		except FileNotFoundError:
 			# Path(__file__).with_name('debug_command.txt').write_text(' '.join(command))
 			print("Cannot write to ", command_path)
 	start_datetime = datetime.now()

@@ -10,7 +10,7 @@ try:
 	from . import variant_callers
 	from . import read_quality
 	from . import common
-except:
+except ModuleNotFoundError:
 	import read_assembly
 	import annotation
 	import variant_callers
@@ -43,36 +43,35 @@ def groupby(collection, by) -> Dict[Any, List[Any]]:
 	return groups
 
 
-def workflow(forward_read: Path, reverse_read: Path, output_folder: Path):
+def workflow(forward_read: Path, reverse_read: Path, parent_folder: Path, genus:str, species:str):
 	forward_name = forward_read.stem
 	reverse_name = reverse_read.stem
 	sample_name = first_common_substring(forward_name, reverse_name)
-	sample_output_folder = output_folder / sample_name
+	prefix = sample_name
+	parent_folder = parent_folder / sample_name
+	prokka_output_folder = parent_folder / "prokka"
 
-	fastqc_output_folder = sample_output_folder / "fastqc_raw"
-	fastqc_trimmed_output_folder = sample_output_folder / "fastqc_trimmed"
-	trimmomatic_output_folder = sample_output_folder / "trimmomatic"
-	spades_output_folder = sample_output_folder / "spades"
-	bandage_output_folder = sample_output_folder / "bandage"
-	prokka_output_folder = sample_output_folder / "prokka"
-	breseq_output_folder = sample_output_folder / "breseq"
 
 	trimmomatic_options = read_quality.TrimmomaticOptions()
 	spades_options = read_assembly.SpadesOptions()
-	prokka_options = annotation.ProkkaOptions()
+	prokka_options = annotation.ProkkaOptions(
+		prefix = prefix,
+		genus = genus,
+		species = species
+	)
 
-	trimmomatic_output = read_quality.workflow(forward_read, reverse_read, trimmomatic_output_folder, options = trimmomatic_options)
+	trimmomatic_output = read_quality.workflow(forward_read, reverse_read, parent_folder, options = trimmomatic_options)
 
 	spades_output = read_assembly.workflow(
 		trimmomatic_output.forward,
 		trimmomatic_output.reverse,
 		trimmomatic_output.unpaired_forward,
-		spades_output_folder,
+		parent_folder,
 		options = spades_options
 	)
 
-	prokka_output = annotation.prokka(spades_output.contigs, prokka_output_folder, prokka_options)
+	annotation.prokka(spades_output.contigs, prokka_output_folder, prokka_options)
 
 
 if __name__ == "__main__":
-	workflow()
+	pass

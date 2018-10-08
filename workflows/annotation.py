@@ -1,6 +1,5 @@
 import argparse
 from pathlib import Path
-from typing import Union
 
 from dataclasses import dataclass
 
@@ -8,7 +7,7 @@ try:
 	from . import common
 	from .read_assembly import SpadesOutput
 	from .common import SubparserType
-except:
+except ModuleNotFoundError:
 	import common
 	from read_assembly import SpadesOutput
 	from common import SubparserType
@@ -35,39 +34,9 @@ class ProkkaOutput:
 
 @dataclass
 class ProkkaOptions:
-	filename: Path
-	output: Path  # Folder
 	prefix: str
 	genus: str  # ex. burkholderia
 	species: str  # ex. multivorans
-
-	@classmethod
-	def from_parser(cls, parser: Union[argparse.Namespace, 'ProkkaOptions']) -> 'ProkkaOptions':
-		return cls(
-			filename = Path(parser.filename),
-			output = Path(parser.output),
-			prefix = parser.prefix,
-			genus = parser.genus,
-			species = parser.species
-		)
-
-	@classmethod
-	def from_args(cls, io: Union[str, Path, SpadesOutput], output: Path, species: str, genus: str, prefix = None) -> 'ProkkaOptions':
-		if isinstance(io, SpadesOutput):
-			filename = io.contigs
-		else:
-			filename = Path(io)
-		if prefix is None:
-			prefix = filename.stem
-		ofolder = Path(output)
-
-		return cls(
-			filename = filename,
-			output = ofolder,
-			prefix = prefix,
-			genus = genus,
-			species = species
-		)
 
 
 def prokka(genome: Path, output_folder: Path, options: ProkkaOptions, prefix = None) -> ProkkaOutput:
@@ -97,7 +66,7 @@ def prokka(genome: Path, output_folder: Path, options: ProkkaOptions, prefix = N
 	]
 
 	if not output.exists():
-		process = common.run_command("prokka", prokka_command, output_folder)
+		common.run_command("prokka", prokka_command, output_folder)
 	return output
 
 
@@ -142,9 +111,4 @@ def get_commandline_parser(subparser: SubparserType = None) -> argparse.Argument
 
 
 if __name__ == "__main__":
-	parser = get_commandline_parser()
-	args = parser.parse_args()
-
-	options = ProkkaOptions.from_parser(args)
-
-	Prokka(genome = args.sample, options = options)
+	pass
