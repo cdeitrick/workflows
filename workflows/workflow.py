@@ -48,7 +48,7 @@ def workflow(forward_read: Path, reverse_read: Path, parent_folder: Path, genus:
 	reverse_name = reverse_read.stem
 	sample_name = first_common_substring(forward_name, reverse_name)
 	prefix = sample_name
-	parent_folder = parent_folder / sample_name
+	parent_folder = common.checkdir(parent_folder / sample_name)
 	prokka_output_folder = parent_folder / "prokka"
 
 
