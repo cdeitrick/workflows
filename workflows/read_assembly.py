@@ -90,15 +90,15 @@ def bandage(assembly_graph: Path, output_folder: Path) -> BandageOutput:
 		common.programs.bandage,
 		"image", assembly_graph, assembly_graph.with_suffix('.fastg.png')
 	]
-	common.run_command('bandageinfo', info_command, output_folder.parent)
-	common.run_command('bandageimage', image_command, output_folder.parent)
+	common.run_command('bandageinfo', info_command, output_folder)
+	common.run_command('bandageimage', image_command, output_folder)
 	output = BandageOutput()
 	return output
 
 
 def workflow(forward_read: Path, reverse_read: Path, unpaired_forward_read: Path, parent_folder: Path, options: SpadesOptions) -> SpadesOutput:
 	spades_folder = parent_folder / "spades"
-	bandage_folder = parent_folder / "bandage"
+	bandage_folder = spades_folder
 	spades_output = spades(forward_read, reverse_read, unpaired_forward_read, spades_folder, options)
 
 	bandage(spades_output.assembly_graph, bandage_folder)
