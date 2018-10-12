@@ -101,6 +101,7 @@ def trimmomatic(forward: Path, reverse: Path, **kwargs) -> TrimmomaticOutput:
 
 	trimmomatic_threads = kwargs.get('threads')
 	prefix = kwargs.get('prefix', forward.stem)
+	prefix = prefix if prefix else forward.stem
 	output_folder = common.get_output_folder("trimmomatic", **kwargs)
 
 	options = kwargs.get("options", TrimmomaticOptions())
@@ -140,13 +141,13 @@ def trimmomatic(forward: Path, reverse: Path, **kwargs) -> TrimmomaticOutput:
 	return output
 
 
-def workflow(forward: Path, reverse: Path, parent_folder:Path, options: TrimmomaticOptions) -> TrimmomaticOutput:
+def workflow(forward: Path, reverse: Path, parent_folder:Path, options: TrimmomaticOptions, prefix = None) -> TrimmomaticOutput:
 	trimmomatic_folder = common.checkdir(parent_folder / "trimmomatic")
 	fastqc_folder = common.checkdir(parent_folder / "fastqc_untrimmed")
 	fastqc_after = common.checkdir(parent_folder / "fastqc_after")
 	fastqc(fastqc_folder, forward, reverse)
 
-	trimmomatic_output = trimmomatic(forward, reverse, output_folder = trimmomatic_folder, options = options)
+	trimmomatic_output = trimmomatic(forward, reverse, output_folder = trimmomatic_folder, options = options, prefix = prefix)
 
 	fastqc(
 		fastqc_after,

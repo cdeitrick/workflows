@@ -60,7 +60,7 @@ def workflow(forward_read: Path, reverse_read: Path, parent_folder: Path, genus:
 		species = species
 	)
 
-	trimmomatic_output = read_quality.workflow(forward_read, reverse_read, parent_folder, options = trimmomatic_options)
+	trimmomatic_output = read_quality.workflow(forward_read, reverse_read, parent_folder, options = trimmomatic_options, prefix = sample_name)
 
 	spades_output = read_assembly.workflow(
 		trimmomatic_output.forward,
@@ -79,7 +79,8 @@ def variant_call_workflow(sample_name:Path, forward_read: Path, reverse_read:Pat
 		forward_read,
 		reverse_read,
 		parent_folder,
-		options = trimmomatic_options
+		options = trimmomatic_options,
+		prefix = sample_name
 	)
 
 	breseq_output = variant_callers.breseq(
@@ -100,6 +101,7 @@ if __name__ == "__main__":
 	_sequence_folder = Path.home() / "projects" /"lipuma"/"sequences"/"180707"/"LiPumaStrains"
 	project_folder = Path.home() / "projects" / "lipuma"
 	parent_folder = project_folder / "pipeline_output"
+
 	if not parent_folder.exists():
 		parent_folder.mkdir()
 
@@ -111,6 +113,7 @@ if __name__ == "__main__":
 	logFormatter = '%(asctime)s - %(user)s - %(levelname)s - %(message)s'
 	logging.basicConfig(format = logFormatter, level = logging.DEBUG)
 	logger.addHandler(handler)
+
 	reference = project_folder / "AU1054 Reference" / "GCA_000014085.1_ASM1408v1_genomic.gff"
 	filename = project_folder / "samples.csv"
 	# sampleName
@@ -121,7 +124,7 @@ if __name__ == "__main__":
 	for index, row in table.iterrows():
 		logging.info("index,")
 		sample_name = row['sampleName']
-		forward = row['forwardRead']
-		reverse = row['reverseRead']
+		forward = Path(row['forwardRead'])
+		reverse = Path(row['reverseRead'])
 
 		variant_call_workflow(sample_name, forward, reverse, parent_folder, reference)
