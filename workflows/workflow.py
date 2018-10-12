@@ -109,8 +109,8 @@ if __name__ == "__main__":
 	handler = logging.FileHandler(str(log_file))
 
 	logFormatter = '%(asctime)s - %(user)s - %(levelname)s - %(message)s'
-	logging.basicConfig(format = logFormatter, level = logging.DEBUG, handler = handler)
-
+	logging.basicConfig(format = logFormatter, level = logging.DEBUG)
+	logger.addHandler(handler)
 	reference = project_folder / "AU1054 Reference" / "GCA_000014085.1_ASM1408v1_genomic.gff"
 	filename = project_folder / "samples.csv"
 	# sampleName
