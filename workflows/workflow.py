@@ -93,7 +93,7 @@ def variant_call_workflow(sample_name:Path, forward_read: Path, reverse_read:Pat
 
 
 if __name__ == "__main__":
-	import logging
+	#import logging
 
 
 
@@ -106,13 +106,13 @@ if __name__ == "__main__":
 		parent_folder.mkdir()
 
 
-	log_file = parent_folder / "pipeline_log.txt"
-	logger = logging.getLogger(__name__)
-	handler = logging.FileHandler(str(log_file))
+	#log_file = parent_folder / "pipeline_log.txt"
+	#logger = logging.getLogger(__name__)
+	#handler = logging.FileHandler(str(log_file))
 
-	logFormatter = '%(asctime)s - %(user)s - %(levelname)s - %(message)s'
-	logging.basicConfig(format = logFormatter, level = logging.DEBUG)
-	logger.addHandler(handler)
+	#logFormatter = '%(asctime)s - %(user)s - %(levelname)s - %(message)s'
+	#logging.basicConfig(format = logFormatter, level = logging.DEBUG)
+	#logger.addHandler(handler)
 
 	reference = project_folder / "AU1054 Reference" / "GCA_000014085.1_ASM1408v1_genomic.gff"
 	filename = project_folder / "samples.csv"
@@ -122,7 +122,7 @@ if __name__ == "__main__":
 	table = pandas.read_csv(filename)
 
 	for index, row in table.iterrows():
-		logging.info(f"{index} of {len(table)}")
+		#logging.info(f"{index} of {len(table)}")
 		sample_name = row['sampleName']
 		forward = Path(row['forwardRead'])
 		reverse = Path(row['reverseRead'])
