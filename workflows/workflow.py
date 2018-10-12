@@ -70,17 +70,27 @@ def workflow(forward_read: Path, reverse_read: Path, parent_folder: Path, genus:
 		options = spades_options
 	)
 
-	annotation.prokka(spades_output.contigs, prokka_output_folder, prokka_options)
+	#annotation.prokka(spades_output.contigs, prokka_output_folder, prokka_options)
 
 
 if __name__ == "__main__":
-	_sequence_folder = Path.home() / "projects" /"lipuma"/"sequences"/"180707"/"LiPumaStrains"/"070818_01"
+	_sequence_folder = Path.home() / "projects" /"lipuma"/"sequences"/"180707"/"LiPumaStrains"
 
-	_forward_read = _sequence_folder / "AU23516_S1_R1_001.fastq.gz"
-	_reverse_read = _sequence_folder / "AU23516_S1_R2_001.fastq.gz"
+	_forward_read = _sequence_folder /"070818_01"/ "AU23516_S1_R1_001.fastq.gz"
+	_reverse_read = _sequence_folder /"070818_01"/ "AU23516_S1_R2_001.fastq.gz"
+	
+	_forward_read2 = _sequence_folder / "010818_10" / "AU30919_S10_R1_001.fastq.gz"
+	_reverse_read2 = _sequence_folder / "010818_10" / "AU30919_S10_R2_001.fastq.gz"
+
+	reads = [
+		(_forward_read, _reverse_read),
+		(_forward_read2, _reverse_read2)
+	]
+	
 	parent_folder = Path.home() / "sample_output"
+	
 	common.checkdir(parent_folder)
 	genus = "Burkholderia"
 	species = "cenocepacia"
-
-	workflow(_forward_read, _reverse_read, parent_folder, genus, species)
+	for f, r in reads:
+		workflow(f, r, parent_folder, genus, species)
