@@ -104,7 +104,7 @@ if __name__ == "__main__":
 
 	if not parent_folder.exists():
 		parent_folder.mkdir()
-
+	print("Parent Folder: ", parent_folder)
 
 	#log_file = parent_folder / "pipeline_log.txt"
 	#logger = logging.getLogger(__name__)
