@@ -90,6 +90,7 @@ def variant_call_workflow(sample_name:Path, forward_read: Path, reverse_read:Pat
 		sample_folder,
 		reference
 	)
+	return breseq_output
 
 
 if __name__ == "__main__":
@@ -128,4 +129,6 @@ if __name__ == "__main__":
 		forward = Path(row['forwardRead'])
 		reverse = Path(row['reverseRead'])
 
-		variant_call_workflow(sample_name, forward, reverse, parent_folder, reference)
+		r = variant_call_workflow(sample_name, forward, reverse, parent_folder, reference)
+		print(r.exists())
+		print(r)
