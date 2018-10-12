@@ -40,6 +40,8 @@ class ProkkaOptions:
 
 
 def prokka(genome: Path, output_folder: Path, options: ProkkaOptions, prefix = None) -> ProkkaOutput:
+	if prefix is None:
+		prefix = genome.stem
 	basename = output_folder / prefix
 	output = ProkkaOutput(
 		gff = basename.with_suffix(".gff"),
