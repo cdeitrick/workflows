@@ -123,6 +123,7 @@ if __name__ == "__main__":
 
 	for index, row in table.iterrows():
 		#logging.info(f"{index} of {len(table)}")
+		print(f"{index} of {len(table)}")
 		sample_name = row['sampleName']
 		forward = Path(row['forwardRead'])
 		reverse = Path(row['reverseRead'])
