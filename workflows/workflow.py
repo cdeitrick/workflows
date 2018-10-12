@@ -24,10 +24,10 @@ except ModuleNotFoundError:
 
 
 def first_common_substring(seqa: str, seqb: str) -> str:
-	for index, element in enumerate(zip(seqa, seqb)):
+	for eindex, element in enumerate(zip(seqa, seqb)):
 		i, j = element
 		if i != j:
-			return seqa[:index]
+			return seqa[:eindex]
 	else:
 		return seqa
 
@@ -48,8 +48,8 @@ def workflow(forward_read: Path, reverse_read: Path, parent_folder: Path, genus:
 	reverse_name = reverse_read.stem
 	sample_name = first_common_substring(forward_name, reverse_name)
 	prefix = sample_name
-	parent_folder = common.checkdir(parent_folder / sample_name)
-	prokka_output_folder = parent_folder / "prokka"
+	sample_folder = common.checkdir(parent_folder / sample_name)
+	prokka_output_folder = sample_folder / "prokka"
 
 
 	trimmomatic_options = read_quality.TrimmomaticOptions()
@@ -66,31 +66,62 @@ def workflow(forward_read: Path, reverse_read: Path, parent_folder: Path, genus:
 		trimmomatic_output.forward,
 		trimmomatic_output.reverse,
 		trimmomatic_output.unpaired_forward,
-		parent_folder,
+		sample_folder,
 		options = spades_options
 	)
 
+def variant_call_workflow(sample_name:Path, forward_read: Path, reverse_read:Path, parent_folder:Path, reference:Path):
+
 	#annotation.prokka(spades_output.contigs, prokka_output_folder, prokka_options)
+	sample_folder = common.checkdir(parent_folder / sample_name)
+	trimmomatic_options = read_quality.TrimmomaticOptions()
+	trimmomatic_output = read_quality.workflow(
+		forward_read,
+		reverse_read,
+		parent_folder,
+		options = trimmomatic_options
+	)
+
+	breseq_output = variant_callers.breseq(
+		trimmomatic_output.forward,
+		trimmomatic_output.reverse,
+		trimmomatic_output.unpaired_forward,
+		sample_folder,
+		reference
+	)
 
 
 if __name__ == "__main__":
+	import logging
+
+
+
+	import pandas
 	_sequence_folder = Path.home() / "projects" /"lipuma"/"sequences"/"180707"/"LiPumaStrains"
+	project_folder = Path.home() / "projects" / "lipuma"
+	parent_folder = project_folder / "pipeline_output"
+	if not parent_folder.exists():
+		parent_folder.mkdir()
 
-	_forward_read = _sequence_folder /"070818_01"/ "AU23516_S1_R1_001.fastq.gz"
-	_reverse_read = _sequence_folder /"070818_01"/ "AU23516_S1_R2_001.fastq.gz"
-	
-	_forward_read2 = _sequence_folder / "010818_10" / "AU30919_S10_R1_001.fastq.gz"
-	_reverse_read2 = _sequence_folder / "010818_10" / "AU30919_S10_R2_001.fastq.gz"
 
-	reads = [
-		(_forward_read, _reverse_read),
-		(_forward_read2, _reverse_read2)
-	]
-	
-	parent_folder = Path.home() / "sample_output"
-	
-	common.checkdir(parent_folder)
-	genus = "Burkholderia"
-	species = "cenocepacia"
-	for f, r in reads:
-		workflow(f, r, parent_folder, genus, species)
+	log_file = parent_folder / "pipeline_log.txt"
+	logger = logging.getLogger(__name__)
+	handler = logging.FileHandler(str(log_file))
+
+	logFormatter = '%(asctime)s - %(user)s - %(levelname)s - %(message)s'
+	logging.basicConfig(format = logFormatter, level = logging.DEBUG, handler = handler)
+
+	reference = project_folder / "AU1054 Reference" / "GCA_000014085.1_ASM1408v1_genomic.gff"
+	filename = project_folder / "samples.csv"
+	# sampleName
+	# forwardRead
+	# reverseRead
+	table = pandas.read_table(filename)
+
+	for index, row in table.iterrows():
+		logging.info("index,")
+		sample_name = row['sampleName']
+		forward = row['forwardRead']
+		reverse = row['reverseRead']
+
+		variant_call_workflow(sample_name, forward, reverse, parent_folder, reference)
