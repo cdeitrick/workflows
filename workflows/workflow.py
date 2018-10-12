@@ -116,7 +116,7 @@ if __name__ == "__main__":
 	# sampleName
 	# forwardRead
 	# reverseRead
-	table = pandas.read_table(filename)
+	table = pandas.read_csv(filename)
 
 	for index, row in table.iterrows():
 		logging.info("index,")
