@@ -122,7 +122,7 @@ if __name__ == "__main__":
 	table = pandas.read_csv(filename)
 
 	for index, row in table.iterrows():
-		logging.info("index,")
+		logging.info(f"{index} of {len(table)}")
 		sample_name = row['sampleName']
 		forward = Path(row['forwardRead'])
 		reverse = Path(row['reverseRead'])
