@@ -84,7 +84,7 @@ def get_output_folder(name: str, make_dirs: bool = True, **kwargs) -> Path:
 
 
 def run_command(program_name: str, command: List[Any], output_folder: Path,
-		threads: Tuple[str, int] = None, use_srun: bool = True) -> subprocess.CompletedProcess:
+		threads: Tuple[str, int] = None, use_srun: bool = True, output:Any = None) -> subprocess.CompletedProcess:
 	"""
 		Runs a program's command. Arguments are used to generate additional files containing the stdout, stderr,and
 		command used to run the program.
@@ -139,6 +139,11 @@ def run_command(program_name: str, command: List[Any], output_folder: Path,
 		stdout_path.write_text(process.stdout)
 		stderr_path.write_text(process.stderr)
 	except FileNotFoundError as exception:
+		print(command_string)
+		print()
+		print(stdout_path)
+		print()
+		print(stderr_path)
 		Path(__file__).with_name('debug_stdout.txt').write_text(process.stdout)
 		Path(__file__).with_name('debug_stderr.txt').write_text(process.stderr)
 		Path(__file__).with_name('debug_command.txt').write_text(command_string)
