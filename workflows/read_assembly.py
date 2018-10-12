@@ -90,8 +90,8 @@ def bandage(assembly_graph: Path, output_folder: Path) -> BandageOutput:
 		common.programs.bandage,
 		"image", assembly_graph, assembly_graph.with_suffix('.fastg.png')
 	]
-	common.run_command('bandageinfo', info_command, output_folder)
-	common.run_command('bandageimage', image_command, output_folder)
+	common.run_command('bandageinfo', info_command, output_folder.parent)
+	common.run_command('bandageimage', image_command, output_folder.parent)
 	output = BandageOutput()
 	return output
 
