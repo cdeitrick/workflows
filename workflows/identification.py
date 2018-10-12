@@ -1,12 +1,12 @@
-from pathlib import Path
 import subprocess
-from typing import List, Tuple, Dict
+from pathlib import Path
+from typing import Dict, List
 
 
-def groupby(iterable, callable) -> Dict[str, List[Path]]:
+def groupby(iterable, method) -> Dict[str, List[Path]]:
 	groups = dict()
 	for element in iterable:
-		key = callable(element)
+		key = method(element)
 		if key in groups:
 			groups[key].append(element)
 		else:
@@ -15,7 +15,7 @@ def groupby(iterable, callable) -> Dict[str, List[Path]]:
 	return groups
 
 
-def get_pairs(filenames: List[Path]) -> List[Tuple[Path, Path]]:
+def get_pairs(filenames: List[Path]) -> List[List[Path, Path]]:
 	groups = groupby(filenames, lambda s: '_'.join(s.name.split('_')[:2]))
 
 	pairs = list(groups.values())
@@ -65,20 +65,6 @@ class Kraken:
 			subprocess.run(krona_command, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
 
 
-class Metaphlan:
-	def __init__(self, path: Path, output: Path):
-		path = Path(path)
-		output = Path(output)
-
-		if path.is_dir():
-			filenames = [f for f in path.glob("**/*") if f.suffix == '.gz']
-		else:
-			filenames = [path]
-
-		for index, filename in enumerate(filenames):
-			print("{} of {}".format(index, len(filenames)))
-
-			command = ["metaphlan.py", filename, "--blastdb", "blastdb"]
 
 
 def generate_parser():
@@ -99,7 +85,4 @@ def generate_parser():
 
 
 if __name__ == "__main__":
-	parser = generate_parser()
-	args = parser.parse_args()
-
-	Kraken(args.input, args.output)
+	pass
