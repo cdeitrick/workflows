@@ -77,11 +77,15 @@ def variant_call_workflow(sample_name:Path, forward_read: Path, reverse_read:Pat
 	if not parent_folder.exists():
 		message = f"{parent_folder} does not exist."
 		raise ValueError(message)
+	else:
+		print(f"{parent_folder} exists!")
 	sample_folder = common.checkdir(parent_folder / sample_name)
 
 	if not sample_folder.exists():
 		message = f"{sample_folder} does not exists"
 		raise ValueError(message)
+	else:
+		print(f"{sample_folder} exists.")
 
 	trimmomatic_options = read_quality.TrimmomaticOptions()
 	print("running trimmomatic")
