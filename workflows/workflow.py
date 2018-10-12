@@ -107,13 +107,6 @@ if __name__ == "__main__":
 		parent_folder.mkdir()
 	print("Parent Folder: ", parent_folder)
 
-	#log_file = parent_folder / "pipeline_log.txt"
-	#logger = logging.getLogger(__name__)
-	#handler = logging.FileHandler(str(log_file))
-
-	#logFormatter = '%(asctime)s - %(user)s - %(levelname)s - %(message)s'
-	#logging.basicConfig(format = logFormatter, level = logging.DEBUG)
-	#logger.addHandler(handler)
 
 	reference = project_folder / "AU1054 Reference" / "GCA_000014085.1_ASM1408v1_genomic.gff"
 	filename = project_folder / "samples.csv"
@@ -128,7 +121,9 @@ if __name__ == "__main__":
 		sample_name = row['sampleName']
 		forward = Path(row['forwardRead'])
 		reverse = Path(row['reverseRead'])
-
+		print(sample_name)
+		print("\t", forward)
+		print("\t", reverse)
 		r = variant_call_workflow(sample_name, forward, reverse, parent_folder, reference)
 		print(r.exists())
 		print(r)

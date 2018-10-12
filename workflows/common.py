@@ -133,18 +133,18 @@ def run_command(program_name: str, command: List[Any], output_folder: Path,
 	command_string = "{}\n\nstart: {}\nend: {}\nduration: {}\n".format(
 		' '.join(command), start_datetime, end_datetime, duration
 	)
-	print(command_string)
-	print()
-	print(stdout_path)
-	print()
-	print(stderr_path)
-	raise ValueError
+
 	try:
 		command_path.write_text(command_string)
 		stdout_path.write_text(process.stdout)
 		stderr_path.write_text(process.stderr)
 	except FileNotFoundError as exception:
-
+		print(command_string)
+		print()
+		print(stdout_path)
+		print()
+		print(stderr_path)
+		raise ValueError
 		Path(__file__).with_name('debug_stdout.txt').write_text(process.stdout)
 		Path(__file__).with_name('debug_stderr.txt').write_text(process.stderr)
 		Path(__file__).with_name('debug_command.txt').write_text(command_string)
