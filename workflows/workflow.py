@@ -135,9 +135,5 @@ if __name__ == "__main__":
 		sample_name = row['sampleName']
 		forward = Path(row['forwardRead'])
 		reverse = Path(row['reverseRead'])
-		print(sample_name)
-		print("\t", forward)
-		print("\t", reverse)
+
 		r = variant_call_workflow(sample_name, forward, reverse, parent_folder, reference)
-		print(r.exists())
-		print(r)
