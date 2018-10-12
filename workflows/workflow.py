@@ -101,7 +101,7 @@ def variant_call_workflow(sample_name:Path, forward_read: Path, reverse_read:Pat
 		trimmomatic_output.forward,
 		trimmomatic_output.reverse,
 		trimmomatic_output.unpaired_forward,
-		sample_folder,
+		sample_folder / "breseq_output",
 		reference
 	)
 	return breseq_output
