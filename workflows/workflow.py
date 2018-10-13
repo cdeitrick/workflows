@@ -124,7 +124,8 @@ if __name__ == "__main__":
 
 
 	reference = project_folder / "AU1054" / "GCA_000014085.1_ASM1408v1_genomic.gbff"
-	filename = project_folder / "samples.csv"
+	#filename = project_folder / "samples.csv"
+	filename = Path.home() / "samples.tsv"
 	# sampleName
 	# forwardRead
 	# reverseRead
@@ -132,9 +133,11 @@ if __name__ == "__main__":
 
 	for index, row in table.iterrows():
 		#logging.info(f"{index} of {len(table)}")
-		print(f"{index} of {len(table)}")
+
 		sample_name = row['sampleName']
 		forward = Path(row['forwardRead'])
 		reverse = Path(row['reverseRead'])
+		exists = forward.exists() and reverse.exists()
+		print(f"{index} of {len(table)}\t{sample_name}\t{exists}")
 
 		r = variant_call_workflow(sample_name, forward, reverse, parent_folder, reference)
