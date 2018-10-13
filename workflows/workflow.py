@@ -120,7 +120,7 @@ if __name__ == "__main__":
 
 	reference = project_folder / "AU1054" / "GCA_000014085.1_ASM1408v1_genomic.gbff"
 	#filename = project_folder / "samples.csv"
-	filename = Path.home() / "samples.tsv"
+	filename = project_folder /"sequences"/ "samples.tsv"
 	# sampleName
 	# forwardRead
 	# reverseRead
