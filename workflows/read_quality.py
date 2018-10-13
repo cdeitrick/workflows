@@ -141,21 +141,23 @@ def trimmomatic(forward: Path, reverse: Path, **kwargs) -> TrimmomaticOutput:
 	return output
 
 
-def workflow(forward: Path, reverse: Path, parent_folder:Path, options: TrimmomaticOptions, prefix = None) -> TrimmomaticOutput:
+def workflow(forward: Path, reverse: Path, parent_folder:Path, options: TrimmomaticOptions, prefix = None, run_fastqc:bool = True) -> TrimmomaticOutput:
 	trimmomatic_folder = common.checkdir(parent_folder / "trimmomatic")
-	fastqc_folder = common.checkdir(parent_folder / "fastqc_untrimmed")
-	fastqc_after = common.checkdir(parent_folder / "fastqc_after")
-	fastqc(fastqc_folder, forward, reverse)
+	if run_fastqc:
+		fastqc_folder = common.checkdir(parent_folder / "fastqc_untrimmed")
+		fastqc_after = common.checkdir(parent_folder / "fastqc_after")
+		fastqc(fastqc_folder, forward, reverse)
 
 	trimmomatic_output = trimmomatic(forward, reverse, output_folder = trimmomatic_folder, options = options, prefix = prefix)
 
-	fastqc(
-		fastqc_after,
-		trimmomatic_output.forward,
-		trimmomatic_output.reverse,
-		trimmomatic_output.unpaired_forward,
-		trimmomatic_output.unpaired_reverse
-	)
+	if run_fastqc:
+		fastqc(
+			fastqc_after,
+			trimmomatic_output.forward,
+			trimmomatic_output.reverse,
+			trimmomatic_output.unpaired_forward,
+			trimmomatic_output.unpaired_reverse
+		)
 
 	return trimmomatic_output
 

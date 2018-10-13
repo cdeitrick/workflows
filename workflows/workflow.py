@@ -92,9 +92,10 @@ def variant_call_workflow(sample_name:Path, forward_read: Path, reverse_read:Pat
 	trimmomatic_output = read_quality.workflow(
 		forward_read,
 		reverse_read,
-		parent_folder,
+		sample_folder,
 		options = trimmomatic_options,
-		prefix = sample_name
+		prefix = sample_name,
+		run_fastqc = False
 	)
 	print("Trimmomatic exists", trimmomatic_output.exists())
 	breseq_output = variant_callers.breseq(
