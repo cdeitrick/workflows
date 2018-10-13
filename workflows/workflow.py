@@ -74,20 +74,15 @@ def variant_call_workflow(sample_name:Path, forward_read: Path, reverse_read:Pat
 
 	#annotation.prokka(spades_output.contigs, prokka_output_folder, prokka_options)
 
-	if not parent_folder.exists():
-		message = f"{parent_folder} does not exist."
-		raise ValueError(message)
-	else:
-		print(f"{parent_folder} exists!")
+
 	sample_folder = common.checkdir(parent_folder / sample_name)
 
-	if not sample_folder.exists():
-		message = f"{sample_folder} does not exists"
-		raise ValueError(message)
-	else:
-		print(f"{sample_folder} exists.")
+
 
 	trimmomatic_options = read_quality.TrimmomaticOptions()
+	print(sample_name)
+	print("\t", forward_read)
+	print("\t", reverse_read)
 	print("running trimmomatic")
 	trimmomatic_output = read_quality.workflow(
 		forward_read,
@@ -97,7 +92,7 @@ def variant_call_workflow(sample_name:Path, forward_read: Path, reverse_read:Pat
 		prefix = sample_name,
 		run_fastqc = False
 	)
-	print("Trimmomatic exists", trimmomatic_output.exists())
+	print("Running Breseq...")
 	breseq_output = variant_callers.breseq(
 		trimmomatic_output.forward,
 		trimmomatic_output.reverse,

@@ -87,7 +87,6 @@ if __name__ == "__main__":
 	from pathlib import Path
 	sequence_folder = Path.home() / "Documents" / "projects" / "lipuma" / "lipuma" / "sequences"
 	output_filename = sequence_folder / "samples.tsv"
-	sfolder = Path.home() / "projects" / "lipuma"
 	whitelist = [i for i in a.split('\n') if i]
 	whitelist = [i.split(' ')[1] for i in whitelist]
 
@@ -110,8 +109,8 @@ if __name__ == "__main__":
 
 		row = {
 			'sampleName': sample_name,
-			'forwardRead': sfolder / forward.stem,
-			'reverseRead': sfolder / reverse.stem
+			'forwardRead': forward,
+			'reverseRead': reverse
 		}
 		t.append(row)
 	import pandas
