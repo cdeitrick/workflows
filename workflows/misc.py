@@ -85,7 +85,7 @@ a = """
 
 if __name__ == "__main__":
 	from pathlib import Path
-	sequence_folder = Path.home() / "Documents" / "projects" / "lipuma" / "lipuma" / "sequences"
+	sequence_folder = "home" /"cld100" / "projects" / "lipuma" / "lipuma" / "sequences"
 	output_filename = sequence_folder / "samples.tsv"
 	whitelist = [i for i in a.split('\n') if i]
 	whitelist = [i.split(' ')[1] for i in whitelist]
