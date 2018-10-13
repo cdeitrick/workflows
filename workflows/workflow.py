@@ -123,7 +123,7 @@ if __name__ == "__main__":
 	print("Parent Folder: ", parent_folder)
 
 
-	reference = project_folder / "AU1054" / "GCA_000014085.1_ASM1408v1_genomic.gff"
+	reference = project_folder / "AU1054" / "GCA_000014085.1_ASM1408v1_genomic.gbff"
 	filename = project_folder / "samples.csv"
 	# sampleName
 	# forwardRead
