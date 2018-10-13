@@ -90,7 +90,7 @@ if __name__ == "__main__":
 	whitelist = [i for i in a.split('\n') if i]
 	whitelist = [i.split(' ')[1] for i in whitelist]
 
-	candidates = list(sequence_folder.glob("**/*"))
+	candidates = list(i.absolute() for i in sequence_folder.glob("**/*"))
 
 	filenames = dict()
 	for candidate in candidates:
