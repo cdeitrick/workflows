@@ -129,7 +129,7 @@ if __name__ == "__main__":
 	# sampleName
 	# forwardRead
 	# reverseRead
-	table = pandas.read_csv(filename)
+	table = pandas.read_csv(filename, sep = "\t")
 
 	for index, row in table.iterrows():
 		#logging.info(f"{index} of {len(table)}")
