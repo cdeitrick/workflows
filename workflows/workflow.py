@@ -43,22 +43,15 @@ def groupby(collection, by) -> Dict[Any, List[Any]]:
 	return groups
 
 
-def workflow(forward_read: Path, reverse_read: Path, parent_folder: Path, genus:str, species:str):
+def assemble_workflow(forward_read: Path, reverse_read: Path, parent_folder: Path, genus:str, species:str):
 	forward_name = forward_read.stem
 	reverse_name = reverse_read.stem
 	sample_name = first_common_substring(forward_name, reverse_name)
 	prefix = sample_name
 	sample_folder = common.checkdir(parent_folder / sample_name)
-	prokka_output_folder = sample_folder / "prokka"
-
 
 	trimmomatic_options = read_quality.TrimmomaticOptions()
 	spades_options = read_assembly.SpadesOptions()
-	prokka_options = annotation.ProkkaOptions(
-		prefix = prefix,
-		genus = genus,
-		species = species
-	)
 
 	trimmomatic_output = read_quality.workflow(forward_read, reverse_read, parent_folder, options = trimmomatic_options, prefix = sample_name)
 
@@ -69,6 +62,7 @@ def workflow(forward_read: Path, reverse_read: Path, parent_folder: Path, genus:
 		sample_folder,
 		options = spades_options
 	)
+	return spades_output
 
 def variant_call_workflow(sample_name:Path, forward_read: Path, reverse_read:Path, parent_folder:Path, reference:Path):
 
@@ -105,25 +99,24 @@ def variant_call_workflow(sample_name:Path, forward_read: Path, reverse_read:Pat
 
 if __name__ == "__main__":
 	#import logging
-
-
-
-	import pandas
 	_sequence_folder = Path.home() / "projects" /"lipuma"/"sequences"/"180707"/"LiPumaStrains"
 	project_folder = Path.home() / "projects" / "lipuma"
-	parent_folder = project_folder / "pipeline_output"
+	reference = project_folder / "AU1054" / "GCA_000014085.1_ASM1408v1_genomic.gbff"
+	reference_forward_read = project_folder / "sequences" / "071218_20"/ 'AU1581_S20_R1_001.fastq.gz'
+	reference_reverse_read = project_folder / "sequences" / "071218_20"/'AU1581_S20_R2_001.fastq.gz'
+	filename = project_folder /"sequences"/ "samples.tsv"
+
+	parent_folder = project_folder / "assemble_output"
 
 	if not parent_folder.exists():
 		parent_folder.mkdir()
 	print("Parent Folder: ", parent_folder)
+	assemble_workflow(reference_forward_read, reference_reverse_read, parent_folder = parent_folder, genus = "Burkholderia", species = "cenocepacia")
 
-
-	reference = project_folder / "AU1054" / "GCA_000014085.1_ASM1408v1_genomic.gbff"
-	#filename = project_folder / "samples.csv"
-	filename = project_folder /"sequences"/ "samples.tsv"
 	# sampleName
 	# forwardRead
 	# reverseRead
+	"""
 	table = pandas.read_csv(filename, sep = "\t")
 
 	for index, row in table.iterrows():
@@ -136,3 +129,4 @@ if __name__ == "__main__":
 		print(f"{index} of {len(table)}\t{sample_name}\t{exists}")
 
 		r = variant_call_workflow(sample_name, forward, reverse, parent_folder, reference)
+	"""
