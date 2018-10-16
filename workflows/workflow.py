@@ -119,7 +119,8 @@ if __name__ == "__main__":
 	# reverseRead
 
 	table = pandas.read_csv(filename, sep = "\t")
-
+	print("Found {} samples".format(len(table)))
+	print(table.to_string())
 	for index, row in table.iterrows():
 		#logging.info(f"{index} of {len(table)}")
 
