@@ -98,25 +98,26 @@ def variant_call_workflow(sample_name:Path, forward_read: Path, reverse_read:Pat
 
 
 if __name__ == "__main__":
+	import pandas
 	#import logging
 	_sequence_folder = Path.home() / "projects" /"lipuma"/"sequences"/"180707"/"LiPumaStrains"
 	project_folder = Path.home() / "projects" / "lipuma"
 	reference = project_folder / "AU1054" / "GCA_000014085.1_ASM1408v1_genomic.gbff"
 	reference_forward_read = project_folder / "sequences" / "071218_20"/ 'AU1581_S20_R1_001.fastq.gz'
 	reference_reverse_read = project_folder / "sequences" / "071218_20"/'AU1581_S20_R2_001.fastq.gz'
-	filename = project_folder /"sequences"/ "samples.tsv"
+	filename = project_folder /"samples.tsv"
 
-	parent_folder = project_folder / "assemble_output"
+	parent_folder = project_folder / "cluster2_output"
 
 	if not parent_folder.exists():
 		parent_folder.mkdir()
 	print("Parent Folder: ", parent_folder)
-	assemble_workflow(reference_forward_read, reference_reverse_read, parent_folder = parent_folder, genus = "Burkholderia", species = "cenocepacia")
+	#assemble_workflow(reference_forward_read, reference_reverse_read, parent_folder = parent_folder, genus = "Burkholderia", species = "cenocepacia")
 
 	# sampleName
 	# forwardRead
 	# reverseRead
-	"""
+
 	table = pandas.read_csv(filename, sep = "\t")
 
 	for index, row in table.iterrows():
@@ -129,4 +130,3 @@ if __name__ == "__main__":
 		print(f"{index} of {len(table)}\t{sample_name}\t{exists}")
 
 		r = variant_call_workflow(sample_name, forward, reverse, parent_folder, reference)
-	"""
