@@ -117,7 +117,7 @@ if __name__ == "__main__":
 	sample_reference_id = "AU1836"
 	sample_table_filename = project_folder / "samples.tsv"
 	reference_forward_read, reference_reverse_read = get_sample(sample_reference_id, project_folder / "sequences")
-	parent_folder = project_folder / "cluster2_output"
+	parent_folder = project_folder / "AU1836_output"
 
 	if not parent_folder.exists():
 		parent_folder.mkdir()
