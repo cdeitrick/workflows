@@ -25,7 +25,7 @@ class SpadesOptions:
 	# reverse: Path
 	# unpaired_forward: Path = None
 	# unpaired_reverse: Path = None  # Don't use the unpaired reverse reads.
-	kmers: str = '21,33,55,71'  # A comma-separated list of odd integers less than 128.
+	kmers: str = '11,21,33,55,71,83,97,111'  # A comma-separated list of odd integers less than 128.
 	threads: int = 16
 	careful: bool = True
 
