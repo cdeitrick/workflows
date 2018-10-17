@@ -116,11 +116,12 @@ if __name__ == "__main__":
 	# import logging
 	_sequence_folder = Path.home() / "projects" / "lipuma" / "sequences" / "180707" / "LiPumaStrains"
 	project_folder = Path.home() / "projects" / "lipuma"
-	reference = project_folder / "AU1054" / "GCA_000014085.1_ASM1408v1_genomic.gbff"
+	#reference = project_folder / "AU1054" / "GCA_000014085.1_ASM1408v1_genomic.gbff"
+	reference = project_folder / "reference" / "AU1836.gbk"
 	sample_reference_id = "AU1836"
 	sample_table_filename = project_folder / "samples.tsv"
 	reference_forward_read, reference_reverse_read = get_sample(sample_reference_id, project_folder / "sequences")
-	parent_folder = project_folder / "AU1836_output"
+	parent_folder = project_folder / "cluster2_output"
 
 	if not parent_folder.exists():
 		parent_folder.mkdir()
@@ -134,7 +135,7 @@ if __name__ == "__main__":
 	table = pandas.read_csv(sample_table_filename, sep = "\t")
 	print("Found {} samples".format(len(table)))
 	#print(table.to_string())
-	assemble = True
+	assemble = False
 	if assemble:
 		assemble_workflow(reference_forward_read, reference_reverse_read,parent_folder, "burkholderia", "cenocepacia")
 	else:
