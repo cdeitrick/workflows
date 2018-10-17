@@ -51,6 +51,9 @@ def assemble_workflow(forward_read: Path, reverse_read: Path, parent_folder: Pat
 	sample_folder = common.checkdir(parent_folder / sample_name)
 
 	trimmomatic_options = read_quality.TrimmomaticOptions()
+	trimmomatic_options.minimum_length = 70
+	trimmomatic_options.leading = 20
+	trimmomatic_options.trailing = 20
 	spades_options = read_assembly.SpadesOptions()
 
 	trimmomatic_output = read_quality.workflow(forward_read, reverse_read, parent_folder, options = trimmomatic_options, prefix = sample_name)
