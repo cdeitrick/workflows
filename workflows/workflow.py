@@ -98,9 +98,9 @@ def get_sample(sample_id: str, folder: Path) -> Tuple[Path, Path]:
 	candidates = [i for i in folder.glob("**/*") if i.suffix == '.gz']
 	candidates = [i for i in candidates if i.name.startswith(sample_id)]
 
-	forward = [i for i in candidates if 'R1' in i]
+	forward = [i for i in candidates if 'R1' in i.stem]
 
-	reverse = [i for i in candidates if 'R2' in i]
+	reverse = [i for i in candidates if 'R2' in i.stem]
 	print(forward)
 	print(reverse)
 	return forward[0], reverse[0]
