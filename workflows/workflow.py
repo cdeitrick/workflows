@@ -117,7 +117,7 @@ if __name__ == "__main__":
 	_sequence_folder = Path.home() / "projects" / "lipuma" / "sequences" / "180707" / "LiPumaStrains"
 	project_folder = Path.home() / "projects" / "lipuma"
 	#reference = project_folder / "AU1054" / "GCA_000014085.1_ASM1408v1_genomic.gbff"
-	reference = project_folder / "reference" / "AU1836.gbk"
+	reference = project_folder / "reference" / "AU1836.gff"
 	sample_reference_id = "AU1836"
 	sample_table_filename = project_folder / "samples.tsv"
 	reference_forward_read, reference_reverse_read = get_sample(sample_reference_id, project_folder / "sequences")

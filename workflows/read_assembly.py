@@ -30,6 +30,10 @@ class SpadesOptions:
 	careful: bool = True
 
 @dataclass
+class PilonOptions:
+	pass
+
+@dataclass
 class SpadesOutput:
 	output_folder: Path  # Folder where all spades output should be.
 	contigs: Path
@@ -39,6 +43,12 @@ class SpadesOutput:
 	def exists(self):
 		return self.contigs.exists()
 
+def pilon(forward_read:Path, reverse_read:Path, unpaired_forward_read:Path, assembly:Path, output_folder:Path, options:PilonOptions):
+
+	command = [
+		"java","-Xmx16G", "-jar", "pilon.jar",
+		"--genome", assembly
+	]
 
 def spades(forward_read: Path, reverse_read: Path, unpaired_forward_read: Path, output_folder, options: SpadesOptions) -> SpadesOutput:
 	"""
