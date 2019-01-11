@@ -119,8 +119,8 @@ def generate_samplesheet_from_project_folder(folder: Path) -> List[Dict[str, Uni
 		reverse = [i for i in files if 'R2' in i.name][0]
 		row = {
 			'sampleName': sample_name,
-			'forward':    forward,
-			'reverse':    reverse
+			'forwardRead':    forward,
+			'reverseRead':    reverse
 		}
 		table.append(row)
 	return table
@@ -138,7 +138,7 @@ if __name__ == "__main__":
 	# reference = project_folder / "AU1054" / "GCA_000014085.1_ASM1408v1_genomic.gbff"
 	reference = Path("/home/cld100/projects/lipuma/reference/HI2424_Reference/GCA_000203955.1_ASM20395v1_genomic.gbff.gz")
 	sample_reference_id = "HI2424"
-	parent_folder = project_folder 
+	parent_folder = project_folder
 
 	if not parent_folder.exists():
 		parent_folder.mkdir()
