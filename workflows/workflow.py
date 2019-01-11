@@ -1,6 +1,6 @@
 import sys
 from pathlib import Path
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List, Tuple, Union
 
 sys.path.append(str(Path(__file__).parent))
 
@@ -109,44 +109,50 @@ def get_sample(sample_id: str, folder: Path) -> Tuple[Path, Path]:
 	return forward[0], reverse[0]
 
 
+def generate_samplesheet_from_project_folder(folder: Path) -> List[Dict[str, Union[str, Path]]]:
+	table = list()
+	for sample_folder in folder.iterdir():
+		if not folder.is_dir(): continue
+		files = list(sample_folder.iterdir())
+		sample_name = files[0].split('_')[0]
+		forward = [i for i in files if 'R1' in i.name][0]
+		reverse = [i for i in files if 'R2' in i.name][0]
+		row = {
+			'sampleName': sample_name,
+			'forward':    forward,
+			'reverse':    reverse
+		}
+		table.append(row)
+	return table
+
+
 if __name__ == "__main__":
 	import pendulum
 	import pandas
 
 	# import logging
-	_sequence_folder = Path.home() / "projects" / "lipuma" / "sequences" / "180707" / "LiPumaStrains"
-	project_folder = Path.home() / "projects" / "lipuma"
-	#reference = project_folder / "AU1054" / "GCA_000014085.1_ASM1408v1_genomic.gbff"
-	reference = project_folder / "reference" / "AU1836_nopilon" / "AU1836.gff"
-	sample_reference_id = "AU1836"
-	sample_table_filename = project_folder / "samples.tsv"
-	reference_forward_read, reference_reverse_read = get_sample(sample_reference_id, project_folder / "sequences")
+	sequences = generate_samplesheet_from_project_folder(Path("/home/data/dmux/181218/CooperLabEM/"))
+	sequences += generate_samplesheet_from_project_folder(Path("/home/data/dmux/181220/CooperLabEM/"))
+
+	project_folder = Path.home() / "projects" / "eisha"
+	# reference = project_folder / "AU1054" / "GCA_000014085.1_ASM1408v1_genomic.gbff"
+	reference = Path("/home/cld100/projects/lipuma/reference/HI2424_Reference/GCA_000203955.1_ASM20395v1_genomic.gbff.gz")
+	sample_reference_id = "HI2424"
 	parent_folder = project_folder / "cluster2_output"
 
 	if not parent_folder.exists():
 		parent_folder.mkdir()
 	print("Parent Folder: ", parent_folder)
-	# assemble_workflow(reference_forward_read, reference_reverse_read, parent_folder = parent_folder, genus = "Burkholderia", species = "cenocepacia")
-
-	# sampleName
-	# forwardRead
-	# reverseRead
-
-	table = pandas.read_csv(sample_table_filename, sep = "\t")
+	table = sequences
 	print("Found {} samples".format(len(table)))
-	#print(table.to_string())
-	assemble = False
-	if assemble:
-		assemble_workflow(reference_forward_read, reference_reverse_read,parent_folder, "burkholderia", "cenocepacia")
-	else:
-		for index, row in table.iterrows():
-			# logging.info(f"{index} of {len(table)}")
 
-			sample_name = row['sampleName']
-			forward = Path(row['forwardRead'])
-			reverse = Path(row['reverseRead'])
-			exists = forward.exists() and reverse.exists()
-			n = pendulum.now().to_datetime_string()
-			print(f"{n}:\t{index} of {len(table)}\t{sample_name}\t{exists}")
+	for index, row in enumerate(table):
+		# logging.info(f"{index} of {len(table)}")
+		sample_name = row['sampleName']
+		forward = Path(row['forwardRead'])
+		reverse = Path(row['reverseRead'])
+		exists = forward.exists() and reverse.exists()
+		n = pendulum.now().to_datetime_string()
+		print(f"{n}:\t{index} of {len(table)}\t{sample_name}\t{exists}")
 
-			r = variant_call_workflow(sample_name, forward, reverse, parent_folder, reference)
+		r = variant_call_workflow(sample_name, forward, reverse, parent_folder, reference)
