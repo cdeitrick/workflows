@@ -114,7 +114,7 @@ def generate_samplesheet_from_project_folder(folder: Path) -> List[Dict[str, Uni
 	for sample_folder in folder.iterdir():
 		if not folder.is_dir(): continue
 		files = list(sample_folder.iterdir())
-		sample_name = files[0].split('_')[0]
+		sample_name = files[0].name.split('_')[0]
 		forward = [i for i in files if 'R1' in i.name][0]
 		reverse = [i for i in files if 'R2' in i.name][0]
 		row = {
