@@ -138,7 +138,7 @@ if __name__ == "__main__":
 	# reference = project_folder / "AU1054" / "GCA_000014085.1_ASM1408v1_genomic.gbff"
 	reference = Path("/home/cld100/projects/lipuma/reference/HI2424_Reference/GCA_000203955.1_ASM20395v1_genomic.gbff.gz")
 	sample_reference_id = "HI2424"
-	parent_folder = project_folder / "cluster2_output"
+	parent_folder = project_folder 
 
 	if not parent_folder.exists():
 		parent_folder.mkdir()
