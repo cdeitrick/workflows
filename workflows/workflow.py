@@ -114,7 +114,8 @@ def generate_samplesheet_from_project_folder(folder: Path) -> List[Dict[str, Uni
 	for sample_folder in folder.iterdir():
 		if not folder.is_dir(): continue
 		files = list(sample_folder.iterdir())
-		sample_name = files[0].name.split('_')[0]
+		sample_name = files[0].name.split('_')[:2]
+		sample_name = "_".join(sample_name)
 		forward = [i for i in files if 'R1' in i.name][0]
 		reverse = [i for i in files if 'R2' in i.name][0]
 		row = {
@@ -136,7 +137,7 @@ if __name__ == "__main__":
 
 	project_folder = Path.home() / "projects" / "eisha"
 	# reference = project_folder / "AU1054" / "GCA_000014085.1_ASM1408v1_genomic.gbff"
-	reference = Path("/home/cld100/projects/lipuma/reference/HI2424_Reference/GCA_000203955.1_ASM20395v1_genomic.gbff.gz")
+	reference = Path("/home/cld100/projects/eisha/GCA_000203955.1_ASM20395v1_genomic.fna")
 	sample_reference_id = "HI2424"
 	parent_folder = project_folder
 
