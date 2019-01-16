@@ -29,8 +29,9 @@ def breseq(forward:Path, reverse:Path, uforward:Path, output_folder:Path, refere
 	command = [
 		options.program,
 		# "-j", THREADS,
+		"-p",
 		"-o", output_folder,
-		"-r", reference
+		"-r", reference,
 	]
 
 	command += [forward, reverse, uforward]
