@@ -135,7 +135,7 @@ if __name__ == "__main__":
 	sequences = generate_samplesheet_from_project_folder(Path("/home/data/dmux/181218/CooperLabEM/"))
 	sequences += generate_samplesheet_from_project_folder(Path("/home/data/dmux/181220/CooperLabEM/"))
 
-	project_folder = Path.home() / "projects" / "eisha"
+	project_folder = Path.home() / "projects" / "eishap"
 	# reference = project_folder / "AU1054" / "GCA_000014085.1_ASM1408v1_genomic.gbff"
 	reference = Path("/home/cld100/projects/eisha/GCA_000203955.1_ASM20395v1_genomic.fna")
 	sample_reference_id = "HI2424"
