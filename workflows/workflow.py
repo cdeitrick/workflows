@@ -128,30 +128,50 @@ def groupby(key, sequence):
 	return groups
 
 if __name__ == "__main__":
-	"""
+
 	import pendulum
-
-	project_folder = Path.home() / "projects" / "riptide"
-	sequences = groupby(lambda s: "-".join(s.name.split('-')[:2]), (project_folder / "fastqs").iterdir())
-	reference = Path("/home/data/refs/hi2424_180206.gbk")
-
-	parent_folder = project_folder
-
+	reference = Path("/home/cld100/projects/lipuma/reference/SC1145/prokka_output/sc1145.gbk")
+	project_folder = Path.home() / "projects" / "lipuma"
+	parent_folder = project_folder / "au1145_pipeline_output"
 	if not parent_folder.exists():
 		parent_folder.mkdir()
-	print("Found {} samples".format(len(sequences)))
-	index = 0
-	for sample_name, filenames in sequences.items():
-		index += 1
-		forward = [i for i in filenames if 'R1' in i.name][0]
-		reverse = [i for i in filenames if 'R2' in i.name][0]
-		n = pendulum.now().to_datetime_string()
+	sample_list = generate_samplesheet_from_project_folder(project_folder / "sequences")
+	whitelist = """SC1128
+		SC1129
+		SC1145
+		SC1209
+		SC1210
+		SC1211
+		SC1339
+		AU0465
+		SC1371
+		SC1392
+		SC1400
+		AU1051
+		AU1057
+		AU1055
+		AU1056
+		SC1407
+		SC1419
+		SC1420
+		SC1421
+		SC1435
+		AU3741
+		AU3739
+		AU3740
+		AU4359""".split('\n')
+	whitelist = [i.strip() for i in whitelist if i]
+	total_length = len(sample_list)
+	print(f"Found {total_length} samples.")
+	for index, row in enumerate(sample_list):
+		n = pendulum.now()
+		print(f"{n}\t{index}\t{sample_name}")
+		sample_name = row['sampleName']
+		read1 = row['forwardRead']
+		read2 = row['reverseRead']
+		if sample_name not in whitelist: continue
 
-		print(f"{n}:\t{index} of {len(sequences)}\t{sample_name}")
-		r = variant_call_workflow(sample_name, forward, reverse, parent_folder, reference)
-	"""
-	folder = Path("/home/cld100/projects/lipuma/reference/SC1145")
-	read1 = folder / "SC1145_S52_R1_001.fastq.gz"
-	read2 = folder / "SC1145_S52_R2_001.fastq.gz"
+		variant_call_workflow(sample_name, read1, read2, parent_folder, reference)
 
-	assemble_workflow(read1, read2, folder)
+
+
