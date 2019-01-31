@@ -172,7 +172,7 @@ if __name__ == "__main__":
 		read1 = row['forwardRead']
 		read2 = row['reverseRead']
 		print(f"{n}\t{index}\t{sample_name}")
-		if sample_name not in whitelist: continue
+		if sample_name.split('_')[0] not in whitelist: continue
 
 		variant_call_workflow(sample_name, read1, read2, parent_folder, reference)
 
