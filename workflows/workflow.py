@@ -103,8 +103,10 @@ def get_sample(sample_id: str, folder: Path) -> Tuple[Path, Path]:
 def generate_samplesheet_from_project_folder(folder: Path) -> List[Dict[str, Union[str, Path]]]:
 	table = list()
 	for sample_folder in folder.iterdir():
-		if not folder.is_dir(): continue
-		files = list(sample_folder.iterdir())
+		try:
+			files = list(sample_folder.iterdir())
+		except NotADirectoryError:
+			continue
 		sample_name = files[0].name.split('_')[:2]
 		sample_name = "_".join(sample_name)
 		forward = [i for i in files if 'R1' in i.name][0]
