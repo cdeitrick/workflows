@@ -165,6 +165,9 @@ if __name__ == "__main__":
 	whitelist = [i.strip() for i in whitelist if i]
 	total_length = len(sample_list)
 	print(f"Found {total_length} samples.")
+
+	sample_list = [i for i in sample_list if i['sampleName'].split('_')[0] in whitelist]
+
 	for index, row in enumerate(sample_list):
 		n = pendulum.now()
 
@@ -172,7 +175,7 @@ if __name__ == "__main__":
 		read1 = row['forwardRead']
 		read2 = row['reverseRead']
 		print(f"{n}\t{index}\t{sample_name}")
-		if sample_name.split('_')[0] not in whitelist: continue
+		#if sample_name.split('_')[0] not in whitelist: continue
 
 		variant_call_workflow(sample_name, read1, read2, parent_folder, reference)
 
