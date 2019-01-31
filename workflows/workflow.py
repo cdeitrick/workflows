@@ -167,10 +167,11 @@ if __name__ == "__main__":
 	print(f"Found {total_length} samples.")
 	for index, row in enumerate(sample_list):
 		n = pendulum.now()
-		print(f"{n}\t{index}\t{sample_name}")
+
 		sample_name = row['sampleName']
 		read1 = row['forwardRead']
 		read2 = row['reverseRead']
+		print(f"{n}\t{index}\t{sample_name}")
 		if sample_name not in whitelist: continue
 
 		variant_call_workflow(sample_name, read1, read2, parent_folder, reference)
