@@ -2,7 +2,8 @@ from pathlib import Path
 from typing import List, Union
 
 from dataclasses import dataclass
-
+import logging
+logger = logging.getLogger(__name__)
 try:
 	from workflows import common
 except ModuleNotFoundError:

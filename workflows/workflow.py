@@ -1,7 +1,8 @@
 import sys
 from pathlib import Path
 from typing import Any, Dict, List, Tuple, Union
-
+import logging
+logger = logging.getLogger(__name__)
 sys.path.append(str(Path(__file__).parent))
 
 try:
@@ -32,18 +33,7 @@ def first_common_substring(seqa: str, seqb: str) -> str:
 		return seqa
 
 
-def groupby(collection, by) -> Dict[Any, List[Any]]:
-	groups = dict()
-	for element in collection:
-		key = by(element)
-		if key in groups:
-			groups[key].append(element)
-		else:
-			groups[key] = [element]
-	return groups
-
-
-def assemble_workflow(forward_read: Path, reverse_read: Path, parent_folder: Path, genus: str, species: str):
+def assemble_workflow(forward_read: Path, reverse_read: Path, parent_folder: Path):
 	forward_name = forward_read.stem
 	reverse_name = reverse_read.stem
 	sample_name = first_common_substring(forward_name, reverse_name)
@@ -57,7 +47,8 @@ def assemble_workflow(forward_read: Path, reverse_read: Path, parent_folder: Pat
 	spades_options = read_assembly.SpadesOptions()
 
 	trimmomatic_output = read_quality.workflow(forward_read, reverse_read, parent_folder, options = trimmomatic_options, prefix = sample_name)
-
+	reference = Path("/home/cld100/projects/lipuma/reference/SC1145/GCA_000014085.1_ASM1408v1_genomic.fasta")
+	spades_options.reference = reference
 	spades_output = read_assembly.workflow(
 		trimmomatic_output.forward,
 		trimmomatic_output.reverse,
@@ -126,34 +117,41 @@ def generate_samplesheet_from_project_folder(folder: Path) -> List[Dict[str, Uni
 		table.append(row)
 	return table
 
+def groupby(key, sequence):
+	groups = dict()
+	for item in sequence:
+		item_key = key(item)
+		if item_key in groups:
+			groups[item_key].append(item)
+		else:
+			groups[item_key] = [item]
+	return groups
 
 if __name__ == "__main__":
+	"""
 	import pendulum
-	import pandas
 
-	# import logging
-	sequences = generate_samplesheet_from_project_folder(Path("/home/data/dmux/181218/CooperLabEM/"))
-	sequences += generate_samplesheet_from_project_folder(Path("/home/data/dmux/181220/CooperLabEM/"))
+	project_folder = Path.home() / "projects" / "riptide"
+	sequences = groupby(lambda s: "-".join(s.name.split('-')[:2]), (project_folder / "fastqs").iterdir())
+	reference = Path("/home/data/refs/hi2424_180206.gbk")
 
-	project_folder = Path.home() / "projects" / "eishap"
-	# reference = project_folder / "AU1054" / "GCA_000014085.1_ASM1408v1_genomic.gbff"
-	reference = Path("/home/cld100/projects/eisha/GCA_000203955.1_ASM20395v1_genomic.fna")
-	sample_reference_id = "HI2424"
 	parent_folder = project_folder
 
 	if not parent_folder.exists():
 		parent_folder.mkdir()
-	print("Parent Folder: ", parent_folder)
-	table = sequences
-	print("Found {} samples".format(len(table)))
-
-	for index, row in enumerate(table):
-		# logging.info(f"{index} of {len(table)}")
-		sample_name = row['sampleName']
-		forward = Path(row['forwardRead'])
-		reverse = Path(row['reverseRead'])
-		exists = forward.exists() and reverse.exists()
+	print("Found {} samples".format(len(sequences)))
+	index = 0
+	for sample_name, filenames in sequences.items():
+		index += 1
+		forward = [i for i in filenames if 'R1' in i.name][0]
+		reverse = [i for i in filenames if 'R2' in i.name][0]
 		n = pendulum.now().to_datetime_string()
-		print(f"{n}:\t{index} of {len(table)}\t{sample_name}\t{exists}")
 
+		print(f"{n}:\t{index} of {len(sequences)}\t{sample_name}")
 		r = variant_call_workflow(sample_name, forward, reverse, parent_folder, reference)
+	"""
+	folder = Path("/home/cld100/projects/lipuma/reference/SC1145")
+	read1 = folder / "SC1145_S52_R1_001.fastq.gz"
+	read2 = folder / "SC1145_S52_R2_001.fastq.gz"
+
+	assemble_workflow(read1, read2, folder)

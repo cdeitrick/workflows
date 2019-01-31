@@ -3,7 +3,8 @@ import subprocess
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
-
+import logging
+logger = logging.getLogger(__name__)
 from dataclasses import asdict, dataclass
 
 # noinspection PyProtectedMember
@@ -105,7 +106,7 @@ def run_command(program_name: str, command: List[Any], output_folder: Path,
 	-------
 	subprocess.CompletedProcess
 	"""
-
+	logging.info(f"{program_name} - Running command " + str(command))
 	if threads:
 		num_threads = threads[1]
 		command = command[:1] + [*threads] + command[1:]

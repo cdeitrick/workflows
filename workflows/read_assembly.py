@@ -28,6 +28,7 @@ class SpadesOptions:
 	kmers: str = '11,21,33,55,71,83,97,111'  # A comma-separated list of odd integers less than 128.
 	threads: int = 16
 	careful: bool = True
+	reference: Path = None # A file with trusted contigs.
 
 @dataclass
 class PilonOptions:
@@ -81,6 +82,8 @@ def spades(forward_read: Path, reverse_read: Path, unpaired_forward_read: Path, 
 		"--pe1-2", reverse_read,
 		"-o", output_folder
 	]
+	if options.reference:
+		command += ["--trusted-contigs", options.reference]
 	if unpaired_forward_read:
 		command += ['--pe1-s', unpaired_forward_read]
 
