@@ -181,18 +181,21 @@ def get_commandline_parser(subparser: common.SubparserType = None) -> argparse.A
 		"-f", "--forward",
 		action = "store",
 		help = "Path the the forward read.",
-		dest = 'forward'
+		dest = 'forward',
+		type = Path
 	)
 	read_quality_parser.add_argument(
 		"-r", "--reverse",
 		action = "store",
 		help = "Path the the reverse read",
-		dest = "reverse"
+		dest = "reverse",
+		type = Path
 	)
 	read_quality_parser.add_argument(
 		"-p", "--parent-folder",
 		action = 'store',
 		help = "Path to the output folder.",
+		type = Path,
 		dest = 'parent_folder'
 	)
 	return read_quality_parser
@@ -201,3 +204,5 @@ def get_commandline_parser(subparser: common.SubparserType = None) -> argparse.A
 if __name__ == "__main__":
 	parser = get_commandline_parser()
 	args = parser.parse_args()
+	default_options = TrimmomaticOptions()
+	workflow(args.forward, args.reverse, args.parent_folder, options = default_options)
