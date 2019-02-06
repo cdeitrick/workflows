@@ -27,7 +27,7 @@ class TrimmomaticOutput:
 
 		return f and r and fu and ru
 
-
+ADAPTERS_FILENAME = Path(__file__).parent / "resources" / "adapters.fa"
 @dataclass
 class TrimmomaticOptions:
 	# leading: int = 20
@@ -37,7 +37,8 @@ class TrimmomaticOptions:
 	window: str = "4:15"
 	# minimum_length: int = 70
 	minimum_length: int = 36
-	clip: Union[str, Path] = Path("/opt/trimmomatic/Trimmomatic-0.36/adapters/NexteraPE-PE.fa")
+	#clip: Union[str, Path] = Path("/opt/trimmomatic/Trimmomatic-0.36/adapters/NexteraPE-PE.fa")
+	clip: Path =  ADAPTERS_FILENAME
 	job_name: str = "trimmomatic"
 	threads: int = 8
 
