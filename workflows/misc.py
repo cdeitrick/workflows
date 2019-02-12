@@ -1,14 +1,15 @@
-from pathlib import Path
+import os
 import subprocess
 if __name__ == "__main__":
-	path = Path("/home/cld100/projects/lipuma/samples")
-	folders = list(path.iterdir())
+	path = "/home/cld100/projects/lipuma/samples"
+	folders = list(os.listdir(path))
 	for index, folder in enumerate(folders):
-		fastqs = [i for i in folder.iterdir() if 'R1' in i.name or 'R2' in i.name]
+		fastqs = [folder + '/' + i for i in os.listdir(folder) if 'R1' in os.path.basename(i) or 'R2' in os.path.basename(i)]
 
 		cat_command = ["cat"] + fastqs
-		print(f"{index} of {len(folders)}: ", " ".join(map(str,cat_command)))
-		command = ["metaphlan2.py", "--input_type", "multifastq", "--bowtie2output", f"{folder}/{folder.name}.bt2out.txt", "-o", f"{folder}/{folder.name}.metaphlan.txt"]
+		print(index, len(folders), fastqs)
+		prefix = folder + '/' + os.path.basename(folder)
+		command = ["metaphlan2.py", "--input_type", "multifastq", "--bowtie2output", prefix + ".bt2out.txt", "-o", prefix + ".metaphlan.txt"]
 
 		process = subprocess.run(cat_command, stdout = subprocess.PIPE, shell = True)
 
