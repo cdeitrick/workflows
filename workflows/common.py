@@ -1,9 +1,10 @@
 import argparse
+import logging
 import subprocess
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
-import logging
+
 logger = logging.getLogger(__name__)
 from dataclasses import asdict, dataclass
 
@@ -40,17 +41,6 @@ def checkdir(path):
 @dataclass
 class WorkflowOptions:
 	trimmomatic_location: Path
-
-
-@dataclass
-class Sample:
-	name: str
-	forward: Path
-	reverse: Path
-	folder: Path
-
-	def exists(self):
-		return self.forward.exists() and self.reverse.exists()
 
 
 def get_srun_command(threads: Optional = None) -> List[Any]:
@@ -140,7 +130,6 @@ def run_command(program_name: str, command: List[Any], output_folder: Path,
 		stdout_path.write_text(process.stdout)
 		stderr_path.write_text(process.stderr)
 	except FileNotFoundError as exception:
-
 		Path(__file__).with_name('debug_stdout.txt').write_text(process.stdout)
 		Path(__file__).with_name('debug_stderr.txt').write_text(process.stderr)
 		Path(__file__).with_name('debug_command.txt').write_text(command_string)

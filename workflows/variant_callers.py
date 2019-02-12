@@ -21,9 +21,10 @@ class BreseqOutput:
 @dataclass
 class BreseqOptions:
 	threads: int = 8
-	program:str = "breseq"
+	program: str = "breseq"
 
-def breseq(forward:Path, reverse:Path, uforward:Path, output_folder:Path, reference:Path, options:BreseqOptions = None)->BreseqOutput:
+
+def breseq(forward: Path, reverse: Path, uforward: Path, output_folder: Path, reference: Path, options: BreseqOptions = None) -> BreseqOutput:
 	if options is None:
 		options = BreseqOptions()
 	command = [

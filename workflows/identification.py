@@ -1,70 +1,12 @@
-import subprocess
 from pathlib import Path
-from typing import Dict, List
+
+import common
+import sampleio
 
 
-def groupby(iterable, method) -> Dict[str, List[Path]]:
-	groups = dict()
-	for element in iterable:
-		key = method(element)
-		if key in groups:
-			groups[key].append(element)
-		else:
-			groups[key] = [element]
-
-	return groups
-
-
-def get_pairs(filenames: List[Path]) -> List[List[Path, Path]]:
-	groups = groupby(filenames, lambda s: '_'.join(s.name.split('_')[:2]))
-
-	pairs = list(groups.values())
-	return pairs
-
-
-class Kraken:
-	def __init__(self, path: Path, output_folder: Path):
-		path = Path(path)
-		output_folder = Path(output_folder)
-		if not output_folder.exists():
-			output_folder.mkdir()
-
-		if path.is_dir():
-			filenames = [f for f in path.glob("**/*") if f.suffix == '.gz']
-		else:
-			filenames = [path]
-
-		pairs = get_pairs(filenames)
-		for index, sample in enumerate(pairs):
-			print("{} of {}".format(index, len(pairs)))
-			# print(sample)
-			try:
-				left = [i for i in sample if 'R1' in i.stem][0]
-				right = [i for i in sample if 'R2' in i.stem][0]
-			except ValueError:
-				print("Could not parse ", sample)
-				continue
-
-			name = left.stem
-			output_base = output_folder / name
-			report_filename = output_base.with_suffix(".report.txt")
-			output_filename = output_base.with_suffix(".kraken.txt")
-			error_filename = output_base.with_suffix(".stderr.txt")
-			krona_output = output_base.with_suffix(".krona.html")
-			command = ["kraken2", "--paired", "--db", "kraken_standard_database", "--report", report_filename, left,
-				right]
-
-			process = subprocess.run(command, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
-			if process.stdout:
-				output_filename.write_bytes(process.stdout)
-			if process.stderr:
-				error_filename.write_bytes(process.stderr)
-
-			krona_command = ["ImportTaxonomy.pl", "-q", "2", "-t", "3", output_filename, "-o", krona_output]
-
-			subprocess.run(krona_command, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
-
-
+def metaphlan(forward: Path, reverse: Path, output_folder: Path):
+	command = ["metaphlan2.py", forward, reverse, "--input_type", "multifastq", "-o", output_folder]
+	common.run_command("metaphlan", command, output_folder)
 
 
 def generate_parser():
@@ -72,17 +14,34 @@ def generate_parser():
 	parser = argparse.ArgumentParser()
 	parser.add_argument(
 		"-i", "--input",
-		help = "The input file or folder",
-		dest = 'input'
+		help = "The input folder",
+		dest = 'input',
+		type = Path
 	)
 	parser.add_argument(
 		"-o", "--output",
 		help = "The output folder",
-		dest = "output"
+		dest = "output",
+		type = Path
 	)
 
 	return parser
 
 
 if __name__ == "__main__":
-	pass
+	args = generate_parser().parse_args()
+	output_folder = args.output
+	output_folder = sampleio.checkdir(output_folder)
+	inputio = args.input
+	if inputio.suffix == '.tsv':
+		samples = sampleio.read_sample_list(inputio)
+	else:
+		raise ValueError(f"Cannot read {inputio}")
+
+	for sample in samples:
+		forward = sample.forward
+		reverse = sample.reverse
+
+		sample_output_folder = sampleio.checkdir(output_folder / sample.name)
+
+		metaphlan(forward, reverse, sample_output_folder)

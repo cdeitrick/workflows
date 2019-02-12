@@ -1,7 +1,8 @@
+import logging
 import sys
 from pathlib import Path
-from typing import Any, Dict, List, Tuple, Union
-import logging
+from typing import Dict, List, Union
+
 logger = logging.getLogger(__name__)
 sys.path.append(str(Path(__file__).parent))
 
@@ -88,18 +89,6 @@ def variant_call_workflow(sample_name: Path, forward_read: Path, reverse_read: P
 	return breseq_output
 
 
-def get_sample(sample_id: str, folder: Path) -> Tuple[Path, Path]:
-	candidates = [i for i in folder.glob("**/*") if i.suffix == '.gz']
-	candidates = [i for i in candidates if i.name.startswith(sample_id)]
-
-	forward = [i for i in candidates if 'R1' in i.stem]
-
-	reverse = [i for i in candidates if 'R2' in i.stem]
-	print(forward)
-	print(reverse)
-	return forward[0], reverse[0]
-
-
 def generate_samplesheet_from_project_folder(folder: Path) -> List[Dict[str, Union[str, Path]]]:
 	table = list()
 	for sample_folder in folder.iterdir():
@@ -112,12 +101,13 @@ def generate_samplesheet_from_project_folder(folder: Path) -> List[Dict[str, Uni
 		forward = [i for i in files if 'R1' in i.name][0]
 		reverse = [i for i in files if 'R2' in i.name][0]
 		row = {
-			'sampleName': sample_name,
-			'forwardRead':    forward,
-			'reverseRead':    reverse
+			'sampleName':  sample_name,
+			'forwardRead': forward,
+			'reverseRead': reverse
 		}
 		table.append(row)
 	return table
+
 
 def groupby(key, sequence):
 	groups = dict()
@@ -129,9 +119,10 @@ def groupby(key, sequence):
 			groups[item_key] = [item]
 	return groups
 
-if __name__ == "__main__":
 
+if __name__ == "__main__":
 	import pendulum
+
 	reference = Path("/home/cld100/projects/lipuma/reference/SC1145/prokka_output/sc1145.gbk")
 	project_folder = Path.home() / "projects" / "lipuma"
 	parent_folder = project_folder / "au1145_pipeline_output"
@@ -175,9 +166,6 @@ if __name__ == "__main__":
 		read1 = row['forwardRead']
 		read2 = row['reverseRead']
 		print(f"{n}\t{index}\t{sample_name}")
-		#if sample_name.split('_')[0] not in whitelist: continue
+		# if sample_name.split('_')[0] not in whitelist: continue
 
 		variant_call_workflow(sample_name, read1, read2, parent_folder, reference)
-
-
-

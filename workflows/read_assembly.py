@@ -28,11 +28,13 @@ class SpadesOptions:
 	kmers: str = '11,21,33,55,71,83,97,111,121'  # A comma-separated list of odd integers less than 128.
 	threads: int = 16
 	careful: bool = True
-	reference: Path = None # A file with trusted contigs.
+	reference: Path = None  # A file with trusted contigs.
+
 
 @dataclass
 class PilonOptions:
 	pass
+
 
 @dataclass
 class SpadesOutput:
@@ -40,16 +42,16 @@ class SpadesOutput:
 	contigs: Path
 	assembly_graph: Path
 
-
 	def exists(self):
 		return self.contigs.exists()
 
-def pilon(forward_read:Path, reverse_read:Path, unpaired_forward_read:Path, assembly:Path, output_folder:Path, options:PilonOptions):
 
+def pilon(forward_read: Path, reverse_read: Path, unpaired_forward_read: Path, assembly: Path, output_folder: Path, options: PilonOptions):
 	command = [
-		"java","-Xmx16G", "-jar", "pilon.jar",
+		"java", "-Xmx16G", "-jar", "pilon.jar",
 		"--genome", assembly
 	]
+
 
 def spades(forward_read: Path, reverse_read: Path, unpaired_forward_read: Path, output_folder, options: SpadesOptions) -> SpadesOutput:
 	"""
@@ -94,7 +96,6 @@ def spades(forward_read: Path, reverse_read: Path, unpaired_forward_read: Path, 
 
 
 def bandage(assembly_graph: Path, output_folder: Path) -> BandageOutput:
-
 	info_command = [
 		common.programs.bandage,
 		"info", assembly_graph
@@ -138,7 +139,7 @@ def get_commandline_parser(subparser: SubparserType = None) -> argparse.Argument
 	assembly_parser.add_argument(
 		"-uf", "--unpaired-forward",
 		help = "The unpaired forward reads.",
-		dest = "unpaired forward"
+		dest = "unpaired_forward"
 	)
 
 	assembly_parser.add_argument(
@@ -149,7 +150,7 @@ def get_commandline_parser(subparser: SubparserType = None) -> argparse.Argument
 	)
 	assembly_parser.add_argument(
 		"--not-careful",
-		help = "Turns of careful assembly.",
+		help = "Turns off careful assembly.",
 		action = "store_false",
 		dest = "careful"
 	)
@@ -164,4 +165,6 @@ def get_commandline_parser(subparser: SubparserType = None) -> argparse.Argument
 
 
 if __name__ == "__main__":
-	pass
+	parser = get_commandline_parser()
+	arguments = parser.parse_args()
+	workflow(arguments.forward, arguments.reverse, arguments.unpaired_forward)

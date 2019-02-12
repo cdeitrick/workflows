@@ -1,8 +1,9 @@
+import logging
 from pathlib import Path
-from typing import List, Union
+from typing import List
 
 from dataclasses import dataclass
-import logging
+
 logger = logging.getLogger(__name__)
 try:
 	from workflows import common
@@ -27,7 +28,10 @@ class TrimmomaticOutput:
 
 		return f and r and fu and ru
 
+
 ADAPTERS_FILENAME = Path(__file__).parent / "resources" / "adapters.fa"
+
+
 @dataclass
 class TrimmomaticOptions:
 	# leading: int = 20
@@ -37,8 +41,8 @@ class TrimmomaticOptions:
 	window: str = "4:15"
 	# minimum_length: int = 70
 	minimum_length: int = 36
-	#clip: Union[str, Path] = Path("/opt/trimmomatic/Trimmomatic-0.36/adapters/NexteraPE-PE.fa")
-	clip: Path =  ADAPTERS_FILENAME
+	# clip: Union[str, Path] = Path("/opt/trimmomatic/Trimmomatic-0.36/adapters/NexteraPE-PE.fa")
+	clip: Path = ADAPTERS_FILENAME
 	job_name: str = "trimmomatic"
 	threads: int = 8
 
@@ -143,7 +147,8 @@ def trimmomatic(forward: Path, reverse: Path, **kwargs) -> TrimmomaticOutput:
 	return output
 
 
-def workflow(forward: Path, reverse: Path, parent_folder:Path, options: TrimmomaticOptions, prefix = None, run_fastqc:bool = True) -> TrimmomaticOutput:
+def workflow(forward: Path, reverse: Path, parent_folder: Path, options: TrimmomaticOptions, prefix = None,
+		run_fastqc: bool = True) -> TrimmomaticOutput:
 	trimmomatic_folder = common.checkdir(parent_folder / "trimmomatic")
 	if run_fastqc:
 		fastqc_folder = common.checkdir(parent_folder / "fastqc_untrimmed")

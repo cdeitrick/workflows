@@ -27,7 +27,8 @@ AU29957
 
 if __name__ == "__main__":
 	from pathlib import Path
-	sequence_folder =  Path.home() / "projects" / "lipuma" / "sequences"
+
+	sequence_folder = Path.home() / "projects" / "lipuma" / "sequences"
 	output_filename = Path(__file__).parent / "samples.tsv"
 	whitelist = [i for i in a.split('\n') if i]
 	_sequence_folder = Path("/home/cld100/projects/lipuma")
@@ -50,12 +51,13 @@ if __name__ == "__main__":
 		reverse = [i for i in reads if '_R2_' in str(i)][0]
 
 		row = {
-			'sampleName': sample_name,
+			'sampleName':  sample_name,
 			'forwardRead': forward,
 			'reverseRead': reverse
 		}
 		t.append(row)
 	import pandas
+
 	df = pandas.DataFrame(t)
 	print(output_filename)
 	df.to_csv(str(output_filename), sep = "\t", index = False)
