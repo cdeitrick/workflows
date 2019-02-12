@@ -10,8 +10,10 @@ if __name__ == "__main__":
 		cat_command = ["cat"] + fastqs
 		print(index, len(folders), fastqs)
 		prefix = folder + '/' + os.path.basename(folder)
-		command = ["metaphlan2.py", "--input_type", "multifastq", "--bowtie2output", prefix + ".bt2out.txt", "-o", prefix + ".metaphlan.txt"]
+		mcommand = ["metaphlan2.py", "--input_type", "multifastq", "--bowtie2output", prefix + ".bt2out.txt", "-o", prefix + ".metaphlan.txt"]
+		command = " ".join(cat_command) + " | " + " ".join(mcommand)
+		print(command)
+		os.system(command)
+		#process = subprocess.run(cat_command, stdout = subprocess.PIPE, shell = True)
 
-		process = subprocess.run(cat_command, stdout = subprocess.PIPE, shell = True)
-
-		subprocess.run(command, stdin = process.stdout)
+		#subprocess.run(command, stdin = process.stdout)
