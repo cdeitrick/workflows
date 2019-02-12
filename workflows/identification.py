@@ -39,6 +39,7 @@ if __name__ == "__main__":
 		raise ValueError(f"Cannot read {inputio}")
 
 	for sample in samples:
+		print(sample)
 		forward = sample.forward
 		reverse = sample.reverse
 

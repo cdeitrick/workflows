@@ -16,8 +16,8 @@ class Sample:
 		return self.forward.exists() and self.reverse.exists()
 
 
-def get_sample(sample_id: str, folder: Path) -> Tuple[Path, Path]:
-	candidates = [i for i in folder.glob("**/*") if i.suffix == '.gz']
+def get_sample_from_folder(folder: Path, sample_id: Optional[str] = None) -> Tuple[Path, Path]:
+	candidates = [i for i in folder.glob("**/*") if i.suffix in {'.gz', '.fastq'}]
 	candidates = [i for i in candidates if i.name.startswith(sample_id)]
 
 	forward = [i for i in candidates if 'R1' in i.stem]
