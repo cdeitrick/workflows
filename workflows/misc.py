@@ -4,6 +4,7 @@ if __name__ == "__main__":
 	path = "/home/cld100/projects/lipuma/samples"
 	folders = list(os.listdir(path))
 	for index, folder in enumerate(folders):
+		folder = path + '/' + folder
 		fastqs = [folder + '/' + i for i in os.listdir(folder) if 'R1' in os.path.basename(i) or 'R2' in os.path.basename(i)]
 
 		cat_command = ["cat"] + fastqs
