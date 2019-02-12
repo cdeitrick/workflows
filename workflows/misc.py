@@ -10,6 +10,6 @@ if __name__ == "__main__":
 		print(f"{index} of {len(folders)}: ", " ".join(map(str,cat_command)))
 		command = ["metaphlan2.py", "--input_type", "multifastq", "--bowtie2output", f"{folder}/{folder.name}.bt2out.txt", "-o", f"{folder}/{folder.name}.metaphlan.txt"]
 
-		process = subprocess.run(cat_command, stdout = subprocess.PIPE)
+		process = subprocess.run(cat_command, stdout = subprocess.PIPE, shell = True)
 
 		subprocess.run(command, stdin = process.stdout)
