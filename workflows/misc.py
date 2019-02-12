@@ -5,4 +5,7 @@ if __name__ == "__main__":
 	for folder in path.iterdir():
 		files = list(folder.iterdir())
 		sample_name = files[0].name.split('_')[0]
-		folder.rename(folder.with_name(sample_name))
+		try:
+			folder.rename(folder.with_name(sample_name))
+		except:
+			pass
