@@ -6,5 +6,5 @@ if __name__ == "__main__":
 	compressed_files = list(path.glob("**/*.gz"))
 	for index, compressed_file in enumerate(compressed_files):
 		print(f"{index} of {len(compressed_files)}: {compressed_file.name}")
-		command = ["tar","-C", compressed_file.parent, "-zxvf", compressed_file]
+		command = ["gunzip", compressed_file]
 		subprocess.run(command)
