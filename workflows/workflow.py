@@ -1,8 +1,8 @@
 import logging
 import sys
 from pathlib import Path
-from typing import Dict, List, Union
-
+from typing import Dict, List, Union, Optional
+logging.basicConfig(filename = "workflow_log.txt", level = logging.INFO, filemode = 'a', format = '%(asctime)s %(module)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 sys.path.append(str(Path(__file__).parent))
 
@@ -12,12 +12,14 @@ try:
 	from workflows import variant_callers
 	from workflows import read_quality
 	from workflows import common
+	from workflows import sampleio
 except ModuleNotFoundError:
 	import read_assembly
 	import annotation
 	import variant_callers
 	import read_quality
 	import common
+	import sampleio
 
 """
 	Assemblers -> Annotation -> Breseq
@@ -34,7 +36,7 @@ def first_common_substring(seqa: str, seqb: str) -> str:
 		return seqa
 
 
-def assemble_workflow(forward_read: Path, reverse_read: Path, parent_folder: Path):
+def assemble_workflow(forward_read: Path, reverse_read: Path, parent_folder: Path, trusted_contigs:Optional[Path] = None):
 	forward_name = forward_read.stem
 	reverse_name = reverse_read.stem
 	sample_name = first_common_substring(forward_name, reverse_name)
@@ -46,7 +48,7 @@ def assemble_workflow(forward_read: Path, reverse_read: Path, parent_folder: Pat
 	trimmomatic_options.leading = 20
 	trimmomatic_options.trailing = 20
 	spades_options = read_assembly.SpadesOptions()
-
+	spades_options.reference = trusted_contigs
 	trimmomatic_output = read_quality.workflow(forward_read, reverse_read, parent_folder, options = trimmomatic_options, prefix = sample_name)
 	reference = Path("/home/cld100/projects/lipuma/reference/SC1145/GCA_000014085.1_ASM1408v1_genomic.fasta")
 	spades_options.reference = reference
@@ -122,50 +124,17 @@ def groupby(key, sequence):
 
 if __name__ == "__main__":
 	import pendulum
-
-	reference = Path("/home/cld100/projects/lipuma/reference/SC1145/prokka_output/sc1145.gbk")
-	project_folder = Path.home() / "projects" / "lipuma"
-	parent_folder = project_folder / "au1145_pipeline_output"
-	if not parent_folder.exists():
-		parent_folder.mkdir()
-	sample_list = generate_samplesheet_from_project_folder(project_folder / "sequences")
-	whitelist = """SC1128
-		SC1129
-		SC1145
-		SC1209
-		SC1210
-		SC1211
-		SC1339
-		AU0465
-		SC1371
-		SC1392
-		SC1400
-		AU1051
-		AU1057
-		AU1055
-		AU1056
-		SC1407
-		SC1419
-		SC1420
-		SC1421
-		SC1435
-		AU3741
-		AU3739
-		AU3740
-		AU4359""".split('\n')
-	whitelist = [i.strip() for i in whitelist if i]
-	total_length = len(sample_list)
-	print(f"Found {total_length} samples.")
-
-	sample_list = [i for i in sample_list if i['sampleName'].split('_')[0] in whitelist]
-
-	for index, row in enumerate(sample_list):
-		n = pendulum.now()
-
-		sample_name = row['sampleName']
-		read1 = row['forwardRead']
-		read2 = row['reverseRead']
-		print(f"{n}\t{index}\t{sample_name}")
-		# if sample_name.split('_')[0] not in whitelist: continue
-
-		variant_call_workflow(sample_name, read1, read2, parent_folder, reference)
+	folder = Path("/home/cld100/projects/lipuma/samples")
+	output_folder = folder.parent / "reference_assemblies"
+	if not output_folder.exists():
+		output_folder.mkdir()
+	a_sample = sampleio.Sample.from_folder(folder / "SC1360")
+	b_sample = None
+	e_sample = sampleio.Sample.from_folder(folder / "AU3415")
+	f_sample = sampleio.Sample.from_folder(folder / "AU14286")
+	logging.info("Assembling A")
+	assemble_workflow(a_sample.forward, a_sample.reverse, parent_folder = output_folder)
+	logging.info("Assembling E")
+	assemble_workflow(e_sample.forward, e_sample.reverse, parent_folder = output_folder)
+	logging.info("Assembling F")
+	assemble_workflow(f_sample.forward, f_sample.reverse, parent_folder = output_folder)

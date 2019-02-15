@@ -14,7 +14,14 @@ class Sample:
 
 	def exists(self):
 		return self.forward.exists() and self.reverse.exists()
+	@classmethod
+	def from_folder(self, folder:Path, sample_id:Optional[str] = None)->'Sample':
 
+		forward, reverse = get_sample_from_folder(folder, sample_id)
+		if not sample_id:
+			sample_id = folder.name
+
+		return Sample(name = sample_id, forward = forward, reverse = reverse)
 
 def get_sample_from_folder(folder: Path, sample_id: Optional[str] = None) -> Tuple[Path, Path]:
 	candidates = [i for i in folder.glob("**/*") if i.suffix in {'.gz', '.fastq'}]
