@@ -3,6 +3,7 @@ import subprocess
 if __name__ == "__main__":
 	path = "/home/cld100/projects/lipuma/samples"
 	folders = list(i for i in os.listdir(path) if os.path.isdir(i))
+	print("Found ", len(folders), " samples")
 	for index, folder in enumerate(folders):
 		folder = path + '/' + folder
 		fastqs = [folder + '/' + i for i in os.listdir(folder) if 'R1' in os.path.basename(i) or 'R2' in os.path.basename(i)]
