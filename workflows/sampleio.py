@@ -10,7 +10,7 @@ class Sample:
 	name: str
 	forward: Path
 	reverse: Path
-	folder: Optional[Path]
+	folder: Optional[Path] = None
 
 	def exists(self):
 		return self.forward.exists() and self.reverse.exists()
