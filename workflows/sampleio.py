@@ -16,10 +16,9 @@ class Sample:
 		return self.forward.exists() and self.reverse.exists()
 	@classmethod
 	def from_folder(self, folder:Path, sample_id:Optional[str] = None)->'Sample':
-
-		forward, reverse = get_sample_from_folder(folder, sample_id)
 		if not sample_id:
 			sample_id = folder.name
+		forward, reverse = get_sample_from_folder(folder, sample_id)
 
 		return Sample(name = sample_id, forward = forward, reverse = reverse)
 
