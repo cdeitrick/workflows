@@ -123,18 +123,24 @@ def groupby(key, sequence):
 
 
 if __name__ == "__main__":
-	import pendulum
 	folder = Path("/home/cld100/projects/lipuma/samples")
 	output_folder = folder.parent / "reference_assemblies"
 	if not output_folder.exists():
 		output_folder.mkdir()
-	a_sample = sampleio.Sample.from_folder(folder / "SC1360")
-	b_sample = None
-	e_sample = sampleio.Sample.from_folder(folder / "AU3415")
-	f_sample = sampleio.Sample.from_folder(folder / "AU14286")
-	logging.info("Assembling A")
-	assemble_workflow(a_sample.forward, a_sample.reverse, parent_folder = output_folder)
-	logging.info("Assembling E")
-	assemble_workflow(e_sample.forward, e_sample.reverse, parent_folder = output_folder)
-	logging.info("Assembling F")
-	assemble_workflow(f_sample.forward, f_sample.reverse, parent_folder = output_folder)
+	a1_sample = sampleio.Sample.from_folder(folder / "SC1360")
+	a2_sample = sampleio.Sample.from_folder(folder / "AU1064")
+	b1_sample = sampleio.Sample.from_folder(folder / "SC1128")
+	b2_sample = sampleio.Sample.from_folder(folder / "SC1145")
+	e1_sample = sampleio.Sample.from_folder(folder / "AU3415")
+	e2_sample = sampleio.Sample.from_folder(folder / "AU1836")
+	f1_sample = sampleio.Sample.from_folder(folder / "AU14286")
+	f2_sample = sampleio.Sample.from_folder(folder / "AU15033")
+
+	for sample in [a1_sample, a2_sample, b1_sample, b2_sample, e1_sample, e2_sample, f1_sample, f2_sample]:
+		print(sample)
+		logging.info(f"Assembling {sample.name}")
+		sample_output_folder = output_folder / sample.name
+		if not sample_output_folder.exists():
+			sample_output_folder.mkdir()
+		assemble_workflow(sample.forward, sample.reverse, parent_folder = sample_output_folder)
+
