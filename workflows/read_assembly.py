@@ -115,7 +115,7 @@ def workflow(forward_read: Path, reverse_read: Path, unpaired_forward_read: Path
 	bandage_folder = spades_folder
 	spades_output = spades(forward_read, reverse_read, unpaired_forward_read, spades_folder, options)
 
-	bandage(spades_output.assembly_graph, bandage_folder)
+	#bandage(spades_output.assembly_graph, bandage_folder)
 
 	return spades_output
 
