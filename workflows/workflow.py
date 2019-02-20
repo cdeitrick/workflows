@@ -2,7 +2,16 @@ import logging
 import sys
 from pathlib import Path
 from typing import Dict, List, Union, Optional
-logging.basicConfig(filename = Path.home() / "workflow_log.txt", level = logging.INFO, filemode = 'a', format = '%(asctime)s %(module)s - %(levelname)s - %(message)s')
+import sys
+file_handler = logging.FileHandler(filename = Path.home() / "workflow_log.txt")
+stdout_handler = logging.StreamHandler(sys.stdout)
+handlers = [file_handler, stdout_handler]
+logging.basicConfig(
+	handlers = handlers,
+	level = logging.INFO,
+	filemode = 'a',
+	format = '%(asctime)s %(module)s - %(levelname)s - %(message)s'
+)
 logger = logging.getLogger(__name__)
 sys.path.append(str(Path(__file__).parent))
 
