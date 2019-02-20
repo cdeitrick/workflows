@@ -9,7 +9,6 @@ handlers = [file_handler, stdout_handler]
 logging.basicConfig(
 	handlers = handlers,
 	level = logging.INFO,
-	filemode = 'a',
 	format = '%(asctime)s %(module)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
