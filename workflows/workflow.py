@@ -143,18 +143,19 @@ def load_sample_map(filename:Path)->Dict[str,str]:
 	return sample_map
 if __name__ == "__main__":
 	folder = Path("/home/cld100/projects/lipuma/samples")
-	output_folder = folder.parent / "reference_assemblies"
-	if not output_folder.exists():
-		output_folder.mkdir()
-	a1_sample = sampleio.Sample.from_folder(folder / "SC1360")
-	a2_sample = sampleio.Sample.from_folder(folder / "AU1064")
-	b1_sample = sampleio.Sample.from_folder(folder / "SC1128")
-	b2_sample = sampleio.Sample.from_folder(folder / "SC1145")
-	e1_sample = sampleio.Sample.from_folder(folder / "AU3415")
-	e2_sample = sampleio.Sample.from_folder(folder / "AU1836")
-	f1_sample = sampleio.Sample.from_folder(folder / "AU14286")
-	f2_sample = sampleio.Sample.from_folder(folder / "AU15033")
+
+	reference_folder =  folder.parent / "reference_assemblies"
+	a1_sample = Path(reference_folder / "SC1360" / "prokka_output" / "SC1360.ffn")
+	a2_sample = Path(reference_folder / "AU1064" / "prokka_output" / "AU1064.ffn")
+	b1_sample = Path(reference_folder / "SC1128" / "prokka_output" / "SC1128.ffn")
+	b2_sample = Path(reference_folder / "SC1145" / "prokka_output" / "SC1145.ffn")
+	e1_sample = Path(reference_folder / "AU3415" / "prokka_output" / "AU3415.ffn")
+	e2_sample = Path(reference_folder / "AU1836" / "prokka_output" / "AU1836.ffn")
+	f1_sample = Path(reference_folder / "AU14286" / "prokka_output" / "AU14286.ffn")
+	f2_sample = Path(reference_folder / "AU15033" / "prokka_output" / "AU15033.ffn")
 	references = [a1_sample, a2_sample, b1_sample, b2_sample, e1_sample, e2_sample, f1_sample, f2_sample]
+	for ref in references:
+		logger.info(f"Reference Exists: {ref.exists()}\t{ref}")
 	patients = "A|A|B|B|E|E|F|F".split('|')
 
 	samples = list()
