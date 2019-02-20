@@ -132,7 +132,6 @@ def load_sample_map(filename:Path)->Dict[str,str]:
 			sample_map[i] = j
 		except:
 			pass
-	print(sample_map)
 	return sample_map
 if __name__ == "__main__":
 	folder = Path("/home/cld100/projects/lipuma/samples")
@@ -157,20 +156,21 @@ if __name__ == "__main__":
 			samples.append(sample)
 		except:
 			pass
-
+	logger.info(f"Found {len(samples)} samples.")
 	sample_map_filename = Path("/home/cld100/projects/lipuma/isolate_sample_map.tsv")
 	sample_map = load_sample_map(sample_map_filename)
 	output_folder = Path("/home/cld100/projects/lipuma/pairwise_pipeline")
 
 	for reference_label, reference_filename in zip(patients, references):
+		logger.info(f"Running pipeline for {reference_filename}")
 		reference_pipeline_output_folder = output_folder / reference_label
 		if not reference_pipeline_output_folder.exists():
 			reference_pipeline_output_folder.mkdir()
 
 		pipeline_samples = [i for i in samples if sample_map.get(i.name, "").startswith(reference_label)]
-
-		for sample in pipeline_samples:
-			pass
+		logger.info(f"Found {len(pipeline_samples)} samples for this reference.")
+		for index, sample in enumerate(pipeline_samples):
+			logger.info(f"Running pipeline for sample {index} of {len(pipeline_samples)}.")
 			#variant_call_workflow(sample.name, sample.forward, sample.reverse, reference_pipeline_output_folder, reference_filename)
 
 
