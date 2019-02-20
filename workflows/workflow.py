@@ -172,7 +172,7 @@ if __name__ == "__main__":
 
 	for reference_label, reference_filename in zip(patients, references):
 		logger.info(f"Running pipeline for {reference_filename}")
-		reference_pipeline_output_folder = output_folder / reference_label
+		reference_pipeline_output_folder = output_folder / reference_filename.stem
 		if not reference_pipeline_output_folder.exists():
 			reference_pipeline_output_folder.mkdir()
 
