@@ -127,8 +127,12 @@ def load_sample_map(filename:Path)->Dict[str,str]:
 	sample_map = dict()
 	for line in contents:
 		line = line.strip()
-		i,j = line.split('\t')
-		sample_map[i] = j
+		try:
+			i,j = line.split('\t')
+			sample_map[i] = j
+		except:
+			pass
+	print(sample_map)
 	return sample_map
 if __name__ == "__main__":
 	folder = Path("/home/cld100/projects/lipuma/samples")
