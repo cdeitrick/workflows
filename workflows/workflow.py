@@ -180,6 +180,6 @@ if __name__ == "__main__":
 		logger.info(f"Found {len(pipeline_samples)} samples for this reference.")
 		for index, sample in enumerate(pipeline_samples):
 			logger.info(f"Running pipeline for sample {index} of {len(pipeline_samples)}.")
-			#variant_call_workflow(sample.name, sample.forward, sample.reverse, reference_pipeline_output_folder, reference_filename)
+			variant_call_workflow(sample.name, sample.forward, sample.reverse, reference_pipeline_output_folder, reference_filename)
 
 
