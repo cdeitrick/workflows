@@ -57,6 +57,10 @@ class FastQCOutput:
 
 
 def fastqc(output_folder: Path, forward: Path, reverse: Path, unpaired_forward: Path = None, unpaired_reverse: Path = None) -> FastQCOutput:
+	logger.info("Running fastqc")
+	logger.info(f"\toutput folder: {output_folder}")
+	logger.info(f"\t forward read: {forward}")
+	logger.info(f"\t reverse read: {reverse}")
 	reads = [forward, reverse]
 	if unpaired_forward:
 		reads.append(unpaired_forward)
@@ -150,7 +154,9 @@ def trimmomatic(forward: Path, reverse: Path, **kwargs) -> TrimmomaticOutput:
 def workflow(forward: Path, reverse: Path, parent_folder: Path, options: TrimmomaticOptions, prefix = None,
 		run_fastqc: bool = True) -> TrimmomaticOutput:
 	trimmomatic_folder = common.checkdir(parent_folder / "trimmomatic")
+	logger.info(f"trimmomatic output folder: {trimmomatic_folder}")
 	if run_fastqc:
+
 		fastqc_folder = common.checkdir(parent_folder / "fastqc_untrimmed")
 		fastqc_after = common.checkdir(parent_folder / "fastqc_after")
 		fastqc(fastqc_folder, forward, reverse)

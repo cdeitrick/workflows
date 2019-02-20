@@ -2,7 +2,7 @@ import logging
 import sys
 from pathlib import Path
 from typing import Dict, List, Union, Optional
-logging.basicConfig(filename = "workflow_log.txt", level = logging.INFO, filemode = 'a', format = '%(asctime)s %(module)s - %(levelname)s - %(message)s')
+logging.basicConfig(filename = Path.home() / "workflow_log.txt", level = logging.INFO, filemode = 'a', format = '%(asctime)s %(module)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 sys.path.append(str(Path(__file__).parent))
 
@@ -62,16 +62,17 @@ def assemble_workflow(forward_read: Path, reverse_read: Path, parent_folder: Pat
 	return spades_output
 
 
-def variant_call_workflow(sample_name: Path, forward_read: Path, reverse_read: Path, parent_folder: Path, reference: Path):
+def variant_call_workflow(sample_name: str, forward_read: Path, reverse_read: Path, pipeline_output_folder: Path, reference: Path):
 	# annotation.prokka(spades_output.contigs, prokka_output_folder, prokka_options)
 
-	sample_folder = common.checkdir(parent_folder / sample_name)
+	sample_folder = common.checkdir(pipeline_output_folder / sample_name)
 
 	trimmomatic_options = read_quality.TrimmomaticOptions()
-	print(sample_name)
-	print("\t", forward_read)
-	print("\t", reverse_read)
-	print("running trimmomatic")
+	logger.info(sample_name)
+	logger.info(f"\tforward read: {forward_read}")
+	logger.info(f"\treverse_read: {reverse_read}")
+	logger.info(f"\toutput folder: {sample_folder}")
+	logger.info("running trimmomatic")
 	trimmomatic_output = read_quality.workflow(
 		forward_read,
 		reverse_read,
@@ -80,7 +81,7 @@ def variant_call_workflow(sample_name: Path, forward_read: Path, reverse_read: P
 		prefix = sample_name,
 		run_fastqc = False
 	)
-	print("Running Breseq...")
+	logger.info("Running Breseq...")
 	breseq_output = variant_callers.breseq(
 		trimmomatic_output.forward,
 		trimmomatic_output.reverse,
@@ -121,7 +122,14 @@ def groupby(key, sequence):
 			groups[item_key] = [item]
 	return groups
 
-
+def load_sample_map(filename:Path)->Dict[str,str]:
+	contents = filename.read_text().split('\n')
+	sample_map = dict()
+	for line in contents:
+		line = line.strip()
+		i,j = line.split('\t')
+		sample_map[i] = j
+	return sample_map
 if __name__ == "__main__":
 	folder = Path("/home/cld100/projects/lipuma/samples")
 	output_folder = folder.parent / "reference_assemblies"
@@ -135,12 +143,30 @@ if __name__ == "__main__":
 	e2_sample = sampleio.Sample.from_folder(folder / "AU1836")
 	f1_sample = sampleio.Sample.from_folder(folder / "AU14286")
 	f2_sample = sampleio.Sample.from_folder(folder / "AU15033")
+	references = [a1_sample, a2_sample, b1_sample, b2_sample, e1_sample, e2_sample, f1_sample, f2_sample]
+	patients = "A|A|B|B|E|E|F|F".split('|')
 
-	for sample in [a1_sample, a2_sample, b1_sample, b2_sample, e1_sample, e2_sample, f1_sample, f2_sample]:
-		print(sample)
-		logging.info(f"Assembling {sample.name}")
-		sample_output_folder = output_folder / sample.name
-		if not sample_output_folder.exists():
-			sample_output_folder.mkdir()
-		assemble_workflow(sample.forward, sample.reverse, parent_folder = sample_output_folder)
+	samples = list()
+	for sample_folder in folder.iterdir():
+		try:
+			sample = sampleio.Sample.from_folder(sample_folder)
+			samples.append(sample)
+		except:
+			pass
+
+	sample_map_filename = Path("/home/cld100/projects/lipuma/isolate_sample_map.tsv")
+	sample_map = load_sample_map(sample_map_filename)
+	output_folder = Path("/home/cld100/projects/lipuma/pairwise_pipeline")
+
+	for reference_label, reference_filename in zip(patients, references):
+		reference_pipeline_output_folder = output_folder / reference_label
+		if not reference_pipeline_output_folder.exists():
+			reference_pipeline_output_folder.mkdir()
+
+		pipeline_samples = [i for i in samples if sample_map.get(i.name, "").startswith(reference_label)]
+
+		for sample in pipeline_samples:
+			pass
+			#variant_call_workflow(sample.name, sample.forward, sample.reverse, reference_pipeline_output_folder, reference_filename)
+
 

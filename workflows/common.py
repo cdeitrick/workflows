@@ -115,12 +115,19 @@ def run_command(program_name: str, command: List[Any], output_folder: Path,
 			command_path.write_text(' '.join(command))
 		except FileNotFoundError:
 			# Path(__file__).with_name('debug_command.txt').write_text(' '.join(command))
-			print("Cannot write to ", command_path)
+			logger.warning("Cannot write to ", command_path)
 	start_datetime = datetime.now()
+	logger.info("Running Command")
+	for element in command:
+		if element.startswith('-'):
+			logger.info(f"\t{element}")
+		else:
+			logger.info(f"\t\t{element}")
 	process = subprocess.run(command, stdout = subprocess.PIPE, stderr = subprocess.PIPE, encoding = "UTF-8")
+
 	end_datetime = datetime.now()
 	duration = end_datetime - start_datetime
-
+	logger.info(f"Finished command. Duration: {duration}")
 	command_string = "{}\n\nstart: {}\nend: {}\nduration: {}\n".format(
 		' '.join(command), start_datetime, end_datetime, duration
 	)
