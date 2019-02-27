@@ -20,7 +20,7 @@ class BreseqOutput:
 
 @dataclass
 class BreseqOptions:
-	threads: int = 8
+	threads: int = 24
 	program: str = "breseq"
 
 
@@ -30,7 +30,7 @@ def breseq(forward: Path, reverse: Path, uforward: Path, output_folder: Path, re
 	command = [
 		options.program,
 		# "-j", THREADS,
-		"-p",
+		#"-p",
 		"-o", output_folder,
 		"-r", reference,
 	]

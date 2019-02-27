@@ -145,14 +145,14 @@ if __name__ == "__main__":
 	folder = Path("/home/cld100/projects/lipuma/samples")
 
 	reference_folder =  folder.parent / "reference_assemblies"
-	a1_sample = Path(reference_folder / "SC1360" / "prokka_output" / "SC1360.ffn")
-	a2_sample = Path(reference_folder / "AU1064" / "prokka_output" / "AU1064.ffn")
-	b1_sample = Path(reference_folder / "SC1128" / "prokka_output" / "SC1128.ffn")
-	b2_sample = Path(reference_folder / "SC1145" / "prokka_output" / "SC1145.ffn")
-	e1_sample = Path(reference_folder / "AU3415" / "prokka_output" / "AU3415.ffn")
-	e2_sample = Path(reference_folder / "AU1836" / "prokka_output" / "AU1836.ffn")
-	f1_sample = Path(reference_folder / "AU14286" / "prokka_output" / "AU14286.ffn")
-	f2_sample = Path(reference_folder / "AU15033" / "prokka_output" / "AU15033.ffn")
+	a1_sample = Path(reference_folder / "SC1360" / "prokka_output" / "SC1360.gff")
+	a2_sample = Path(reference_folder / "AU1064" / "prokka_output" / "AU1064.gff")
+	b1_sample = Path(reference_folder / "SC1128" / "prokka_output" / "SC1128.gff")
+	b2_sample = Path(reference_folder / "SC1145" / "prokka_output" / "SC1145.gff")
+	e1_sample = Path(reference_folder / "AU3415" / "prokka_output" / "AU3415.gff")
+	e2_sample = Path(reference_folder / "AU1836" / "prokka_output" / "AU1836.gff")
+	f1_sample = Path(reference_folder / "AU14286" / "prokka_output" / "AU14286.gff")
+	f2_sample = Path(reference_folder / "AU15033" / "prokka_output" / "AU15033.gff")
 	references = [a1_sample, a2_sample, b1_sample, b2_sample, e1_sample, e2_sample, f1_sample, f2_sample]
 	for ref in references:
 		logger.info(f"Reference Exists: {ref.exists()}\t{ref}")

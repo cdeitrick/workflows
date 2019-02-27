@@ -102,7 +102,7 @@ def run_command(program_name: str, command: List[Any], output_folder: Path,
 		command = command[:1] + [*threads] + command[1:]
 	else:
 		num_threads = None
-	if use_srun and False:
+	if use_srun:
 		command = get_srun_command(num_threads) + command
 
 	stdout_path = output_folder / "{}_stdout.txt".format(program_name)
