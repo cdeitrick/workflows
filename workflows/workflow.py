@@ -3,6 +3,7 @@ import sys
 from pathlib import Path
 from typing import Dict, List, Union, Optional
 import sys
+
 file_handler = logging.FileHandler(filename = Path.home() / "workflow_log.txt")
 stdout_handler = logging.StreamHandler(sys.stdout)
 handlers = [file_handler, stdout_handler]
@@ -44,7 +45,7 @@ def first_common_substring(seqa: str, seqb: str) -> str:
 		return seqa
 
 
-def assemble_workflow(forward_read: Path, reverse_read: Path, parent_folder: Path, trusted_contigs:Optional[Path] = None):
+def assemble_workflow(forward_read: Path, reverse_read: Path, parent_folder: Path, trusted_contigs: Optional[Path] = None):
 	forward_name = forward_read.stem
 	reverse_name = reverse_read.stem
 	sample_name = first_common_substring(forward_name, reverse_name)
@@ -130,21 +131,24 @@ def groupby(key, sequence):
 			groups[item_key] = [item]
 	return groups
 
-def load_sample_map(filename:Path)->Dict[str,str]:
+
+def load_sample_map(filename: Path) -> Dict[str, str]:
 	contents = filename.read_text().split('\n')
 	sample_map = dict()
 	for line in contents:
 		line = line.strip()
 		try:
-			i,j = line.split('\t')
+			i, j = line.split('\t')
 			sample_map[i] = j
 		except:
 			pass
 	return sample_map
-if __name__ == "__main__":
+
+_assemble = False
+if __name__ == "__main__" and _assemble:
 	folder = Path("/home/cld100/projects/lipuma/samples")
 
-	reference_folder =  folder.parent / "reference_assemblies"
+	reference_folder = folder.parent / "reference_assemblies"
 	a1_sample = Path(reference_folder / "SC1360" / "prokka_output" / "SC1360.gff")
 	a2_sample = Path(reference_folder / "AU1064" / "prokka_output" / "AU1064.gff")
 	b1_sample = Path(reference_folder / "SC1128" / "prokka_output" / "SC1128.gff")
@@ -181,5 +185,11 @@ if __name__ == "__main__":
 		for index, sample in enumerate(pipeline_samples):
 			logger.info(f"Running pipeline for sample {index} of {len(pipeline_samples)}.")
 			variant_call_workflow(sample.name, sample.forward, sample.reverse, reference_pipeline_output_folder, reference_filename)
-
-
+else:
+	s = Path("/home/cld100/projects/lipuma/samples/AU0074")
+	f = s / "AU0074_S1_R1_001.fastq"
+	r = s / "AU0074_S1_R2_001.fastq"
+	parent = Path("/home/cld100/projects/lipuma/reference_assemblies/AU0074")
+	if not parent.exists():
+		parent.mkdir()
+	assemble_workflow(f,r,parent)
