@@ -144,8 +144,8 @@ def load_sample_map(filename: Path) -> Dict[str, str]:
 			pass
 	return sample_map
 
-_assemble = False
-if __name__ == "__main__" and _assemble:
+_variants = True
+if __name__ == "__main__" and _variants:
 	folder = Path("/home/cld100/projects/lipuma/samples")
 
 	reference_folder = folder.parent / "reference_assemblies"
@@ -155,12 +155,16 @@ if __name__ == "__main__" and _assemble:
 	b2_sample = Path(reference_folder / "SC1145" / "prokka_output" / "SC1145.gff")
 	e1_sample = Path(reference_folder / "AU3415" / "prokka_output" / "AU3415.gff")
 	e2_sample = Path(reference_folder / "AU1836" / "prokka_output" / "AU1836.gff")
-	f1_sample = Path(reference_folder / "AU14286" / "prokka_output" / "AU14286.gff")
+	f1_sample = Path(reference_folder / "AU0074" / "prokka_output" / "AU14286.gff")
 	f2_sample = Path(reference_folder / "AU15033" / "prokka_output" / "AU15033.gff")
-	references = [a1_sample, a2_sample, b1_sample, b2_sample, e1_sample, e2_sample, f1_sample, f2_sample]
+	r1_sample = Path(reference_folder / "AU1054" / "GCA_000014085.1_ASM1408v1_genomic.gbk")
+	references = [a1_sample, a2_sample, b1_sample, b2_sample, e1_sample, e2_sample, f1_sample, f2_sample, r1_sample]
 	for ref in references:
 		logger.info(f"Reference Exists: {ref.exists()}\t{ref}")
-	patients = "A|A|B|B|E|E|F|F".split('|')
+	patients = "A|A|B|B|E|E|F|F|A".split('|')
+
+	references = reversed(references)
+	patients = reversed(patients)
 
 	samples = list()
 	for sample_folder in folder.iterdir():
