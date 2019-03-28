@@ -155,7 +155,7 @@ if __name__ == "__main__" and _variants:
 	b2_sample = Path(reference_folder / "SC1145" / "prokka_output" / "SC1145.gff")
 	e1_sample = Path(reference_folder / "AU3415" / "prokka_output" / "AU3415.gff")
 	e2_sample = Path(reference_folder / "AU1836" / "prokka_output" / "AU1836.gff")
-	f1_sample = Path(reference_folder / "AU0074" / "prokka_output" / "AU14286.gff")
+	f1_sample = Path(reference_folder / "AU0074" / "prokka_output" / "AU0074.gff")
 	f2_sample = Path(reference_folder / "AU15033" / "prokka_output" / "AU15033.gff")
 	r1_sample = Path(reference_folder / "AU1054" / "GCA_000014085.1_ASM1408v1_genomic.gbk")
 	references = [a1_sample, a2_sample, b1_sample, b2_sample, e1_sample, e2_sample, f1_sample, f2_sample, r1_sample]
@@ -188,6 +188,7 @@ if __name__ == "__main__" and _variants:
 		logger.info(f"Found {len(pipeline_samples)} samples for this reference.")
 		for index, sample in enumerate(pipeline_samples):
 			logger.info(f"Running pipeline for sample {index} of {len(pipeline_samples)}.")
+			if reference_pipeline_output_folder.joinpath(sample.name).exists(): continue
 			variant_call_workflow(sample.name, sample.forward, sample.reverse, reference_pipeline_output_folder, reference_filename)
 else:
 	s = Path("/home/cld100/projects/lipuma/samples/AU0074")
