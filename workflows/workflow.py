@@ -194,4 +194,8 @@ else:
 	folder = Path("/home/cld100/projects/stjude")
 	sample = sampleio.Sample.from_folder(folder)
 	print(sample)
-	read_quality.trimmomatic(sample.forward, sample.reverse, output_folder = folder / "trimmed")
+	read_quality.trimmomatic(
+		folder / "1042323_AN0L2G6_S77_L006_R1_001.fastq",
+		folder / "1042323_AN0L2G6_S77_L006_R1_001.fastq",
+		output_folder = folder / "trimmed"
+	)
