@@ -192,8 +192,6 @@ if __name__ == "__main__" and _variants:
 			variant_call_workflow(sample.name, sample.forward, sample.reverse, reference_pipeline_output_folder, reference_filename)
 else:
 	folder = Path("/home/cld100/projects/stjude")
-	sample = sampleio.Sample.from_folder(folder)
-	print(sample)
 	read_quality.trimmomatic(
 		folder / "1042323_AN0L2G6_S77_L006_R1_001.fastq",
 		folder / "1042323_AN0L2G6_S77_L006_R1_001.fastq",
