@@ -144,7 +144,7 @@ def load_sample_map(filename: Path) -> Dict[str, str]:
 			pass
 	return sample_map
 
-_variants = True
+_variants = False
 if __name__ == "__main__" and _variants:
 	folder = Path("/home/cld100/projects/lipuma/samples")
 
@@ -191,10 +191,7 @@ if __name__ == "__main__" and _variants:
 			if reference_pipeline_output_folder.joinpath(sample.name).exists(): continue
 			variant_call_workflow(sample.name, sample.forward, sample.reverse, reference_pipeline_output_folder, reference_filename)
 else:
-	s = Path("/home/cld100/projects/lipuma/samples/AU0074")
-	f = s / "AU0074_S1_R1_001.fastq"
-	r = s / "AU0074_S1_R2_001.fastq"
-	parent = Path("/home/cld100/projects/lipuma/reference_assemblies/AU0074")
-	if not parent.exists():
-		parent.mkdir()
-	assemble_workflow(f,r,parent)
+	folder = Path("/home/cld100/projects/stjude")
+	sample = sampleio.Sample.from_folder(folder)
+	print(sample)
+	read_quality.trimmomatic(sample.forward, sample.reverse, output_folder = folder / "trimmed")
