@@ -41,8 +41,8 @@ class TrimmomaticOptions:
 	window: str = "4:15"
 	# minimum_length: int = 70
 	minimum_length: int = 36
-	# clip: Union[str, Path] = Path("/opt/trimmomatic/Trimmomatic-0.36/adapters/NexteraPE-PE.fa")
-	clip: Path = ADAPTERS_FILENAME
+	clip: Union[str, Path] = Path("/opt/trimmomatic/Trimmomatic-0.36/adapters/NexteraPE-PE.fa")
+	#clip: Path = ADAPTERS_FILENAME
 	job_name: str = "trimmomatic"
 	threads: int = 8
 
