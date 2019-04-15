@@ -210,6 +210,8 @@ if __name__ == "__main__" and _variants:
 			variant_call_workflow(sample.name, sample.forward, sample.reverse, reference_pipeline_output_folder, reference_filename)
 else:
 	output_folder = Path("/home/cld100/projects/lipuma/shovill_assemblies")
+	if not output_folder.exists():
+		output_folder.mkdir()
 	sample_folder = Path("/home/cld100/projects/lipuma/samples/AU1064")
 
 	assemble_workflow(

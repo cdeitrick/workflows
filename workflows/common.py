@@ -1,11 +1,11 @@
 import argparse
-import logging
+
 import subprocess
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
+from loguru import logger
 
-logger = logging.getLogger(__name__)
 from dataclasses import asdict, dataclass
 
 # noinspection PyProtectedMember

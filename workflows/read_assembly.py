@@ -53,7 +53,7 @@ def pilon(forward_read: Path, reverse_read: Path, unpaired_forward_read: Path, a
 	]
 
 
-def spades(forward_read: Path, reverse_read: Path, unpaired_forward_read: Path, output_folder, options: SpadesOptions) -> SpadesOutput:
+def spades(forward_read: Path, reverse_read: Path, output_folder, options: SpadesOptions, unpaired_forward_read = None) -> SpadesOutput:
 	"""
 		Assembles a genome via spades.
 	Parameters
