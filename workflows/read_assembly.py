@@ -109,15 +109,22 @@ def bandage(assembly_graph: Path, output_folder: Path) -> BandageOutput:
 	output = BandageOutput()
 	return output
 
+def shovill(forward_read:Path, reverse_read:Path, output_folder:Path, options: SpadesOptions = SpadesOptions()):
+	if not output_folder.exists(): output_folder.mkdir()
+	shovill_command = [
+		"shovill",
+		"--minlen", "500",
+		"--assembler", "spades",
+		"--kmers", options.kmers,
+		"--outdir", output_folder,
+		"--R1", forward_read,
+		"--R2", reverse_read
+	]
 
-def workflow(forward_read: Path, reverse_read: Path, unpaired_forward_read: Path, parent_folder: Path, options: SpadesOptions) -> SpadesOutput:
-	spades_folder = parent_folder / "spades"
-	bandage_folder = spades_folder
-	spades_output = spades(forward_read, reverse_read, unpaired_forward_read, spades_folder, options)
+	if options.reference:
+		shovill_command += ['--opts', f'"--trusted-contigs {options.reference}"']
 
-	#bandage(spades_output.assembly_graph, bandage_folder)
-
-	return spades_output
+	common.run_command("shovill", shovill_command, output_folder)
 
 
 def get_commandline_parser(subparser: SubparserType = None) -> argparse.ArgumentParser:

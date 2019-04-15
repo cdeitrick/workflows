@@ -4,15 +4,7 @@ from pathlib import Path
 from typing import Dict, List, Union, Optional
 import sys
 
-file_handler = logging.FileHandler(filename = Path.home() / "workflow_log.txt")
-stdout_handler = logging.StreamHandler(sys.stdout)
-handlers = [file_handler, stdout_handler]
-logging.basicConfig(
-	handlers = handlers,
-	level = logging.INFO,
-	format = '%(asctime)s %(module)s - %(levelname)s - %(message)s'
-)
-logger = logging.getLogger(__name__)
+from loguru import logger
 sys.path.append(str(Path(__file__).parent))
 
 try:
@@ -46,12 +38,14 @@ def first_common_substring(seqa: str, seqb: str) -> str:
 
 
 def assemble_workflow(forward_read: Path, reverse_read: Path, parent_folder: Path, trusted_contigs: Optional[Path] = None):
+	parameters = {'forward_read': forward_read, 'reverse_read': reverse_read, 'parent_folder': parent_folder}
+	logger.info("running the assembly workflow")
+	logger.debug(parameters)
 	forward_name = forward_read.stem
 	reverse_name = reverse_read.stem
 	sample_name = first_common_substring(forward_name, reverse_name)
-	prefix = sample_name
 	sample_folder = common.checkdir(parent_folder / sample_name)
-
+	logger.debug(f"Sample folder: {sample_folder}")
 	trimmomatic_options = read_quality.TrimmomaticOptions()
 	trimmomatic_options.minimum_length = 70
 	trimmomatic_options.leading = 20
@@ -61,10 +55,15 @@ def assemble_workflow(forward_read: Path, reverse_read: Path, parent_folder: Pat
 	trimmomatic_output = read_quality.workflow(forward_read, reverse_read, parent_folder, options = trimmomatic_options, prefix = sample_name)
 	reference = Path("/home/cld100/projects/lipuma/reference/SC1145/GCA_000014085.1_ASM1408v1_genomic.fasta")
 	spades_options.reference = reference
-	spades_output = read_assembly.workflow(
+	spades_output = read_assembly.spades(
 		trimmomatic_output.forward,
 		trimmomatic_output.reverse,
-		trimmomatic_output.unpaired_forward,
+		sample_folder,
+		options = spades_options
+	)
+	shovill_output = read_assembly.shovill(
+		trimmomatic_output.forward,
+		trimmomatic_output.reverse,
 		sample_folder,
 		options = spades_options
 	)
@@ -191,9 +190,11 @@ if __name__ == "__main__" and _variants:
 			if reference_pipeline_output_folder.joinpath(sample.name).exists(): continue
 			variant_call_workflow(sample.name, sample.forward, sample.reverse, reference_pipeline_output_folder, reference_filename)
 else:
-	folder = Path("/home/cld100/projects/stjude")
-	read_quality.trimmomatic(
-		folder / "1042323_AN0L2G6_S77_L006_R1_001.fastq",
-		folder / "1042323_AN0L2G6_S77_L006_R1_001.fastq",
-		output_folder = folder / "trimmed"
+	output_folder = Path("/home/cld100/projects/lipuma/shovill_assemblies")
+	sample_folder = Path("/home/cld100/projects/lipuma/samples/AU1064")
+
+	assemble_workflow(
+		sample_folder / "AU1064_S14_R1_001.fastq",
+		sample_folder / "AU1064_S14_R2_001.fastq",
+		parent_folder = output_folder
 	)
