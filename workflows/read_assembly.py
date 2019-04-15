@@ -109,7 +109,7 @@ def bandage(assembly_graph: Path, output_folder: Path) -> BandageOutput:
 	output = BandageOutput()
 	return output
 
-def shovill(forward_read:Path, reverse_read:Path, output_folder:Path, options: SpadesOptions = SpadesOptions()):
+def shovill(forward_read:Path, reverse_read:Path, output_folder:Path, options: SpadesOptions):
 	if not output_folder.exists(): output_folder.mkdir()
 	shovill_command = [
 		"shovill",

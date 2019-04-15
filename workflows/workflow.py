@@ -27,6 +27,8 @@ except ModuleNotFoundError:
 
 """
 
+REFERENCE_AU1054 = Path("/home/cld100/projects/lipuma/reference/AU1054/GCA_000014085.1_ASM1408v1_genomic.fna")
+
 
 def first_common_substring(seqa: str, seqb: str) -> str:
 	for eindex, element in enumerate(zip(seqa, seqb)):
@@ -38,23 +40,40 @@ def first_common_substring(seqa: str, seqb: str) -> str:
 
 
 def assemble_workflow(forward_read: Path, reverse_read: Path, parent_folder: Path, trusted_contigs: Optional[Path] = None):
+	"""
+		Assembles the provided reads.
+		[original reads] -> Trimmomatic -> Spades
+	Parameters
+	----------
+	forward_read: Path
+		The untrimmed forward read
+	reverse_read: Path
+		The untrimmed reverse read
+	parent_folder: Path
+	trusted_contigs: Optional[Path]
+	"""
 	parameters = {'forward_read': forward_read, 'reverse_read': reverse_read, 'parent_folder': parent_folder}
 	logger.info("running the assembly workflow")
 	logger.debug(parameters)
+
 	forward_name = forward_read.stem
 	reverse_name = reverse_read.stem
+
 	sample_name = first_common_substring(forward_name, reverse_name)
+	logger.debug(f"Sample Name: {sample_name}")
 	sample_folder = common.checkdir(parent_folder / sample_name)
 	logger.debug(f"Sample folder: {sample_folder}")
-	trimmomatic_options = read_quality.TrimmomaticOptions()
-	trimmomatic_options.minimum_length = 70
-	trimmomatic_options.leading = 20
-	trimmomatic_options.trailing = 20
-	spades_options = read_assembly.SpadesOptions()
-	spades_options.reference = trusted_contigs
+
+	trimmomatic_options = read_quality.TrimmomaticOptions(
+		minimum_length = 70,
+		leading = 20,
+		trailing = 20
+	)
+
+	spades_options = read_assembly.SpadesOptions(reference = trusted_contigs)
+
 	trimmomatic_output = read_quality.workflow(forward_read, reverse_read, parent_folder, options = trimmomatic_options, prefix = sample_name)
-	reference = Path("/home/cld100/projects/lipuma/reference/SC1145/GCA_000014085.1_ASM1408v1_genomic.fasta")
-	spades_options.reference = reference
+
 	spades_output = read_assembly.spades(
 		trimmomatic_output.forward,
 		trimmomatic_output.reverse,
