@@ -77,13 +77,13 @@ def assemble_workflow(forward_read: Path, reverse_read: Path, parent_folder: Pat
 	spades_output = read_assembly.spades(
 		trimmomatic_output.forward,
 		trimmomatic_output.reverse,
-		sample_folder,
+		sample_folder / "spades",
 		options = spades_options
 	)
 	shovill_output = read_assembly.shovill(
 		trimmomatic_output.forward,
 		trimmomatic_output.reverse,
-		sample_folder,
+		sample_folder / "shovill",
 		options = spades_options
 	)
 	return spades_output

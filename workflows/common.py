@@ -96,7 +96,10 @@ def run_command(program_name: str, command: List[Any], output_folder: Path,
 	-------
 	subprocess.CompletedProcess
 	"""
-	logger.info(f"{program_name} - Running command " + str(command))
+	logger.info(f"Running program: {program_name}")
+	logger.info(f"\tOutput Folder: {output_folder}")
+	logger.info(f"\tThreads: {threads}")
+	logger.info(f"\tUse srun: {use_srun}")
 	if threads:
 		num_threads = threads[1]
 		command = command[:1] + [*threads] + command[1:]
