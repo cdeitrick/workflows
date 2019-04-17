@@ -73,20 +73,21 @@ def assemble_workflow(forward_read: Path, reverse_read: Path, parent_folder: Pat
 	spades_options = read_assembly.SpadesOptions(reference = trusted_contigs)
 
 	trimmomatic_output = read_quality.workflow(forward_read, reverse_read, parent_folder, options = trimmomatic_options, prefix = sample_name)
-
+	"""
 	spades_output = read_assembly.spades(
 		trimmomatic_output.forward,
 		trimmomatic_output.reverse,
 		sample_folder / "spades",
 		options = spades_options
 	)
+	"""
 	shovill_output = read_assembly.shovill(
 		trimmomatic_output.forward,
 		trimmomatic_output.reverse,
 		sample_folder / "shovill",
 		options = spades_options
 	)
-	return spades_output
+
 
 
 def variant_call_workflow(sample_name: str, forward_read: Path, reverse_read: Path, pipeline_output_folder: Path, reference: Path):

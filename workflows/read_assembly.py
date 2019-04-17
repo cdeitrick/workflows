@@ -118,7 +118,8 @@ def shovill(forward_read:Path, reverse_read:Path, output_folder:Path, options: S
 		"--kmers", options.kmers,
 		"--outdir", output_folder,
 		"--R1", forward_read,
-		"--R2", reverse_read
+		"--R2", reverse_read,
+		"--force" # Since the output folder is automatically generated.
 	]
 
 	if options.reference:
@@ -174,4 +175,4 @@ def get_commandline_parser(subparser: SubparserType = None) -> argparse.Argument
 if __name__ == "__main__":
 	parser = get_commandline_parser()
 	arguments = parser.parse_args()
-	workflow(arguments.forward, arguments.reverse, arguments.unpaired_forward)
+	spades(arguments.forward, arguments.reverse, arguments.unpaired_forward)
