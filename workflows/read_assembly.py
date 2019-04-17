@@ -115,7 +115,6 @@ def shovill(forward_read:Path, reverse_read:Path, output_folder:Path, options: S
 		"shovill",
 		"--minlen", "500",
 		"--assembler", "spades",
-		"--kmers", options.kmers,
 		"--outdir", output_folder,
 		"--R1", forward_read,
 		"--R2", reverse_read,
