@@ -1,7 +1,6 @@
 import argparse
-from pathlib import Path
-
 from dataclasses import dataclass
+from pathlib import Path
 
 try:
 	from workflows.read_quality import TrimmomaticOutput
@@ -20,11 +19,6 @@ class BandageOutput:
 
 @dataclass
 class SpadesOptions:
-	# output_folder: Path
-	# forward: Path
-	# reverse: Path
-	# unpaired_forward: Path = None
-	# unpaired_reverse: Path = None  # Don't use the unpaired reverse reads.
 	kmers: str = '11,21,33,55,71,83,97,111,121'  # A comma-separated list of odd integers less than 128.
 	threads: int = 16
 	careful: bool = True
@@ -44,13 +38,6 @@ class SpadesOutput:
 
 	def exists(self):
 		return self.contigs.exists()
-
-
-def pilon(forward_read: Path, reverse_read: Path, unpaired_forward_read: Path, assembly: Path, output_folder: Path, options: PilonOptions):
-	command = [
-		"java", "-Xmx16G", "-jar", "pilon.jar",
-		"--genome", assembly
-	]
 
 
 def spades(forward_read: Path, reverse_read: Path, output_folder, options: SpadesOptions, unpaired_forward_read = None) -> SpadesOutput:
@@ -109,7 +96,21 @@ def bandage(assembly_graph: Path, output_folder: Path) -> BandageOutput:
 	output = BandageOutput()
 	return output
 
-def shovill(forward_read:Path, reverse_read:Path, output_folder:Path, options: SpadesOptions):
+
+def shovill(forward_read: Path, reverse_read: Path, output_folder: Path, options: SpadesOptions):
+	"""
+		Shovel requires the --force parameter if the output folder already exists.
+	Parameters
+	----------
+	forward_read
+	reverse_read
+	output_folder
+	options
+
+	Returns
+	-------
+
+	"""
 	if not output_folder.exists(): output_folder.mkdir()
 	shovill_command = [
 		"shovill",
@@ -118,7 +119,7 @@ def shovill(forward_read:Path, reverse_read:Path, output_folder:Path, options: S
 		"--outdir", output_folder,
 		"--R1", forward_read,
 		"--R2", reverse_read,
-		"--force" # Since the output folder is automatically generated.
+		"--force"  # Since the output folder is automatically generated.
 	]
 
 	if options.reference:

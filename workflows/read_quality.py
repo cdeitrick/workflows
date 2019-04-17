@@ -41,8 +41,8 @@ class TrimmomaticOptions:
 	window: str = "4:15"
 	# minimum_length: int = 70
 	minimum_length: int = 36
-	clip: Path = Path("/opt/trimmomatic/Trimmomatic-0.36/adapters/NexteraPE-PE.fa")
-	#clip: Path = ADAPTERS_FILENAME
+	#clip: Path = Path("/opt/trimmomatic/Trimmomatic-0.36/adapters/NexteraPE-PE.fa")
+	clip: Path = ADAPTERS_FILENAME
 	job_name: str = "trimmomatic"
 	threads: int = 8
 
@@ -217,4 +217,5 @@ if __name__ == "__main__":
 	parser = get_commandline_parser()
 	args = parser.parse_args()
 	default_options = TrimmomaticOptions()
+
 	workflow(args.forward, args.reverse, args.parent_folder, options = default_options)

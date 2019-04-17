@@ -211,6 +211,7 @@ if __name__ == "__main__" and _variants:
 			variant_call_workflow(sample.name, sample.forward, sample.reverse, reference_pipeline_output_folder, reference_filename)
 else:
 	output_folder = Path("/home/cld100/projects/lipuma/shovill_assemblies")
+	reference = Path("/home/cld100/projects/lipuma/reference/AU1054/GCA_000014085.1_ASM1408v1_genomic.fna")
 	if not output_folder.exists():
 		output_folder.mkdir()
 	sample_folder = Path("/home/cld100/projects/lipuma/samples/AU1064")
@@ -218,5 +219,6 @@ else:
 	assemble_workflow(
 		sample_folder / "AU1064_S14_R1_001.fastq",
 		sample_folder / "AU1064_S14_R2_001.fastq",
-		parent_folder = output_folder
+		parent_folder = output_folder,
+		trusted_contigs = reference
 	)
