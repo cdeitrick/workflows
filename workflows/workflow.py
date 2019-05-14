@@ -73,14 +73,7 @@ def assemble_workflow(forward_read: Path, reverse_read: Path, parent_folder: Pat
 	spades_options = read_assembly.SpadesOptions(reference = trusted_contigs)
 
 	trimmomatic_output = read_quality.workflow(forward_read, reverse_read, parent_folder, options = trimmomatic_options, prefix = sample_name)
-	"""
-	spades_output = read_assembly.spades(
-		trimmomatic_output.forward,
-		trimmomatic_output.reverse,
-		sample_folder / "spades",
-		options = spades_options
-	)
-	"""
+
 	shovill_output = read_assembly.shovill(
 		trimmomatic_output.forward,
 		trimmomatic_output.reverse,
@@ -163,8 +156,8 @@ def load_sample_map(filename: Path) -> Dict[str, str]:
 			pass
 	return sample_map
 
-_variants = False
-if __name__ == "__main__" and _variants:
+
+if __name__ == "__main__" and False:
 	folder = Path("/home/cld100/projects/lipuma/samples")
 
 	reference_folder = folder.parent / "reference_assemblies"
@@ -211,14 +204,27 @@ if __name__ == "__main__" and _variants:
 			variant_call_workflow(sample.name, sample.forward, sample.reverse, reference_pipeline_output_folder, reference_filename)
 else:
 	output_folder = Path("/home/cld100/projects/lipuma/shovill_assemblies")
-	reference = Path("/home/cld100/projects/lipuma/reference/AU1054/GCA_000014085.1_ASM1408v1_genomic.fna")
 	if not output_folder.exists():
 		output_folder.mkdir()
-	sample_folder = Path("/home/cld100/projects/lipuma/samples/AU1064")
-
-	assemble_workflow(
-		sample_folder / "AU1064_S14_R1_001.fastq",
-		sample_folder / "AU1064_S14_R2_001.fastq",
-		parent_folder = output_folder,
-		trusted_contigs = reference
-	)
+	sample_folder = Path("/home/cld100/projects/lipuma/samples")
+	sample_folders = [
+		sample_folder / "AU0074",
+		sample_folder / "AU1064",
+		sample_folder / "AU1836",
+		sample_folder / "AU3415",
+		sample_folder / "AU15033",
+		sample_folder / "SC1128",
+		sample_folder / "SC1145",
+		sample_folder / "SC1360"
+		]
+	for folder in sample_folders:
+		s = sampleio.Sample.from_folder(folder, sample_id = folder.name)
+		sample_output_folder = output_folder / s.name
+		if not sample_output_folder.exists():
+			sample_output_folder.mkdir()
+		assemble_workflow(
+			s.forward,
+			s.reverse,
+			parent_folder = sample_output_folder
+		)
+		break
