@@ -208,7 +208,7 @@ else:
 		output_folder.mkdir()
 	sample_folder = Path("/home/cld100/projects/lipuma/samples")
 	sample_folders = [
-		sample_folder / "AU0074",
+		#sample_folder / "AU0074",
 		sample_folder / "AU1064",
 		sample_folder / "AU1836",
 		sample_folder / "AU3415",
@@ -227,4 +227,3 @@ else:
 			s.reverse,
 			parent_folder = sample_output_folder
 		)
-		break
