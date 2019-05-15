@@ -157,26 +157,26 @@ def load_sample_map(filename: Path) -> Dict[str, str]:
 	return sample_map
 
 
-if __name__ == "__main__" and False:
+if __name__ == "__main__" and True:
 	folder = Path("/home/cld100/projects/lipuma/samples")
 
 	reference_folder = folder.parent / "reference_assemblies"
-	a1_sample = Path(reference_folder / "SC1360" / "prokka_output" / "SC1360.gff")
-	a2_sample = Path(reference_folder / "AU1064" / "prokka_output" / "AU1064.gff")
-	b1_sample = Path(reference_folder / "SC1128" / "prokka_output" / "SC1128.gff")
-	b2_sample = Path(reference_folder / "SC1145" / "prokka_output" / "SC1145.gff")
-	e1_sample = Path(reference_folder / "AU3415" / "prokka_output" / "AU3415.gff")
-	e2_sample = Path(reference_folder / "AU1836" / "prokka_output" / "AU1836.gff")
-	f1_sample = Path(reference_folder / "AU0074" / "prokka_output" / "AU0074.gff")
-	f2_sample = Path(reference_folder / "AU15033" / "prokka_output" / "AU15033.gff")
 	r1_sample = Path(reference_folder / "AU1054" / "GCA_000014085.1_ASM1408v1_genomic.gbk")
+
+	reference_folder = folder.parent / "shovill_assemblies" / "annotated_assemblies"
+	a1_sample = reference_folder / "SC1360" / "SC1360.gff"
+	a2_sample = reference_folder / "AU1064" / "AU1064.gff"
+	b1_sample = reference_folder / "SC1128" / "SC1128.gff"
+	b2_sample = reference_folder / "SC1145" / "SC1145.gff"
+	e1_sample = reference_folder / "AU3415" / "AU3415.gff"
+	e2_sample = reference_folder / "AU1836" / "AU1836.gff"
+	f1_sample = reference_folder / "AU0074" / "AU0074.gff"
+	f2_sample = reference_folder / "AU15033" / "AU15033.gff"
+
 	references = [a1_sample, a2_sample, b1_sample, b2_sample, e1_sample, e2_sample, f1_sample, f2_sample, r1_sample]
 	for ref in references:
 		logger.info(f"Reference Exists: {ref.exists()}\t{ref}")
 	patients = "A|A|B|B|E|E|F|F|A".split('|')
-
-	references = reversed(references)
-	patients = reversed(patients)
 
 	samples = list()
 	for sample_folder in folder.iterdir():
@@ -188,7 +188,9 @@ if __name__ == "__main__" and False:
 	logger.info(f"Found {len(samples)} samples.")
 	sample_map_filename = Path("/home/cld100/projects/lipuma/isolate_sample_map.tsv")
 	sample_map = load_sample_map(sample_map_filename)
-	output_folder = Path("/home/cld100/projects/lipuma/pairwise_pipeline")
+	output_folder = Path("/home/cld100/projects/lipuma/pairwise_pipeline_shovill")
+	if not output_folder.exists():
+		output_folder.mkdir()
 
 	for reference_label, reference_filename in zip(patients, references):
 		logger.info(f"Running pipeline for {reference_filename}")
