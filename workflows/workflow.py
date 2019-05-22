@@ -157,7 +157,7 @@ def load_sample_map(filename: Path) -> Dict[str, str]:
 	return sample_map
 
 
-if __name__ == "__main__" and True:
+if __name__ == "__main__" and False:
 	folder = Path("/home/cld100/projects/lipuma/samples")
 
 	reference_folder = folder.parent / "reference_assemblies"
@@ -205,20 +205,12 @@ if __name__ == "__main__" and True:
 			if reference_pipeline_output_folder.joinpath(sample.name).exists(): continue
 			variant_call_workflow(sample.name, sample.forward, sample.reverse, reference_pipeline_output_folder, reference_filename)
 else:
-	output_folder = Path("/home/cld100/projects/lipuma/shovill_assemblies")
+
+	output_folder = Path("/home/cld100/projects/lipuma/shovill_sample_assemblies")
 	if not output_folder.exists():
 		output_folder.mkdir()
 	sample_folder = Path("/home/cld100/projects/lipuma/samples")
-	sample_folders = [
-		#sample_folder / "AU0074",
-		sample_folder / "AU1064",
-		sample_folder / "AU1836",
-		sample_folder / "AU3415",
-		sample_folder / "AU15033",
-		sample_folder / "SC1128",
-		sample_folder / "SC1145",
-		sample_folder / "SC1360"
-		]
+	sample_folders = list(i for i in sample_folder.iterdir() if i.is_dir())
 	for folder in sample_folders:
 		s = sampleio.Sample.from_folder(folder, sample_id = folder.name)
 		sample_output_folder = output_folder / s.name
