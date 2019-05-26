@@ -157,7 +157,7 @@ def load_sample_map(filename: Path) -> Dict[str, str]:
 	return sample_map
 
 
-if __name__ == "__main__" and False:
+if __name__ == "__main__" and True:
 	folder = Path("/home/cld100/projects/lipuma/samples")
 
 	reference_folder = folder.parent / "reference_assemblies"
@@ -170,7 +170,7 @@ if __name__ == "__main__" and False:
 	b2_sample = reference_folder / "SC1145" / "SC1145.gff"
 	e1_sample = reference_folder / "AU3415" / "AU3415.gff"
 	e2_sample = reference_folder / "AU1836" / "AU1836.gff"
-	f1_sample = reference_folder / "AU0074" / "AU0074.gff"
+	f1_sample = reference_folder / "AU0075" / "AU0075.gff"
 	f2_sample = reference_folder / "AU15033" / "AU15033.gff"
 
 	references = [a1_sample, a2_sample, b1_sample, b2_sample, e1_sample, e2_sample, f1_sample, f2_sample, r1_sample]
@@ -193,6 +193,7 @@ if __name__ == "__main__" and False:
 		output_folder.mkdir()
 
 	for reference_label, reference_filename in zip(patients, references):
+		if reference_filename.stem != "AU0075": continue
 		logger.info(f"Running pipeline for {reference_filename}")
 		reference_pipeline_output_folder = output_folder / reference_filename.stem
 		if not reference_pipeline_output_folder.exists():
