@@ -116,10 +116,19 @@ if __name__ == "__main__":
 	common_assembly_folder = base_folder / "assemblies"
 	if not common_assembly_folder.exists():
 		common_assembly_folder.mkdir()
-	for sample in list(base_folder.iterdir()):
-		if sample.name == 'assembly': continue
 
-		unannotated_contigs = [i for i in sample.iterdir() if sample.name in i.name][0] / "shovill" / "contigs.fa"
-		options = ProkkaOptions(genus = 'Burkholderia', species = 'cenocepacia')
-		prokka_output = prokka(unannotated_contigs, sample / "prokka", options = options, prefix = sample.name)
-		(common_assembly_folder / prokka_output.fna.name).write_bytes(prokka_output.fna.read_bytes())
+	with open("prokka_workflow.sh") as file1:
+
+		for sample in list(base_folder.iterdir()):
+			if sample.name == 'assembly': continue
+
+			unannotated_contigs = [i for i in sample.iterdir() if sample.name in i.name][0] / "shovill" / "contigs.fa"
+			options = ProkkaOptions(genus = 'Burkholderia', species = 'cenocepacia')
+			#prokka_output = prokka(unannotated_contigs, sample / "prokka", options = options, prefix = sample.name)
+			prokka_command = [
+				"prokka", "--outdir", str(sample/"prokka"), "--genus", "Burkholderia", "--species", "cenocepacia", "--prefix", sample.name, str(unannotated_contigs)
+			]
+			expected_output = sample / "prokka" / f"{sample.name}.fna"
+			cp_command = ["cp", expected_output, str(common_assembly_folder / f"{sample.name}.fna")]
+			file1.write(' '.join(prokka_command) + "\n")
+			file1.write(' '.join(cp_command) + "\n")
