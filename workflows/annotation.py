@@ -116,7 +116,7 @@ if __name__ == "__main__":
 	common_assembly_folder = base_folder / "assemblies"
 	if not common_assembly_folder.exists():
 		common_assembly_folder.mkdir()
-	for sample in tqdm(list(base_folder.iterdir())):
+	for sample in list(base_folder.iterdir()):
 		if sample.name == 'assembly': continue
 
 		unannotated_contigs = [i for i in sample.iterdir() if sample.name in i.name][0] / "shovill" / "contigs.fa"
