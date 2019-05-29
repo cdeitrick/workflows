@@ -34,13 +34,12 @@ class ProkkaOutput:
 
 @dataclass
 class ProkkaOptions:
-	prefix: str
 	genus: str  # ex. burkholderia
 	species: str  # ex. multivorans
 
 
 def prokka(genome: Path, output_folder: Path, options: ProkkaOptions, prefix = None) -> ProkkaOutput:
-	prefix = genome.stem
+	if prefix is None: prefix = genome.stem
 	basename = output_folder / prefix
 	output = ProkkaOutput(
 		gff = basename.with_suffix(".gff"),
@@ -112,4 +111,15 @@ def get_commandline_parser(subparser: SubparserType = None) -> argparse.Argument
 
 
 if __name__ == "__main__":
-	pass
+	from tqdm import tqdm
+	base_folder = Path("/home/cld100/projects/lipuma/shovill_sample_assemblies/")
+	common_assembly_folder = base_folder / "assemblies"
+	if not common_assembly_folder.exists():
+		common_assembly_folder.mkdir()
+	for sample in tqdm(list(base_folder.iterdir())):
+		if sample.name == 'assembly': continue
+
+		unannotated_contigs = [i for i in sample.iterdir() if sample.name in i.name][0] / "shovill" / "contigs.fa"
+		options = ProkkaOptions(genus = 'Burkholderia', species = 'cenocepacia')
+		prokka_output = prokka(unannotated_contigs, sample / "prokka", options = options, prefix = sample.name)
+		(common_assembly_folder / prokka_output.fna.name).write_bytes(prokka_output.fna.read_bytes())
