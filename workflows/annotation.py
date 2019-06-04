@@ -124,7 +124,6 @@ if __name__ == "__main__":
 
 			unannotated_contigs = [i for i in sample.iterdir() if sample.name in i.name][0] / "shovill" / "contigs.fa"
 			options = ProkkaOptions(genus = 'Burkholderia', species = 'cenocepacia')
-			#prokka_output = prokka(unannotated_contigs, sample / "prokka", options = options, prefix = sample.name)
 			prokka_command = [
 				"prokka", "--outdir", str(sample/"prokka"), "--genus", "Burkholderia", "--species", "cenocepacia", "--prefix", sample.name, str(unannotated_contigs)
 			]

@@ -157,7 +157,7 @@ def load_sample_map(filename: Path) -> Dict[str, str]:
 	return sample_map
 
 
-if __name__ == "__main__" and True:
+if __name__ == "__main__" and False:
 	folder = Path("/home/cld100/projects/lipuma/samples")
 
 	reference_folder = folder.parent / "reference_assemblies"
@@ -206,17 +206,23 @@ if __name__ == "__main__" and True:
 			if reference_pipeline_output_folder.joinpath(sample.name).exists(): continue
 			variant_call_workflow(sample.name, sample.forward, sample.reverse, reference_pipeline_output_folder, reference_filename)
 else:
-
+	selected_samples = [
+		"AU4359", "AU15182", "AU20364", "AU20866", "AU28626", "AU30919", "AU31639", "AU32367", "AU33182", "AU33869", "AU33878", "AU34858",
+		"AU35919", "AU37865", "SC1407", "AU3827B", "AU3415B", "AU3740B", "AU6936B", "AU3416B"
+	]
 	output_folder = Path("/home/cld100/projects/lipuma/shovill_sample_assemblies")
 	if not output_folder.exists():
 		output_folder.mkdir()
 	sample_folder = Path("/home/cld100/projects/lipuma/samples")
 	sample_folders = list(i for i in sample_folder.iterdir() if i.is_dir())
 	for folder in sample_folders:
+		if folder.name not in selected_samples: continue
 		s = sampleio.Sample.from_folder(folder, sample_id = folder.name)
 		sample_output_folder = output_folder / s.name
 		if not sample_output_folder.exists():
 			sample_output_folder.mkdir()
+		else:
+			continue
 		assemble_workflow(
 			s.forward,
 			s.reverse,

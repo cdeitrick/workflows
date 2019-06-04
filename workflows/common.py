@@ -47,7 +47,7 @@ def get_srun_command(threads: Optional = None) -> List[Any]:
 	srun_command = ["srun"]
 	if threads:
 		srun_command += ["--threads", threads]
-	srun_command += ["--mail-user=cld100@pitt.edu", "--mail-type=end,fail"]
+	srun_command += ["--mail-user=cld100@pitt.edu", "--mail-type=end,fail", "--mem-per-cpu", "27000"]
 	return srun_command
 
 
@@ -120,12 +120,12 @@ def run_command(program_name: str, command: List[Any], output_folder: Path,
 			# Path(__file__).with_name('debug_command.txt').write_text(' '.join(command))
 			logger.warning("Cannot write to ", command_path)
 	start_datetime = datetime.now()
-	logger.info("Running Command")
-	for element in command:
-		if element.startswith('-'):
-			logger.info(f"\t{element}")
-		else:
-			logger.info(f"\t\t{element}")
+	#logger.info("Running Command")
+	#for element in command:
+	#	if element.startswith('-'):
+	#		logger.info(f"\t{element}")
+	#	else:
+	#		logger.info(f"\t\t{element}")
 	process = subprocess.run(command, stdout = subprocess.PIPE, stderr = subprocess.PIPE, encoding = "UTF-8")
 
 	end_datetime = datetime.now()
