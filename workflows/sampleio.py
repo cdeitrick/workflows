@@ -23,8 +23,7 @@ class Sample:
 		return Sample(name = sample_id, forward = forward, reverse = reverse)
 
 def get_sample_from_folder(folder: Path, sample_id: Optional[str] = None) -> Tuple[Path, Path]:
-	candidates = [i for i in folder.glob("**/*") if i.suffix in {'.gz', '.fastq'}]
-	candidates = [i for i in candidates if i.name.startswith(sample_id)]
+	candidates = [i for i in folder.iterdir()]
 
 	forward = [i for i in candidates if 'R1' in i.stem]
 	reverse = [i for i in candidates if 'R2' in i.stem]

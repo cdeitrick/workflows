@@ -206,10 +206,7 @@ if __name__ == "__main__" and False:
 			if reference_pipeline_output_folder.joinpath(sample.name).exists(): continue
 			variant_call_workflow(sample.name, sample.forward, sample.reverse, reference_pipeline_output_folder, reference_filename)
 else:
-	selected_samples = [
-		"AU4359", "AU15182", "AU20364", "AU20866", "AU28626", "AU30919", "AU31639", "AU32367", "AU33182", "AU33869", "AU33878", "AU34858",
-		"AU35919", "AU37865", "SC1407", "AU3827B", "AU3415B", "AU3740B", "AU6936B", "AU3416B"
-	]
+	selected_samples = ["AU28626", "AU3827B", "AU3415B", "AU3740B", "AU6936B", "AU3416B"]
 	output_folder = Path("/home/cld100/projects/lipuma/shovill_sample_assemblies")
 	if not output_folder.exists():
 		output_folder.mkdir()
