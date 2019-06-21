@@ -33,7 +33,7 @@ class SampleReads:
 
 
 def get_reads_from_folder(folder: Path) -> Tuple[Path, Path]:
-	candidates = list(folder.iterdir())
+	candidates = list(i for i in folder.iterdir() if i.suffix == '.fastq')
 	forward = [i for i in candidates if 'R1' in i.stem][0]
 	reverse = [i for i in candidates if 'R2' in i.stem][0]
 
