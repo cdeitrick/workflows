@@ -57,7 +57,7 @@ class Trimmomatic:
 		self.threads: int = threads
 	@staticmethod
 	def version()->Optional[str]:
-		return systemio.check_output(["trimmomatic", "--version"])
+		return systemio.check_output(["trimmomatic", "-version"])
 
 	def test(self):
 		result = self.version()
