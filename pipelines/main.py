@@ -11,7 +11,7 @@ from pipelines.processes.variant_calling import sample_variant_calling
 def main():
 	lipuma_folder = Path("/home/cld100/projects/lipuma")
 	pipeline_folder = lipuma_folder / "pipeline_nanopore"
-	reference_folder = lipuma_folder / "reads" / "nanopore"
+	reference_folder = lipuma_folder /"genomes" / "reads" / "nanopore"
 
 	#reference_sc1128 = reference_folder / "SC1128Build" / "SC1128.fasta"
 	reference_sc1360 = reference_folder / "SC1360Build" / "SC1360.fasta"
@@ -20,7 +20,7 @@ def main():
 	reference_sc1128 = reference_folder / "SC1128Build" / "SC1128.polished.fasta"
 	reference_au0075 = reference_folder / "AU0075Build" / "AU0075.polished.fasta"
 
-	sequence_folder = lipuma_folder / "reads"
+	sequence_folder = lipuma_folder / "genomes" / "reads" / "raw"
 	samples = list()
 	for sample_read_folder in sequence_folder.iterdir():
 		try:
