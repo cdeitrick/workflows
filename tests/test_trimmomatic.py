@@ -1,7 +1,7 @@
 from pathlib import Path
 import pytest
-from workflows.programs import trimmomatic
-from workflows import sampleio
+from pipelines.programs import trimmomatic
+from pipelines import sampleio
 
 def test_trimmomatic(tmp_path, sample_reads):
 	output_folder = tmp_path / "output"

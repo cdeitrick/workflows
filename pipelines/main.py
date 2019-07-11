@@ -1,18 +1,24 @@
+"""
+The entry point for scripts using the piplelines.
+"""
 from pathlib import Path
 
 from loguru import logger
 
-from workflows import sampleio
-from workflows.processes.variant_calling import sample_variant_calling
+from pipelines import sampleio
+from pipelines.processes.variant_calling import sample_variant_calling
 
-if __name__ == "__main__":
+def main():
 	lipuma_folder = Path("/home/cld100/projects/lipuma")
 	pipeline_folder = lipuma_folder / "pipeline_nanopore"
 	reference_folder = lipuma_folder / "reads" / "nanopore"
 
-	reference_sc1128 = reference_folder / "SC1128Build" / "SC1128.fasta"
+	#reference_sc1128 = reference_folder / "SC1128Build" / "SC1128.fasta"
 	reference_sc1360 = reference_folder / "SC1360Build" / "SC1360.fasta"
-	reference_au0075 = reference_folder / "AU0075Build" / "AU0075.fasta"
+	#reference_au0075 = reference_folder / "AU0075Build" / "AU0075.fasta"
+
+	reference_sc1128 = reference_folder / "SC1128Build" / "SC1128.polished.fasta"
+	reference_au0075 = reference_folder / "AU0075Build" / "AU0075.polished.fasta"
 
 	sequence_folder = lipuma_folder / "reads"
 	samples = list()
@@ -49,6 +55,8 @@ if __name__ == "__main__":
 	sibling_pair_b_folder = pipeline_folder / "SC1128"
 	sibling_pair_f_folder = pipeline_folder / "AU0075"
 
-	sample_variant_calling(reference_sc1360, sibling_pair_a_samples, sibling_pair_a_folder)
+	#sample_variant_calling(reference_sc1360, sibling_pair_a_samples, sibling_pair_a_folder)
 	sample_variant_calling(reference_sc1128, sibling_pair_b_samples, sibling_pair_b_folder)
 	sample_variant_calling(reference_au0075, sibling_pair_f_samples, sibling_pair_f_folder)
+if __name__ == "__main__":
+	main()

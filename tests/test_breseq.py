@@ -1,4 +1,4 @@
-from workflows.programs import breseq
+from pipelines.programs import breseq
 from loguru import logger
 import sys
 import pytest

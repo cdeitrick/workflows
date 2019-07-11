@@ -1,7 +1,7 @@
 from pathlib import Path
 from typing import Union, List, Optional
 
-from workflows import systemio
+from pipelines import systemio
 
 ADAPTERS_FILENAME = Path(__file__).parent / "resources" / "adapters.fa"
 

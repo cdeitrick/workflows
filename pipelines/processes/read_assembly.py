@@ -1,6 +1,6 @@
 from pathlib import Path
-from workflows.programs import trimmomatic, fastqc, shovill
-from workflows import systemio, sampleio
+from pipelines.programs import trimmomatic, fastqc, shovill
+from pipelines import systemio, sampleio
 from typing import Optional, Dict, Any, List
 
 def stringent_parameters()->Dict[str,Any]:

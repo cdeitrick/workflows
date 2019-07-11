@@ -1,6 +1,8 @@
 from pathlib import Path
-from workflows import systemio, sampleio
-from workflows.programs import trimmomatic, breseq
+
+from pipelines import systemio, sampleio
+from pipelines.programs import trimmomatic, breseq
+
 from typing import List
 from loguru import logger
 def sample_variant_calling(reference:Path, samples: List[sampleio.SampleReads], parent_folder:Path):

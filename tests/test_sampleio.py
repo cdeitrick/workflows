@@ -1,5 +1,5 @@
 import pytest
-from workflows import sampleio
+from pipelines import sampleio
 from pathlib import Path
 from loguru import logger
 def checkdir(path)->Path:

@@ -1,3 +1,2 @@
-import workflows
-if __name__ == "__main__":
-	workflows.workflow.main()
+from pipelines import main
+main.main()

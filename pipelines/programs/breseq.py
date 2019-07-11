@@ -1,7 +1,7 @@
 from pathlib import Path
 from typing import List, Optional
 
-from workflows import systemio
+from pipelines import systemio
 
 
 class BreseqOutput:

@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Iterable, List
 
-from workflows import systemio
+from pipelines import systemio
 
 
 @dataclass

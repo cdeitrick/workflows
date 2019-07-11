@@ -1,5 +1,5 @@
 from pathlib import Path
-from workflows import systemio
+from pipelines import systemio
 
 def test_get_srun_command():
 	assert systemio.get_srun_command() == ["srun",  "--mem-per-cpu", "27000"]

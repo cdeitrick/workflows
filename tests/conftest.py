@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pytest
 
-from workflows import sampleio, systemio
+from pipelines import sampleio, systemio
 
 DATA_FOLDER = Path(__file__).parent / "data"
 

@@ -1,5 +1,5 @@
 import pytest
-from workflows.programs import shovill
+from pipelines.programs import shovill
 import sys
 sys.path.append("/home/cld100/anaconda3/envs/shovill/bin/")
 def test_shovill(tmp_path, sample_reads):
