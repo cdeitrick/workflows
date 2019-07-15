@@ -15,7 +15,7 @@ def checkdir(path:Path)->Path:
 def main():
 	lipuma_folder = Path("/home/cld100/projects/lipuma")
 	pipeline_folder = checkdir(lipuma_folder / "pipeline_nanopore")
-	reference_folder = lipuma_folder /"genomes" / "reads" / "nanopore"
+	reference_folder = lipuma_folder /"genomes" / "assembly_nanopore"
 
 	reference_sc1360 = reference_folder / "SC1360Build" / "SC1360.fasta"
 	reference_sc1128 = reference_folder / "SC1128Build" / "SC1128.polished.fasta"
