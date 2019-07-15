@@ -26,7 +26,7 @@ def sample_variant_calling(reference:Path, samples: List[sampleio.SampleReads], 
 
 	# Set up the environment
 	systemio.command_runner.set_command_log(parent_folder / "variant_calling_commands.sh")
-	trimmomatic_workflow = trimmomatic.Trimmomatic()
+	trimmomatic_workflow = trimmomatic.Trimmomatic(stringent = True)
 	trimmomatic_workflow.test()
 	breseq_workflow = breseq.Breseq(reference)
 	breseq_workflow.test()

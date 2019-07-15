@@ -7,16 +7,17 @@ from loguru import logger
 
 from pipelines import sampleio
 from pipelines.processes.variant_calling import sample_variant_calling
-
+def checkdir(path:Path)->Path:
+	path = Path(path)
+	if not path.exists():
+		path.mkdir()
+	return path
 def main():
 	lipuma_folder = Path("/home/cld100/projects/lipuma")
-	pipeline_folder = lipuma_folder / "pipeline_nanopore"
+	pipeline_folder = checkdir(lipuma_folder / "pipeline_nanopore")
 	reference_folder = lipuma_folder /"genomes" / "reads" / "nanopore"
 
-	#reference_sc1128 = reference_folder / "SC1128Build" / "SC1128.fasta"
 	reference_sc1360 = reference_folder / "SC1360Build" / "SC1360.fasta"
-	#reference_au0075 = reference_folder / "AU0075Build" / "AU0075.fasta"
-
 	reference_sc1128 = reference_folder / "SC1128Build" / "SC1128.polished.fasta"
 	reference_au0075 = reference_folder / "AU0075Build" / "AU0075.polished.fasta"
 
@@ -51,11 +52,11 @@ def main():
 	assert len(sibling_pair_b_samples) == 25
 	assert len(sibling_pair_f_samples) == 18
 
-	sibling_pair_a_folder = pipeline_folder / "SC1360"
-	sibling_pair_b_folder = pipeline_folder / "SC1128"
-	sibling_pair_f_folder = pipeline_folder / "AU0075"
+	sibling_pair_a_folder = checkdir(pipeline_folder / "SC1360")
+	sibling_pair_b_folder = checkdir(pipeline_folder / "SC1128")
+	sibling_pair_f_folder = checkdir(pipeline_folder / "AU0075")
 
-	#sample_variant_calling(reference_sc1360, sibling_pair_a_samples, sibling_pair_a_folder)
+	sample_variant_calling(reference_sc1360, sibling_pair_a_samples, sibling_pair_a_folder)
 	sample_variant_calling(reference_sc1128, sibling_pair_b_samples, sibling_pair_b_folder)
 	sample_variant_calling(reference_au0075, sibling_pair_f_samples, sibling_pair_f_folder)
 if __name__ == "__main__":

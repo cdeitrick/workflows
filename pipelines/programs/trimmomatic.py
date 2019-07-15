@@ -48,13 +48,21 @@ class Trimmomatic:
 			trimmomatic_stdout.txt
 	"""
 	program = "trimmomatic"
-	def __init__(self, leading: int = 3, trailing: int = 3, window: str = "4:15", minimum: int = 36, clip = ADAPTERS_FILENAME, threads: int = 8):
+	def __init__(self, leading: int = 3, trailing: int = 3, window: str = "4:15", minimum: int = 36, clip = ADAPTERS_FILENAME, threads: int = 8, stringent:bool = False):
 		self.leading: int = leading
 		self.trailing: int = trailing
 		self.window: str = window
 		self.minimum: int = minimum
 		self.clip: Path = clip
 		self.threads: int = threads
+
+		if stringent:
+			self.leading = 20
+			self.trailing = 20
+			self.minimum = 70
+
+
+
 	@staticmethod
 	def version()->Optional[str]:
 		return systemio.check_output(["trimmomatic", "-version"])
