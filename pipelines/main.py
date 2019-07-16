@@ -19,7 +19,7 @@ def main():
 
 	# /home/cld100/projects/lipuma/pairwise_pipeline_shovill/AU1064/AU3827/breseq_output
 
-	parent_folder = lipuma_folder / "pairwise_pipeline_shovill"
+	parent_folder = lipuma_folder /"pipelines"/ "pairwise_pipeline_shovill"
 	reference_folder = lipuma_folder / "genomes" / "assembly" / "assembly_shovill_annotated"
 	sample_folder = lipuma_folder / "genomes" / "reads" / "raw"
 
