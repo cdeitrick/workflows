@@ -82,8 +82,8 @@ class Trimmomatic:
 		sample_name: Optional[str]
 			Will form the prefix of the output files if given. Otherwise, the name of the forward read will be used to generate the output names.
 		"""
-
-		output_folder.mkdir()
+		if not output_folder.exists():
+			output_folder.mkdir()
 		output = self.get_expected_output(output_folder, sample_name if sample_name else forward)
 		command = self.get_command(forward, reverse, output)
 

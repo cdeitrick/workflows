@@ -13,7 +13,7 @@ def checkdir(path:Path)->Path:
 		path.mkdir()
 	return path
 
-def main_pairwise_pipeline():
+def main():
 
 	lipuma_folder = Path("/home/cld100/projects/lipuma")
 
@@ -22,6 +22,7 @@ def main_pairwise_pipeline():
 	parent_folder = lipuma_folder / "pairwise_pipeline_shovill"
 	reference_folder = lipuma_folder / "genomes" / "assembly" / "assembly_shovill_annotated"
 	sample_folder = lipuma_folder / "genomes" / "reads" / "raw"
+
 	au1064 = reference_folder / "AU1064" / "AU1064.gff"
 	sc1360 = reference_folder / "SC1360" / "SC1360.gff"
 
@@ -44,7 +45,7 @@ def main_pairwise_pipeline():
 	sample_variant_calling(au1836, patient_pair_e_samples, checkdir(parent_folder / "AU1836"))
 	sample_variant_calling(au3415, patient_pair_e_samples, checkdir(parent_folder / "AU3415"))
 
-def main():
+def main_nanopore():
 	lipuma_folder = Path("/home/cld100/projects/lipuma")
 	pipeline_folder = checkdir(lipuma_folder / "pipeline_nanopore")
 	reference_folder = lipuma_folder /"genomes" / "assembly_nanopore"
