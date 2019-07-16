@@ -12,6 +12,38 @@ def checkdir(path:Path)->Path:
 	if not path.exists():
 		path.mkdir()
 	return path
+
+def main_pairwise_pipeline():
+
+	lipuma_folder = Path("/home/cld100/projects/lipuma")
+
+	# /home/cld100/projects/lipuma/pairwise_pipeline_shovill/AU1064/AU3827/breseq_output
+
+	parent_folder = lipuma_folder / "pairwise_pipeline_shovill"
+	reference_folder = lipuma_folder / "genomes" / "assembly" / "assembly_shovill_annotated"
+	sample_folder = lipuma_folder / "genomes" / "reads" / "raw"
+	au1064 = reference_folder / "AU1064" / "AU1064.gff"
+	sc1360 = reference_folder / "SC1360" / "SC1360.gff"
+
+	sc1128 = reference_folder / "SC1128" / "SC1128.gff"
+	sc1145 = reference_folder / "SC1145" / "SC1145.gff"
+
+	au1836 = reference_folder / "AU1836" / "AU1836.gff"
+	au3415 = reference_folder / "AU3415" / "AU3415.gff"
+
+	patient_pair_a_samples = [sampleio.SampleReads.from_folder(sample_folder / "AU3827B")]
+	patient_pair_b_samples = [sampleio.SampleReads.from_folder(sample_folder / "AU3740B")]
+	patient_pair_e_samples = [sample_folder / "AU3415B", sample_folder / "AU3416B", sample_folder / "AU6936B"]
+	patient_pair_e_samples = [sampleio.SampleReads.from_folder(i) for i in patient_pair_e_samples]
+	#sample_variant_calling(reference_sc1360, sibling_pair_a_samples, sibling_pair_a_folder)
+
+	sample_variant_calling(au1064, patient_pair_a_samples, checkdir(parent_folder / "AU1064"))
+	sample_variant_calling(sc1360, patient_pair_a_samples, checkdir(parent_folder / "SC1360"))
+	sample_variant_calling(sc1128, patient_pair_b_samples, checkdir(parent_folder / "SC1128"))
+	sample_variant_calling(sc1145, patient_pair_b_samples, checkdir(parent_folder / "SC1145"))
+	sample_variant_calling(au1836, patient_pair_e_samples, checkdir(parent_folder / "AU1836"))
+	sample_variant_calling(au3415, patient_pair_e_samples, checkdir(parent_folder / "AU3415"))
+
 def main():
 	lipuma_folder = Path("/home/cld100/projects/lipuma")
 	pipeline_folder = checkdir(lipuma_folder / "pipeline_nanopore")
@@ -60,4 +92,4 @@ def main():
 	sample_variant_calling(reference_sc1128, sibling_pair_b_samples, sibling_pair_b_folder)
 	sample_variant_calling(reference_au0075, sibling_pair_f_samples, sibling_pair_f_folder)
 if __name__ == "__main__":
-	main()
+	main_pairwise_pipeline()
