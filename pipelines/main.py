@@ -6,22 +6,39 @@ from pathlib import Path
 from loguru import logger
 
 from pipelines import sampleio
+from pipelines.processes import read_assembly
 from pipelines.processes.variant_calling import sample_variant_calling
-def checkdir(path:Path)->Path:
+
+
+def checkdir(path: Path) -> Path:
 	path = Path(path)
 	if not path.exists():
 		path.mkdir()
 	return path
 
-def main():
 
+def main():
+	source_folder = Path("/home/cld100/projects/lipuma/genomes/reads/trimmed/")
+	parent_folder = source_folder.with_name('trimmed_stringent')
+
+	folders = list(source_folder.iterdir())
+	samples = [sampleio.SampleReads.from_trimmomatic(i, i.name) for i in folders]
+
+	read_assembly.read_assembly(samples, parent_folder)
+
+
+def breseq_main():
 	lipuma_folder = Path("/home/cld100/projects/lipuma")
 
-	# /home/cld100/projects/lipuma/pairwise_pipeline_shovill/AU1064/AU3827/breseq_output
-
-	parent_folder = lipuma_folder /"pipelines"/ "pairwise_pipeline_shovill"
+	parent_folder = lipuma_folder / "pipelines" / "pairwise_pipeline_shovill"
 	reference_folder = lipuma_folder / "genomes" / "assembly" / "assembly_shovill_annotated"
-	sample_folder = lipuma_folder / "genomes" / "reads" / "raw"
+	sample_folder = lipuma_folder / "genomes" / "reads" / "trimmed"
+	isolate_map_filename = lipuma_folder / "isolate_sample_map.old.txt"
+
+	# Import isolate map
+	lines = isolate_map_filename.read_text().split('\n')
+	pairs = [i.strip().split('\t') for i in lines if i]
+	pairs = {i: j for i, j in pairs}
 
 	au1064 = reference_folder / "AU1064" / "AU1064.gff"
 	sc1360 = reference_folder / "SC1360" / "SC1360.gff"
@@ -32,23 +49,36 @@ def main():
 	au1836 = reference_folder / "AU1836" / "AU1836.gff"
 	au3415 = reference_folder / "AU3415" / "AU3415.gff"
 
-	patient_pair_a_samples = [sampleio.SampleReads.from_folder(sample_folder / "AU3827B")]
-	patient_pair_b_samples = [sampleio.SampleReads.from_folder(sample_folder / "AU3740B")]
-	patient_pair_e_samples = [sample_folder / "AU3415B", sample_folder / "AU3416B", sample_folder / "AU6936B"]
-	patient_pair_e_samples = [sampleio.SampleReads.from_folder(i) for i in patient_pair_e_samples]
-	#sample_variant_calling(reference_sc1360, sibling_pair_a_samples, sibling_pair_a_folder)
+	au0075 = reference_folder / "AU0075" / "AU0075.gff"
+	au15033 = reference_folder / "AU15033" / "AU15033.gff"
 
-	sample_variant_calling(au1064, patient_pair_a_samples, checkdir(parent_folder / "AU1064"))
-	sample_variant_calling(sc1360, patient_pair_a_samples, checkdir(parent_folder / "SC1360"))
-	sample_variant_calling(sc1128, patient_pair_b_samples, checkdir(parent_folder / "SC1128"))
-	sample_variant_calling(sc1145, patient_pair_b_samples, checkdir(parent_folder / "SC1145"))
-	sample_variant_calling(au1836, patient_pair_e_samples, checkdir(parent_folder / "AU1836"))
-	sample_variant_calling(au3415, patient_pair_e_samples, checkdir(parent_folder / "AU3415"))
+	logger.info(f"Collecting all PHDC samples...")
+	all_sample_folders = list(sample_folder.iterdir())
+	patient_samples = {'A': list(), 'B': list(), 'E': list(), 'F': list()}
+	for sample_folder in all_sample_folders:
+		sample_id = sample_folder.name
+		remap = pairs.get(sample_id)
+		if remap:
+			patient_id = remap[0]
+			patient_samples[patient_id].append(sample_folder)
+
+	for k, v in patient_samples:
+		logger.info(f"found {len(v)} samples for patient pair {k}")
+
+	sample_variant_calling(au1064, patient_samples['A'], checkdir(parent_folder / "AU1064"))
+	sample_variant_calling(sc1360, patient_samples['A'], checkdir(parent_folder / "SC1360"))
+	sample_variant_calling(sc1128, patient_samples['B'], checkdir(parent_folder / "SC1128"))
+	sample_variant_calling(sc1145, patient_samples['B'], checkdir(parent_folder / "SC1145"))
+	sample_variant_calling(au1836, patient_samples['E'], checkdir(parent_folder / "AU1836"))
+	sample_variant_calling(au3415, patient_samples['E'], checkdir(parent_folder / "AU3415"))
+	sample_variant_calling(au0075, patient_samples['F'], checkdir(parent_folder / "AU0075"))
+	sample_variant_calling(au15033, patient_samples['F'], checkdir(parent_folder / "AU15033"))
+
 
 def main_nanopore():
 	lipuma_folder = Path("/home/cld100/projects/lipuma")
 	pipeline_folder = checkdir(lipuma_folder / "pipeline_nanopore")
-	reference_folder = lipuma_folder /"genomes" / "assembly_nanopore"
+	reference_folder = lipuma_folder / "genomes" / "assembly_nanopore"
 
 	reference_sc1360 = reference_folder / "SC1360Build" / "SC1360.polished.fasta"
 	reference_sc1128 = reference_folder / "SC1128Build" / "SC1128.polished.fasta"
@@ -92,5 +122,7 @@ def main_nanopore():
 	sample_variant_calling(reference_sc1360, sibling_pair_a_samples, sibling_pair_a_folder)
 	sample_variant_calling(reference_sc1128, sibling_pair_b_samples, sibling_pair_b_folder)
 	sample_variant_calling(reference_au0075, sibling_pair_f_samples, sibling_pair_f_folder)
+
+
 if __name__ == "__main__":
-	main_pairwise_pipeline()
+	main()

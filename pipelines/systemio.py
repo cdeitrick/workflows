@@ -50,7 +50,6 @@ class CommandRunner:
 		-------
 		subprocess.CompletedProcess
 		"""
-		srun = False
 		if srun:
 			command = get_srun_command(threads) + command
 		command = format_command(command)
