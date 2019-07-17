@@ -20,6 +20,7 @@ class SampleReads:
 	forward: Path
 	reverse: Path
 	folder: Optional[Path] = None
+	is_trimmed: bool = True
 
 	def exists(self):
 		return self.forward.exists() and self.reverse.exists()
@@ -38,7 +39,7 @@ class SampleReads:
 		try:
 			forward = [i for i in files if ('forward' in i.name and 'unpaired' not in i.name)][0]
 			reverse = [i for i in files if ('reverse' in i.name and 'unpaired' not in i.name)][0]
-			return cls(sample_id, forward, reverse, folder)
+			return cls(sample_id, forward, reverse, folder, is_trimmed = True)
 		except IndexError:
 			logger.warning(f"Could not find trimmomatic reads in folder {folder}")
 			return None

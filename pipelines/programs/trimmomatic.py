@@ -7,6 +7,7 @@ ADAPTERS_FILENAME = Path(__file__).parent / "resources" / "adapters.fa"
 
 
 class TrimmomaticOutput:
+	# TODO: remove this in favor of SampleReads
 
 	# def __init__(self, output_folder: Path, prefix: Union[str, Path]):
 	def __init__(self, name: str, forward: Path, reverse: Path, unpaired_forward: Optional[Path] = None, unpaired_reverse: Optional[Path] = None):

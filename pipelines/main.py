@@ -2,7 +2,6 @@
 The entry point for scripts using the piplelines.
 """
 from pathlib import Path
-
 from loguru import logger
 
 from pipelines import sampleio
