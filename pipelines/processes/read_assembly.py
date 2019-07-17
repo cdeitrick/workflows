@@ -5,7 +5,7 @@ from typing import List
 from loguru import logger
 
 def read_assembly(samples:List[sampleio.SampleReads], parent_folder:Path):
-	logger.info("Assembling {len(samples)} samples...")
+	logger.info(f"Assembling {len(samples)} samples...")
 	cancel = False
 
 	if not parent_folder.exists():
@@ -37,11 +37,10 @@ def read_assembly(samples:List[sampleio.SampleReads], parent_folder:Path):
 		shovill_folder = sample_folder / "shovill"
 
 		if not sample.is_trimmed:
-			logger.info(f"Trimming sample '{sample.name}'")
+			logger.info(f"\tTrimming sample '{sample.name}'")
 			trimmomatic_output = trimmomatic_workflow.run(sample.forward, sample.reverse, trimmomatic_folder)
 		else:
-			logger.info(f"'{sample.name}' is already trimmed.")
+			logger.info(f"\t'{sample.name}' is already trimmed. Skipping...")
 			trimmomatic_output = sample
-
-		print(f"assembling '{sample.name}'")
+		logger.info(f"Assembling {sample.name}")
 		shovill_workflow.run(trimmomatic_output.forward, trimmomatic_output.reverse, shovill_folder)
