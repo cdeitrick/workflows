@@ -17,6 +17,7 @@ def checkdir(path: Path) -> Path:
 
 
 def main():
+	logger.info("Running Assembly pipeline...")
 	source_folder = Path("/home/cld100/projects/lipuma/genomes/reads/trimmed/")
 	parent_folder = source_folder.with_name('trimmed_stringent')
 
