@@ -16,7 +16,7 @@ def checkdir(path: Path) -> Path:
 	return path
 
 
-def main():
+def mainassembly():
 	logger.info("Running Assembly pipeline...")
 	source_folder = Path("/home/cld100/projects/lipuma/genomes/reads/trimmed/")
 	parent_folder = source_folder.with_name('trimmed_stringent')
@@ -122,6 +122,15 @@ def main_nanopore():
 	sample_variant_calling(reference_sc1360, sibling_pair_a_samples, sibling_pair_a_folder)
 	sample_variant_calling(reference_sc1128, sibling_pair_b_samples, sibling_pair_b_folder)
 	sample_variant_calling(reference_au0075, sibling_pair_f_samples, sibling_pair_f_folder)
+
+def main():
+	lipuma_folder = Path.home() / "projects" / "lipuma"
+	source_folder = lipuma_folder / "genomes" / "reads" / "raw"
+	destination_folder = lipuma_folder / "genomes" / "reads" / "trimmedMinor"
+
+	all_samples = [sampleio.SampleReads.from_folder(i) for i in source_folder.iterdir() if i.is_dir()]
+
+	read_assembly.read_assembly(all_samples, destination_folder, stringent = False)
 
 
 if __name__ == "__main__":

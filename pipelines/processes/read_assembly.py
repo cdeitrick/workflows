@@ -4,14 +4,14 @@ from pipelines import sampleio
 from typing import List
 from loguru import logger
 
-def read_assembly(samples:List[sampleio.SampleReads], parent_folder:Path):
+def read_assembly(samples:List[sampleio.SampleReads], parent_folder:Path, stringent:bool = False):
 	logger.info(f"Assembling {len(samples)} samples...")
 	cancel = False
 
 	if not parent_folder.exists():
 		try:
 			parent_folder.mkdir()
-		except Exception as exception:
+		except FileNotFoundError:
 			logger.critical(f"The parent folder does not exist and cannot be created: {parent_folder}")
 			cancel = True
 
