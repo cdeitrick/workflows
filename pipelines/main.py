@@ -6,6 +6,7 @@ from loguru import logger
 
 from pipelines import sampleio
 from pipelines.processes import read_assembly
+from pipelines.processes import read_trimming
 from pipelines.processes.variant_calling import sample_variant_calling
 
 
@@ -130,7 +131,7 @@ def main():
 
 	all_samples = [sampleio.SampleReads.from_folder(i) for i in source_folder.iterdir() if i.is_dir()]
 
-	read_assembly.read_assembly(all_samples, destination_folder, stringent = False)
+	read_trimming.trim(all_samples, destination_folder, stringent = False)
 
 
 if __name__ == "__main__":
