@@ -95,7 +95,9 @@ class Trimmomatic:
 			self.leading = 20
 			self.trailing = 20
 			self.minimum = 70
-
+	def __str__(self)->str:
+		string = f"Trimmomatic(leading = {self.leading}, trailing = {self.trailing}, minimum = {self.minimum}, clip = {self.clip.exists()})"
+		return string
 	@staticmethod
 	def version() -> Optional[str]:
 		return systemio.check_output(["trimmomatic", "-version"])

@@ -18,6 +18,7 @@ def trim(samples:List[sampleio.SampleReads], parent_folder:Path, stringent:bool 
 
 
 	trimmomatic_workflow = trimmomatic.Trimmomatic(stringent = stringent)
+	print(trimmomatic_workflow)
 
 	for index, sample in enumerate(samples):
 		logger.info(f"Trimming sample {index} of {len(samples)}: {sample.name}")
