@@ -127,11 +127,14 @@ def main_nanopore():
 def main():
 	lipuma_folder = Path.home() / "projects" / "lipuma"
 	source_folder = lipuma_folder / "genomes" / "reads" / "raw"
-	destination_folder = checkdir(lipuma_folder / "genomes" / "reads" / "trimmedMinor")
+
+	destination_default = checkdir(lipuma_folder / "genomes" / "reads" / "trimmedMinor")
+	destination_stringent = checkdir(lipuma_folder / "genomes" / "reads" / "trimmedMajor")
 
 	all_samples = [sampleio.SampleReads.from_folder(i) for i in source_folder.iterdir() if i.is_dir()]
 
-	read_trimming.trim(all_samples, destination_folder, stringent = False)
+	read_trimming.trim(all_samples, destination_default, stringent = False)
+	read_trimming.trim(all_samples, destination_stringent, stringent = True)
 
 
 if __name__ == "__main__":

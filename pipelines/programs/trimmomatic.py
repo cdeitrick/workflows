@@ -3,7 +3,7 @@ from typing import List, Optional, Union
 
 from pipelines import systemio
 
-ADAPTERS_FILENAME = Path(__file__).parent / "resources" / "adapters.fa"
+ADAPTERS_FILENAME = Path(__file__).parent.parent / "resources" / "adapters.fa"
 
 
 class TrimmomaticOutput:
@@ -104,6 +104,11 @@ class Trimmomatic:
 		result = self.version()
 		if result is None:
 			message = "Trimmomatic cannot be found."
+			raise FileNotFoundError(message)
+
+		# Make sure the adapters filename exists
+		if not self.clip.exists():
+			message = f"Cannot locate the adaptor file: {self.clip}"
 			raise FileNotFoundError(message)
 
 	def run(self, forward: Path, reverse: Path, output_folder: Path, sample_name: str = None) -> TrimmomaticOutput:
