@@ -1,5 +1,6 @@
 from pathlib import Path
 from pipelines.programs import trimmomatic, shovill
+from pipelines.utilities import checkdir
 from pipelines import sampleio
 from typing import List
 from loguru import logger
@@ -29,14 +30,10 @@ def read_assembly(samples:List[sampleio.SampleReads], parent_folder:Path, string
 
 	for index, sample in enumerate(samples, start = 1):
 		logger.info(f"Assembling sample {index} of {len(samples)}: {sample.name}")
-		sample_folder = parent_folder / sample.name
-		if not sample_folder.exists():
-			sample_folder.mkdir()
 
+		sample_folder = checkdir(parent_folder / sample.name)
 		trimmomatic_folder = sample_folder / "trimmomatic"
-		shovill_folder = sample_folder / "shovill"
-		if not shovill_folder.exists():
-			shovill_folder.mkdir()
+		shovill_folder = checkdir(sample_folder / "shovill")
 
 		if not sample.is_trimmed:
 			logger.info(f"\tTrimming sample '{sample.name}'")
@@ -44,5 +41,6 @@ def read_assembly(samples:List[sampleio.SampleReads], parent_folder:Path, string
 		else:
 			logger.info(f"\t'{sample.name}' is already trimmed. Skipping...")
 			trimmomatic_output = sample
+
 		logger.info(f"Assembling {sample.name}")
 		shovill_workflow.run(trimmomatic_output.forward, trimmomatic_output.reverse, shovill_folder)
