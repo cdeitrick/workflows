@@ -2,11 +2,11 @@
 The entry point for scripts using the piplelines.
 """
 from pathlib import Path
+
 from loguru import logger
 
 from pipelines import sampleio
-from pipelines.processes import read_assembly
-from pipelines.processes import read_trimming
+from pipelines.processes import read_assembly, read_trimming
 from pipelines.processes.variant_calling import sample_variant_calling
 
 
@@ -124,6 +124,7 @@ def main_nanopore():
 	sample_variant_calling(reference_sc1128, sibling_pair_b_samples, sibling_pair_b_folder)
 	sample_variant_calling(reference_au0075, sibling_pair_f_samples, sibling_pair_f_folder)
 
+
 def main():
 	lipuma_folder = Path.home() / "projects" / "lipuma"
 	source_folder = lipuma_folder / "genomes" / "reads" / "raw"
@@ -135,6 +136,29 @@ def main():
 
 	read_trimming.trim(all_samples, destination_default, stringent = False)
 	read_trimming.trim(all_samples, destination_stringent, stringent = True)
+
+
+# def update_2019_07_24():
+def main():
+	""" Re runs asembly and analysis for newly trimmed samples."""
+	lipuma_folder = Path.home() / "projects" / "lipuma"
+	genomes_folder = lipuma_folder / "genomes"
+	hi2424_prefix = genomes_folder / "reference" / "HI2424"
+	isolate_map = lipuma_folder / "isolate_sample_map.old.txt"
+	update_folder = checkdir(lipuma_folder / "2019-07-24-update")
+
+	reference_sample_labels = ["AU0075", "AU1064", "AU1836", "AU3415", "AU15033", "SC1128", "SC1360", "SC1145"]
+	reference_parent_pair = ["F", "A", "E", "E", "F", "B", "A", "B"]
+
+	trimmed_reads_folder = lipuma_folder / "genomes" / "reads" / "trimmedMajor"  # stringent trimming
+	trimmed_reads_samples = list(i for i in trimmed_reads_folder.iterdir() if i.is_dir())
+
+	# First, assemble and annotate the references
+	reference_output_folder = checkdir(update_folder / "reference_samples")
+	reference_sample_folders = [i for i in trimmed_reads_samples if i.name in reference_sample_labels]
+	reference_samples = [sampleio.SampleReads.from_trimmomatic(i, i.name) for i in reference_sample_folders]
+
+	read_assembly.read_assembly(reference_samples, reference_output_folder)
 
 
 if __name__ == "__main__":

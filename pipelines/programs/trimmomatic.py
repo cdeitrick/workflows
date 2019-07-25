@@ -2,8 +2,8 @@ from pathlib import Path
 from typing import List, Optional, Union
 
 from pipelines import systemio
-
-ADAPTERS_FILENAME = Path(__file__).parent.parent / "resources" / "adapters.fa"
+from pipelines.resources import illumina_filename
+ADAPTERS_FILENAME = illumina_filename
 
 
 class TrimmomaticOutput:
