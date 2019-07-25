@@ -27,6 +27,7 @@ class Shovill:
 		command = self.get_command(forward, reverse, output_folder)
 
 		if not output.exists():
+			logger.info(f"Assembly: Generating assembly...")
 			systemio.command_runner.run(command, output_folder)
 		else:
 			logger.info(f"Assembly: The output files already exist in {output_folder}")
