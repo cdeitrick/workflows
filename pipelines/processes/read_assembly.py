@@ -35,6 +35,8 @@ def read_assembly(samples:List[sampleio.SampleReads], parent_folder:Path, string
 
 		trimmomatic_folder = sample_folder / "trimmomatic"
 		shovill_folder = sample_folder / "shovill"
+		if not shovill_folder.exists():
+			shovill_folder.mkdir()
 
 		if not sample.is_trimmed:
 			logger.info(f"\tTrimming sample '{sample.name}'")
