@@ -2,7 +2,7 @@ from pathlib import Path
 from typing import List
 
 from pipelines import systemio
-
+from loguru import logger
 
 class ShovillOutput:
 	def __init__(self, output_folder: Path):
@@ -28,6 +28,8 @@ class Shovill:
 
 		if not output.exists():
 			systemio.command_runner.run(command, output_folder)
+		else:
+			logger.info(f"Assembly: The output files already exist in {output_folder}")
 
 		return output
 
