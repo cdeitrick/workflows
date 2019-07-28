@@ -108,14 +108,14 @@ def main_variant_calling():
 	pipeline_folder = checkdir(update_folder / "pairwise_pipeline")
 
 	references = [
-		reference_folder / "AU1064" / "annotation" / "AU1064.gff",
-		reference_folder / "SC1360" / "annotation" / "SC1360.gff",
-		reference_folder / "SC1128" / "annotation" / "SC1128.gff",
-		reference_folder / "SC1145" / "annotation" / "SC1145.gff",
-		reference_folder / "AU1836" / "annotation" / "AU1836.gff",
-		reference_folder / "AU3415" / "annotation" / "AU3415.gff",
-		reference_folder / "AU0075" / "annotation" / "AU0075.gff",
-		reference_folder / "AU15033" / "annotation" / "AU15033.gff",
+		reference_folder / "AU1064" / "annotations" / "AU1064.gff",
+		reference_folder / "SC1360" / "annotations" / "SC1360.gff",
+		reference_folder / "SC1128" / "annotations" / "SC1128.gff",
+		reference_folder / "SC1145" / "annotations" / "SC1145.gff",
+		reference_folder / "AU1836" / "annotations" / "AU1836.gff",
+		reference_folder / "AU3415" / "annotations" / "AU3415.gff",
+		reference_folder / "AU0075" / "annotations" / "AU0075.gff",
+		reference_folder / "AU15033" / "annotations" / "AU15033.gff",
 	]
 
 	sequence_folder = lipuma_folder / "genomes" / "reads" / "trimmedMajor"
