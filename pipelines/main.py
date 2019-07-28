@@ -132,20 +132,20 @@ def main_variant_calling():
 	sample_name_map_filename = lipuma_folder / "isolate_sample_map.old.txt"
 	sample_name_map = read_sample_map(sample_name_map_filename)
 	print(sample_name_map)
-	sibling_pair_a_ids = [k for k, v in sample_name_map.items() if v.startswith('A')]
-	sibling_pair_b_ids = [k for k, v in sample_name_map.items() if v.startswith('B')]
-	sibling_pair_e_ids = [k for k, v in sample_name_map.items() if v.startswith('E')]
-	sibling_pair_f_ids = [k for k, v in sample_name_map.items() if v.startswith('F')]
+	sibling_pair_a_ids = [k for k, v in sample_name_map.items() if (v.startswith('A0') or v.startswith('A1'))]
+	sibling_pair_b_ids = [k for k, v in sample_name_map.items() if (v.startswith('B0') or v.startswith('B1'))]
+	sibling_pair_e_ids = [k for k, v in sample_name_map.items() if (v.startswith('E0') or v.startswith('E1'))]
+	sibling_pair_f_ids = [k for k, v in sample_name_map.items() if (v.startswith('F0') or v.startswith('F1'))]
 
 	sibling_pair_a_samples = [i for i in samples if i.name in sibling_pair_a_ids]
 	sibling_pair_b_samples = [i for i in samples if i.name in sibling_pair_b_ids]
 	sibling_pair_e_samples = [i for i in samples if i.name in sibling_pair_e_ids]
 	sibling_pair_f_samples = [i for i in samples if i.name in sibling_pair_f_ids]
 
-	logger.info("sibling pair a: ", len(sibling_pair_a_samples))
-	logger.info("sibling pair b: ", len(sibling_pair_b_samples))
-	logger.info("sibling pair e: ", len(sibling_pair_e_samples))
-	logger.info("sibling pair f: ", len(sibling_pair_f_samples))
+	logger.info("sibling pair a: {len(sibling_pair_a_samples)}")
+	logger.info("sibling pair b: {len(sibling_pair_b_samples)}")
+	logger.info("sibling pair e: {len(sibling_pair_e_samples)}")
+	logger.info("sibling pair f: {len(sibling_pair_f_samples)}")
 
 	test_found_all_samples(sibling_pair_a_samples, 25)
 	test_found_all_samples(sibling_pair_b_samples, 25)
