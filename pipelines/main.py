@@ -113,7 +113,7 @@ def main_variant_calling():
 	samples = list()
 	for sample_read_folder in sequence_folder.iterdir():
 		try:
-			sample = sampleio.SampleReads.from_folder(sample_read_folder)
+			sample = sampleio.SampleReads.from_trimmomatic(sample_read_folder, sample_read_folder.name)
 		except:
 			logger.warning(f"Could not collect the reads from folder {sample_read_folder}")
 			continue
