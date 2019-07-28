@@ -142,10 +142,10 @@ def main_variant_calling():
 	sibling_pair_e_samples = [i for i in samples if i.name in sibling_pair_e_ids]
 	sibling_pair_f_samples = [i for i in samples if i.name in sibling_pair_f_ids]
 
-	logger.info("sibling pair a: {len(sibling_pair_a_samples)}")
-	logger.info("sibling pair b: {len(sibling_pair_b_samples)}")
-	logger.info("sibling pair e: {len(sibling_pair_e_samples)}")
-	logger.info("sibling pair f: {len(sibling_pair_f_samples)}")
+	logger.info(f"sibling pair a: {len(sibling_pair_a_samples)}")
+	logger.info(f"sibling pair b: {len(sibling_pair_b_samples)}")
+	logger.info(f"sibling pair e: {len(sibling_pair_e_samples)}")
+	logger.info(f"sibling pair f: {len(sibling_pair_f_samples)}")
 
 	test_found_all_samples(sibling_pair_a_samples, 25)
 	test_found_all_samples(sibling_pair_b_samples, 25)

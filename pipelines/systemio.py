@@ -78,6 +78,9 @@ class CommandRunner:
 				stderr_path.write_text(process.stderr)
 			except FileNotFoundError:
 				logger.error(f"Could not write the output files to {output_folder}")
+		else:
+			logger.warning(f"Cannot detect the output folder...")
+			logger.warning(f"{process.stderr}")
 
 	def write_command_to_commandlog(self, command: List[str]):
 		if self.command_log:
