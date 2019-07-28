@@ -27,7 +27,7 @@ def test_found_all_samples(samples:List[sampleio.SampleReads], expected:int):
 		assert len(samples) == expected
 	except AssertionError:
 		from pprint import pprint
-		pprint(samples)
+		pprint([i.name for i in samples])
 		message = f"Expected {expected} samples, but found {len(samples)}"
 		raise ValueError(message)
 
@@ -132,7 +132,7 @@ def main_variant_calling():
 
 	sample_name_map_filename = lipuma_folder / "isolate_sample_map.old.txt"
 	sample_name_map = read_sample_map(sample_name_map_filename)
-
+	print(sample_name_map)
 	sibling_pair_a_ids = [k for k, v in sample_name_map.items() if v.startswith('A')]
 	sibling_pair_b_ids = [k for k, v in sample_name_map.items() if v.startswith('B')]
 	sibling_pair_e_ids = [k for k, v in sample_name_map.items() if v.startswith('E')]
@@ -145,7 +145,7 @@ def main_variant_calling():
 
 	logger.info("sibling pair a: ", len(sibling_pair_a_samples))
 	logger.info("sibling pair b: ", len(sibling_pair_b_samples))
-	logger.info("sibling pair e: ", len(sibling_pair_f_samples))
+	logger.info("sibling pair e: ", len(sibling_pair_e_samples))
 	logger.info("sibling pair f: ", len(sibling_pair_f_samples))
 
 	test_found_all_samples(sibling_pair_a_samples, 25)
