@@ -2,12 +2,24 @@
 The entry point for scripts using the piplelines.
 """
 from pathlib import Path
+from typing import Dict
 
 from loguru import logger
 
 from pipelines import sampleio
-from pipelines.processes import read_assembly, read_trimming
+from pipelines.processes import read_assembly
 from pipelines.processes.variant_calling import sample_variant_calling
+
+
+def read_sample_map(filename: Path) -> Dict[str, str]:
+	contents = filename.read_text()
+	lines = contents.split('\n')
+	lines = [i.strip() for i in lines]
+	kvs = [i.split('\t') for i in lines]
+	data = dict()
+	for k, v in kvs:
+		data[k] = v
+	return data
 
 
 def checkdir(path: Path) -> Path:
@@ -76,7 +88,7 @@ def breseq_main():
 	sample_variant_calling(au15033, patient_samples['F'], checkdir(parent_folder / "AU15033"))
 
 
-def main_nanopore():
+def main_pairwise_variant_calling():
 	lipuma_folder = Path("/home/cld100/projects/lipuma")
 	pipeline_folder = checkdir(lipuma_folder / "pipeline_nanopore")
 	reference_folder = lipuma_folder / "genomes" / "assembly_nanopore"
@@ -126,16 +138,62 @@ def main_nanopore():
 
 
 def main():
-	lipuma_folder = Path.home() / "projects" / "lipuma"
-	source_folder = lipuma_folder / "genomes" / "reads" / "raw"
+	lipuma_folder = Path("/home/cld100/projects/lipuma")
+	update_folder = checkdir(lipuma_folder / "2019-07-24-update")
+	reference_folder = update_folder / "reference_samples"
+	pipeline_folder = checkdir(update_folder / "pairwise_pipeline")
 
-	destination_default = checkdir(lipuma_folder / "genomes" / "reads" / "trimmedMinor")
-	destination_stringent = checkdir(lipuma_folder / "genomes" / "reads" / "trimmedMajor")
+	references = [
+		reference_folder / "AU1064" / "annotation" / "AU1064.gbk",
+		reference_folder / "SC1360" / "annotation" / "SC1360.gbk",
+		reference_folder / "SC1128" / "annotation" / "SC1128.gbk",
+		reference_folder / "SC1145" / "annotation" / "SC1145.gbk",
+		reference_folder / "AU1836" / "annotation" / "AU1836.gbk",
+		reference_folder / "AU3415" / "annotation" / "AU3415.gbk",
+		reference_folder / "AU0075" / "annotation" / "AU0075.gbk",
+		reference_folder / "AU15033" / "annotation" / "AU15033.gbk",
+	]
 
-	all_samples = [sampleio.SampleReads.from_folder(i) for i in source_folder.iterdir() if i.is_dir()]
+	sequence_folder = lipuma_folder / "genomes" / "reads" / "trimmedMajor"
 
-	read_trimming.trim(all_samples, destination_default, stringent = False)
-	read_trimming.trim(all_samples, destination_stringent, stringent = True)
+	samples = list()
+	for sample_read_folder in sequence_folder.iterdir():
+		try:
+			sample = sampleio.SampleReads.from_folder(sample_read_folder)
+		except:
+			logger.warning(f"Could not collect the reads from folder {sample_read_folder}")
+			continue
+		samples.append(sample)
+
+	sample_name_map_filename = lipuma_folder / "isolate_sample_map.old.txt"
+	sample_name_map = read_sample_map(sample_name_map_filename)
+
+	sibling_pair_a_ids = [k for k, v in sample_name_map.items() if v.startswith('A')]
+	sibling_pair_b_ids = [k for k, v in sample_name_map.items() if v.startswith('B')]
+	sibling_pair_e_ids = [k for k, v in sample_name_map.items() if v.startswith('E')]
+	sibling_pair_f_ids = [k for k, v in sample_name_map.items() if v.startswith('F')]
+
+	sibling_pair_a_samples = [i for i in samples if i.name in sibling_pair_a_ids]
+	sibling_pair_b_samples = [i for i in samples if i.name in sibling_pair_b_ids]
+	sibling_pair_e_samples = [i for i in samples if i.name in sibling_pair_e_ids]
+	sibling_pair_f_samples = [i for i in samples if i.name in sibling_pair_f_ids]
+
+	assert len(sibling_pair_a_samples) == 25
+	assert len(sibling_pair_b_samples) == 25
+	assert len(sibling_pair_e_samples) == 27
+	assert len(sibling_pair_f_samples) == 18
+
+	samples = {
+		'A': sibling_pair_a_samples,
+		'B': sibling_pair_b_samples,
+		'E': sibling_pair_e_samples,
+		'F': sibling_pair_f_samples
+	}
+
+	for reference, pair_id in zip(references, ['A', 'A', 'B', 'B', 'E', 'E', 'F', 'F']):
+		parent_folder = checkdir(pipeline_folder / reference.stem)
+		current_samples = samples[pair_id]
+		sample_variant_calling(reference, current_samples, parent_folder)
 
 
 # def update_2019_07_24():
@@ -146,6 +204,7 @@ def main():
 	hi2424_prefix = genomes_folder / "reference" / "HI2424"
 	isolate_map = lipuma_folder / "isolate_sample_map.old.txt"
 	update_folder = checkdir(lipuma_folder / "2019-07-24-update")
+	reference_folder = update_folder / "reference_samples"
 
 	reference_sample_labels = ["AU0075", "AU1064", "AU1836", "AU3415", "AU15033", "SC1128", "SC1360", "SC1145"]
 	reference_parent_pair = ["F", "A", "E", "E", "F", "B", "A", "B"]
@@ -159,6 +218,10 @@ def main():
 	reference_samples = [sampleio.SampleReads.from_trimmomatic(i, i.name) for i in reference_sample_folders]
 
 	read_assembly.read_assembly(reference_samples, reference_output_folder)
+
+
+def assembly_main():
+	pass
 
 
 if __name__ == "__main__":

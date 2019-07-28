@@ -36,11 +36,9 @@ def read_assembly(samples:List[sampleio.SampleReads], parent_folder:Path, string
 		shovill_folder = checkdir(sample_folder / "shovill")
 
 		if not sample.is_trimmed:
-			logger.info(f"\tTrimming sample '{sample.name}'")
 			trimmomatic_output = trimmomatic_workflow.run(sample.forward, sample.reverse, trimmomatic_folder)
 		else:
 			logger.info(f"\t'{sample.name}' is already trimmed. Skipping...")
 			trimmomatic_output = sample
 
-		logger.info(f"Assembling {sample.name}")
 		shovill_workflow.run(trimmomatic_output.forward, trimmomatic_output.reverse, shovill_folder)

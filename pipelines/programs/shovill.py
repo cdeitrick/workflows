@@ -23,6 +23,7 @@ class Shovill:
 		self.threads = threads
 
 	def run(self, forward: Path, reverse: Path, output_folder: Path) -> ShovillOutput:
+		logger.debug(f"shovill: {forward} {reverse} {output_folder}")
 		output = self.get_output(output_folder)
 		command = self.get_command(forward, reverse, output_folder)
 
