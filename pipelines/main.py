@@ -27,7 +27,6 @@ def test_found_all_samples(samples:List[sampleio.SampleReads], expected:int):
 		assert len(samples) == expected
 	except AssertionError:
 		from pprint import pprint
-		pprint([i.name for i in samples])
 		message = f"Expected {expected} samples, but found {len(samples)}"
 		raise ValueError(message)
 
