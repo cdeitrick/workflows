@@ -2,7 +2,7 @@
 The entry point for scripts using the piplelines.
 """
 from pathlib import Path
-from typing import Dict
+from typing import Dict, List
 
 from loguru import logger
 
@@ -20,6 +20,17 @@ def read_sample_map(filename: Path) -> Dict[str, str]:
 	for k, v in kvs:
 		data[k] = v
 	return data
+
+def test_found_all_samples(samples:List[sampleio.SampleReads], expected:int):
+
+	try:
+		assert len(samples) == expected
+	except AssertionError:
+		from pprint import pprint
+		pprint(samples)
+		message = f"Expected {expected} samples, but found {len(samples)}"
+		raise ValueError(message)
+
 
 
 def checkdir(path: Path) -> Path:
@@ -132,10 +143,15 @@ def main_variant_calling():
 	sibling_pair_e_samples = [i for i in samples if i.name in sibling_pair_e_ids]
 	sibling_pair_f_samples = [i for i in samples if i.name in sibling_pair_f_ids]
 
-	assert len(sibling_pair_a_samples) == 25
-	assert len(sibling_pair_b_samples) == 25
-	assert len(sibling_pair_e_samples) == 27
-	assert len(sibling_pair_f_samples) == 18
+	logger.info("sibling pair a: ", len(sibling_pair_a_samples))
+	logger.info("sibling pair b: ", len(sibling_pair_b_samples))
+	logger.info("sibling pair e: ", len(sibling_pair_f_samples))
+	logger.info("sibling pair f: ", len(sibling_pair_f_samples))
+
+	test_found_all_samples(sibling_pair_a_samples, 25)
+	test_found_all_samples(sibling_pair_b_samples, 25)
+	test_found_all_samples(sibling_pair_e_samples, 27)
+	test_found_all_samples(sibling_pair_f_samples, 18)
 
 	samples = {
 		'A': sibling_pair_a_samples,
