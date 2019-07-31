@@ -34,9 +34,9 @@ def main():
 
 	reference_folder = lipuma_folder / "genomes" / "assembly" / "assembly_nanopore"
 
-	reference_sc1360 = reference_folder / "SC1360" / "SC1360.polished.fasta"
-	reference_sc1128 = reference_folder / "SC1128" / "SC1128.polished.fasta"
-	reference_au0075 = reference_folder / "AU0075" / "AU0075.polished.fasta"
+	reference_sc1360 = reference_folder / "SC1360" / "SC1360.polished.gff"
+	reference_sc1128 = reference_folder / "SC1128" / "SC1128.polished.gff"
+	reference_au0075 = reference_folder / "AU0075" / "AU0075.polished.gff"
 
 	sequence_folder = lipuma_folder / "genomes" / "reads" / "trimmedMajor"
 	samples = list()
