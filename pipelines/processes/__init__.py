@@ -1,1 +1,1 @@
-from . import *
+from . import variant_calling

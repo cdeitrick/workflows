@@ -29,7 +29,7 @@ def read_sample_name_map(filename: Path) -> Dict[str, str]:
 
 def main():
 	lipuma_folder = Path("/home/cld100/projects/lipuma")
-	update_folder = lipuma_folder / "201907-24-update"
+	update_folder = lipuma_folder / "2019-07-24-update"
 	pipeline_folder = checkdir(update_folder / "pipeline_nanopore")
 
 	reference_folder = lipuma_folder / "genomes" / "assembly" / "assembly_nanopore"
