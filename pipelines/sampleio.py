@@ -47,11 +47,19 @@ class SampleReads:
 	def reads(self) -> Iterable[Path]:
 		return [self.forward, self.reverse]
 
+def is_forward_read(filename:Path)->bool:
+	if 'R1' in filename.stem or ('forward' in filename.stem and 'unpaired' not in filename.stem):
+		return True
+	return False
+def is_reverse_read(filename:Path)->bool:
+	if 'R2' in filename.stem or ('reverse' in filename.stem and 'unpaired' not in filename.stem):
+		return True
+	return False
 
 def get_reads_from_folder(folder: Path) -> Tuple[Path, Path]:
 	candidates = list(i for i in folder.iterdir() if i.suffix == '.fastq')
-	forward = [i for i in candidates if 'R1' in i.stem][0]
-	reverse = [i for i in candidates if 'R2' in i.stem][0]
+	forward = [i for i in candidates if is_forward_read(i)][0]
+	reverse = [i for i in candidates if is_reverse_read(i)][0]
 
 	return forward, reverse
 
