@@ -1,12 +1,13 @@
 import sys
 from pathlib import Path
 from typing import Dict
+
 from loguru import logger
 
-from pipelines import processes, sampleio
-
-directory = Path(__file__).parent.parent.parent.absolute() # so pipelines` is visible
+directory = Path(__file__).parent.parent.parent.absolute()  # so pipelines` is visible
 sys.path.append(str(directory))
+
+from pipelines import processes, sampleio
 
 
 def checkdir(path: Path) -> Path:
@@ -15,7 +16,8 @@ def checkdir(path: Path) -> Path:
 		path.mkdir()
 	return path
 
-def read_sample_name_map(filename:Path)->Dict[str,str]:
+
+def read_sample_name_map(filename: Path) -> Dict[str, str]:
 	sample_name_map = dict()
 	content = filename.read_text()
 	lines = content.split('\n')
@@ -23,6 +25,8 @@ def read_sample_name_map(filename:Path)->Dict[str,str]:
 		sample_id, sample_name = line.strip().split('\t')
 		sample_name_map[sample_id] = sample_name
 	return sample_name_map
+
+
 def main():
 	lipuma_folder = Path("/home/cld100/projects/lipuma")
 	update_folder = lipuma_folder / "201907-24-update"
@@ -67,6 +71,7 @@ def main():
 	processes.variant_calling.sample_variant_calling(reference_sc1360, sibling_pair_a_samples, sibling_pair_a_folder)
 	processes.variant_calling.sample_variant_calling(reference_sc1128, sibling_pair_b_samples, sibling_pair_b_folder)
 	processes.variant_calling.sample_variant_calling(reference_au0075, sibling_pair_f_samples, sibling_pair_f_folder)
+
 
 if __name__ == "__main__":
 	main()
