@@ -15,7 +15,7 @@ def checkdir(path):
 def get_srun_command(threads: Optional = None) -> List[Any]:
 	srun_command = ["srun"]
 	if threads:
-		srun_command += ["--threads", threads]
+		srun_command += ["--cpus", threads]
 	srun_command += ["--mem-per-cpu", "27000"]
 	return srun_command
 
