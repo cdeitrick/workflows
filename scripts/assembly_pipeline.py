@@ -12,8 +12,9 @@ from pipelines.processes import read_assembly
 def main():
 
 	logger.info("Running Assembly pipeline...")
-	source_folder = Path("/home/cld100/projects/lipuma/genomes/reads/trimmed/")
-	parent_folder = source_folder.with_name('trimmed_stringent')
+	lipuma_folder = Path.home() / "projects" / "lipuma" #/ "2019-07-24-update"
+	source_folder = lipuma_folder / "genomes" / "reads" / "trimmedMajor/"
+	parent_folder = lipuma_folder / "2019-07-24-update"
 
 	folders = list(source_folder.iterdir())
 	samples = [sampleio.SampleReads.from_trimmomatic(i, i.name) for i in folders]
