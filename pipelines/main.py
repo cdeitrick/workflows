@@ -164,4 +164,13 @@ def main_variant_calling():
 		current_samples = samples[pair_id]
 		sample_variant_calling(reference, current_samples, parent_folder)
 
+def transposon_variant_calling():
+	project_folder = Path.home() / "projects" / "yiwei"
+	sample_folder = project_folder / "WozniakLab"
+
+	samples = [sampleio.SampleReads.from_folder(subfolder) for subfolder in sample_folder.iterdir()]
+
+	reference = project_folder / "GCF_000006765.1_ASM676v1" / "GCF_000006765.1_ASM676v1_genomic.gff"
+
+	sample_variant_calling(reference, samples, project_folder / "breseq")
 
