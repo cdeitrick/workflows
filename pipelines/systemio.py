@@ -59,7 +59,6 @@ class CommandRunner:
 
 		if logonly:
 			return None
-		logger.debug(f"systemio: Running command {command}")
 		process = subprocess.run(command, stdout = subprocess.PIPE, stderr = subprocess.PIPE, encoding = "UTF-8")
 
 		end_datetime = datetime.now()

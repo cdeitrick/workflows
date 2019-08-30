@@ -170,7 +170,7 @@ def transposon_variant_calling():
 
 	samples = [sampleio.SampleReads.from_folder(subfolder) for subfolder in sample_folder.iterdir()]
 
-	reference = project_folder / "GCF_000006765.1_ASM676v1" / "GCF_000006765.1_ASM676v1_genomic.gff"
+	reference = project_folder / "GCF_000006765.1_ASM676v1" / "GCF_000006765.1_ASM676v1_genomic.gbff"
 
 	sample_variant_calling(reference, samples, project_folder / "breseq")
 
