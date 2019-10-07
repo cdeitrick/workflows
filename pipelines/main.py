@@ -177,7 +177,7 @@ def transposon_variant_calling():
 
 def main_migs_maxwelllab_variant_calling():
 	logger.info("Running variant pipeline...")
-	maxwell_folder = Path("/home/cld100/projects/migs/maxwelllab")
+	maxwell_folder = Path("/home/cld100/projects/migs/MaxwellLab")
 	sample_folder = maxwell_folder / "samples"
 	reference = sampleio.SampleReads.from_folder(sample_folder / "100419_42", sample_id = "PA01_EV")
 
