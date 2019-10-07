@@ -32,10 +32,11 @@ class TrimmomaticOutput:
 	@staticmethod
 	def get_name_from_file(path: Path) -> str:
 		name = path.stem
-
+		# TODO: move this to the utilities module.
 		# If the path refers to a read file, only the first part is usefull.
 		if 'R1' in name or 'R2' in name:
-			name = name.split('_')[0]
+			name = name.split('_')[:-3]
+			name = "_".join(name)
 		return name
 
 	@classmethod
