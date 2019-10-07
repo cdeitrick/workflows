@@ -180,17 +180,17 @@ def main_migs_maxwelllab_variant_calling():
 	maxwell_folder = Path("/home/cld100/projects/migs/MaxwellLab")
 	sample_folder = maxwell_folder / "samples"
 
-	reference = sampleio.SampleReads.from_folder(sample_folder / "100419_42", sample_id = "PA01_EV")
+	#reference = sampleio.SampleReads.from_folder(sample_folder / "100419_42", sample_id = "PA01_EV")
 
 	#read_trimming.trim([reference],parent_folder = maxwell_folder, stringent = True)
-	reference_assembly = read_assembly.read_assembly([reference], maxwell_folder, stringent = True)[0]
-	#reference_assembly = Path(maxwell_folder / "PA01_EV" / "prokka" / "annotations" / "PA01_EV.gff")
-	#sample_reads = list()
-	#for folder in sample_folder.iterdir():
-	#	sample_reads.append(sampleio.SampleReads.from_folder(folder))
-	#trimmomatic_files = read_trimming.trim(sample_reads, maxwell_folder)
-	#trimmomatic_files = [i.as_sample() for i in trimmomatic_files]
-	#sample_variant_calling(reference_assembly.contigs, trimmomatic_files, maxwell_folder)
+	#reference_assembly = read_assembly.read_assembly([reference], maxwell_folder, stringent = True)[0]
+	reference_assembly = Path(maxwell_folder / "PA01_EV" / "prokka" / "PA01_EV.gff")
+	sample_reads = list()
+	for folder in sample_folder.iterdir():
+		sample_reads.append(sampleio.SampleReads.from_folder(folder))
+	trimmomatic_files = read_trimming.trim(sample_reads, maxwell_folder)
+	trimmomatic_files = [i.as_sample() for i in trimmomatic_files]
+	sample_variant_calling(reference_assembly.contigs, trimmomatic_files, maxwell_folder)
 
 
 def main_variant_calling_generic(sample_folder: Path, reference: Union[str, Path], output_folder: Path):
