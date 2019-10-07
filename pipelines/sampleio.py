@@ -59,8 +59,16 @@ def is_reverse_read(filename:Path)->bool:
 
 def get_reads_from_folder(folder: Path) -> Tuple[Path, Path]:
 	candidates = list(i for i in folder.iterdir() if i.suffix == '.fastq')
-	forward = [i for i in candidates if is_forward_read(i)][0]
-	reverse = [i for i in candidates if is_reverse_read(i)][0]
+	try:
+		forward = [i for i in candidates if is_forward_read(i)][0]
+		reverse = [i for i in candidates if is_reverse_read(i)][0]
+	except IndexError:
+		message = f"Could not locate the reads in folder (exists = {folder.exists()}): '{folder}'"
+		if folder.exists():
+			logger.debug(f"Folder contents:")
+			for i in folder.iterdir():
+				logger.debug(f"\t{i}")
+		raise FileNotFoundError(message)
 
 	return forward, reverse
 
