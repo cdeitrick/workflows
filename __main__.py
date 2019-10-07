@@ -13,6 +13,6 @@ args = parser.parse_args()
 if args.which == 'assembly':
 	main.mainassembly()
 elif args.which == 'variants':
-	main.transposon_variant_calling()
+	main.main_migs_maxwelllab_variant_calling()
 else:
 	print("Not a possible value")
