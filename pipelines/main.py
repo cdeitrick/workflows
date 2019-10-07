@@ -183,15 +183,13 @@ def main_migs_maxwelllab_variant_calling():
 
 	reference_assembly = read_assembly.read_assembly([reference], maxwell_folder, stringent = True)[0]
 
-	sample_reads = list()
-	for folder in sample_folder.iterdir():
-		if folder.name.endswith('42'): continue
-		sample_reads.append(sampleio.SampleReads.from_folder(folder))
-	trimmomatic_files = read_trimming.trim(sample_reads, maxwell_folder)
-	trimmomatic_files = [i.as_sample() for i in trimmomatic_files]
-
-
-	sample_variant_calling(reference_assembly.contigs, trimmomatic_files, maxwell_folder)
+	#sample_reads = list()
+	#for folder in sample_folder.iterdir():
+	#	if folder.name.endswith('42'): continue
+	#	sample_reads.append(sampleio.SampleReads.from_folder(folder))
+	#trimmomatic_files = read_trimming.trim(sample_reads, maxwell_folder)
+	#trimmomatic_files = [i.as_sample() for i in trimmomatic_files]
+	#sample_variant_calling(reference_assembly.contigs, trimmomatic_files, maxwell_folder)
 
 
 def main_variant_calling_generic(sample_folder: Path, reference: Union[str, Path], output_folder: Path):
