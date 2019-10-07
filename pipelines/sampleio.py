@@ -40,7 +40,7 @@ class SampleReads:
 		try:
 			forward = [i for i in files if ('forward' in i.name and 'unpaired' not in i.name)][0]
 			reverse = [i for i in files if ('reverse' in i.name and 'unpaired' not in i.name)][0]
-			return cls(sample_id, forward, reverse, folder, is_trimmed = True)
+			return cls(sample_id, forward, reverse, folder, is_trimmed = False)
 		except IndexError:
 			logger.warning(f"Could not find trimmomatic reads in folder {folder}")
 			return None
