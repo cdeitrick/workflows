@@ -20,7 +20,7 @@ class SampleReads:
 	forward: Path
 	reverse: Path
 	folder: Optional[Path] = None
-	is_trimmed: bool = True
+	is_trimmed: bool = False
 
 	def exists(self):
 		return self.forward.exists() and self.reverse.exists()
