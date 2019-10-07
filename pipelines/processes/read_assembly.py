@@ -32,7 +32,7 @@ def read_assembly(samples:List[sampleio.SampleReads], parent_folder:Path, string
 		logger.info(f"Assembling sample {index} of {len(samples)}: {sample.name}")
 
 		sample_folder = checkdir(parent_folder / sample.name)
-		trimmomatic_folder = sample_folder / "trimmomatic"
+		trimmomatic_folder = checkdir(sample_folder / "trimmomatic")
 		shovill_folder = checkdir(sample_folder / "shovill")
 
 		if not sample.is_trimmed:

@@ -3,6 +3,7 @@ from typing import List, Optional, Union
 from pipelines import sampleio
 from pipelines import systemio
 from pipelines.resources import illumina_filename
+from loguru import logger
 ADAPTERS_FILENAME = illumina_filename
 
 
@@ -126,6 +127,7 @@ class Trimmomatic:
 		sample_name: Optional[str]
 			Will form the prefix of the output files if given. Otherwise, the name of the forward read will be used to generate the output names.
 		"""
+		logger.info(f"Running Trimmomatic...")
 		if not output_folder.exists():
 			output_folder.mkdir()
 
@@ -134,6 +136,7 @@ class Trimmomatic:
 
 		if not output.exists():
 			systemio.command_runner.run(command, output_folder, threads = self.threads)
+
 		return output
 
 	def get_command(self, forward: Path, reverse: Path, output: TrimmomaticOutput) -> List[str]:
