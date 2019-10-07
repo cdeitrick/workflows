@@ -5,7 +5,7 @@ from pipelines import sampleio
 from typing import List
 from loguru import logger
 
-def read_assembly(samples:List[sampleio.SampleReads], parent_folder:Path, stringent:bool = False):
+def read_assembly(samples:List[sampleio.SampleReads], parent_folder:Path, stringent:bool = False)->List[shovill.ShovillOutput]:
 	logger.info(f"Assembling {len(samples)} samples...")
 	cancel = False
 
@@ -27,7 +27,7 @@ def read_assembly(samples:List[sampleio.SampleReads], parent_folder:Path, string
 
 	trimmomatic_workflow = trimmomatic.Trimmomatic(stringent = True)
 	shovill_workflow = shovill.Shovill()
-
+	output_files = list()
 	for index, sample in enumerate(samples, start = 1):
 		logger.info(f"Assembling sample {index} of {len(samples)}: {sample.name}")
 
@@ -41,4 +41,6 @@ def read_assembly(samples:List[sampleio.SampleReads], parent_folder:Path, string
 			logger.info(f"\t'{sample.name}' is already trimmed. Skipping...")
 			trimmomatic_output = sample
 
-		shovill_workflow.run(trimmomatic_output.forward, trimmomatic_output.reverse, shovill_folder)
+		result = shovill_workflow.run(trimmomatic_output.forward, trimmomatic_output.reverse, shovill_folder)
+		output_files.append(result)
+	return output_files

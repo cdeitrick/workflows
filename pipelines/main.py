@@ -2,12 +2,12 @@
 The entry point for scripts using the piplelines.
 """
 from pathlib import Path
-from typing import Dict, List
+from typing import Dict, List, Union
 
 from loguru import logger
 
 from pipelines import sampleio
-from pipelines.processes import read_assembly
+from pipelines.processes import read_assembly, read_trimming
 from pipelines.processes.variant_calling import sample_variant_calling
 
 
@@ -21,15 +21,14 @@ def read_sample_map(filename: Path) -> Dict[str, str]:
 		data[k] = v
 	return data
 
-def test_found_all_samples(samples:List[sampleio.SampleReads], expected:int):
 
+def test_found_all_samples(samples: List[sampleio.SampleReads], expected: int):
 	try:
 		assert len(samples) == expected
 	except AssertionError:
 		from pprint import pprint
 		message = f"Expected {expected} samples, but found {len(samples)}"
 		raise ValueError(message)
-
 
 
 def checkdir(path: Path) -> Path:
@@ -164,6 +163,7 @@ def main_variant_calling():
 		current_samples = samples[pair_id]
 		sample_variant_calling(reference, current_samples, parent_folder)
 
+
 def transposon_variant_calling():
 	project_folder = Path.home() / "projects" / "yiwei"
 	sample_folder = project_folder / "WozniakLab"
@@ -174,3 +174,25 @@ def transposon_variant_calling():
 
 	sample_variant_calling(reference, samples, project_folder / "breseq")
 
+
+def main_migs_maxwelllab_variant_calling():
+	logger.info("Running variant pipeline...")
+	maxwell_folder = Path("/home/cld100/projects/migs/maxwelllab")
+	sample_folder = maxwell_folder / "samples"
+	reference = sampleio.SampleReads.from_folder(sample_folder / "100419_42", sample_id = "PA01_EV")
+
+	reference_assembly = read_assembly.read_assembly([reference], maxwell_folder, stringent = True)[0]
+
+	sample_reads = list()
+	for folder in sample_folder.iterdir():
+		if folder.name.endswith('42'): continue
+		sample_reads.append(sampleio.SampleReads.from_folder(folder))
+	trimmomatic_files = read_trimming.trim(sample_reads, maxwell_folder)
+	trimmomatic_files = [i.as_sample() for i in trimmomatic_files]
+
+
+	sample_variant_calling(reference_assembly.contigs, trimmomatic_files, maxwell_folder)
+
+
+def main_variant_calling_generic(sample_folder: Path, reference: Union[str, Path], output_folder: Path):
+	pass

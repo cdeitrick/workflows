@@ -14,8 +14,11 @@ def sample_variant_calling(reference: Path, samples: List[sampleio.SampleReads],
 		logger.critical(f"The reference file does not exist: {reference}")
 		cancel = True
 	if not parent_folder.exists():
-		logger.critical(f"The parent folder does not exist: {parent_folder}")
-		cancel = True
+		try:
+			parent_folder.mkdir()
+		except FileNotFoundError:
+			logger.critical(f"The parent folder does not exist: {parent_folder}")
+			cancel = True
 
 	for sample in samples:
 		if not sample.forward.exists() or not sample.reverse.exists():

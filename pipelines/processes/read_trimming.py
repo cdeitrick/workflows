@@ -5,7 +5,7 @@ from pipelines import sampleio
 from typing import List
 from loguru import logger
 
-def trim(samples:List[sampleio.SampleReads], parent_folder:Path, stringent:bool = False):
+def trim(samples:List[sampleio.SampleReads], parent_folder:Path, stringent:bool = False)->List[trimmomatic.TrimmomaticOutput]:
 	cancel = False
 	for sample in samples:
 		if not sample.forward.exists() or not sample.reverse.exists():
@@ -18,9 +18,10 @@ def trim(samples:List[sampleio.SampleReads], parent_folder:Path, stringent:bool 
 
 
 	trimmomatic_workflow = trimmomatic.Trimmomatic(stringent = stringent)
-	print(trimmomatic_workflow)
-
+	output_files = list()
 	for index, sample in enumerate(samples):
 		logger.info(f"Trimming sample {index} of {len(samples)}: {sample.name}")
 
-		trimmomatic_workflow.run(sample.forward, sample.reverse, parent_folder / sample.name)
+		trimmomatic_output = trimmomatic_workflow.run(sample.forward, sample.reverse, parent_folder / sample.name)
+		output_files.append(trimmomatic_output)
+	return output_files

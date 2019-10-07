@@ -27,9 +27,10 @@ class SampleReads:
 
 	@classmethod
 	def from_folder(cls, folder: Path, sample_id: Optional[str] = None) -> 'SampleReads':
-		if not sample_id:
-			sample_id = folder.name
+
 		forward, reverse = get_reads_from_folder(folder)
+		if not sample_id:
+			sample_id = get_name_from_reads(forward)
 
 		return SampleReads(name = sample_id, forward = forward, reverse = reverse)
 

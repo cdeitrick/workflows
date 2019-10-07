@@ -1,6 +1,6 @@
 from pathlib import Path
 from typing import List, Optional, Union
-
+from pipelines import sampleio
 from pipelines import systemio
 from pipelines.resources import illumina_filename
 ADAPTERS_FILENAME = illumina_filename
@@ -66,6 +66,10 @@ class TrimmomaticOutput:
 		unpaired_reverse: Optional[Path] = folder / '{}.reverse.trimmed.unpaired.fastq'.format(prefix)
 		return cls(prefix, forward, reverse, unpaired_forward, unpaired_reverse)
 
+	def as_sample(self)->sampleio.SampleReads:
+
+		result = sampleio.SampleReads(self.name, self.forward, self.reverse, is_trimmed = True)
+		return result
 
 
 class Trimmomatic:
