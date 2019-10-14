@@ -22,6 +22,8 @@ def is_forward_read(filename: Union[str, Path]) -> bool:
 		stem = filename
 	if 'R1' in stem or ('forward' in stem and 'unpaired' not in stem):
 		return True
+	if '1P' in stem:
+		return True
 	return False
 
 
@@ -31,6 +33,8 @@ def is_reverse_read(filename: Union[str, Path]) -> bool:
 	else:
 		stem = filename
 	if 'R2' in stem or ('reverse' in stem and 'unpaired' not in stem):
+		return True
+	if '2P' in filename.stem:
 		return True
 	return False
 
