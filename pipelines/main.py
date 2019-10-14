@@ -58,7 +58,7 @@ def main_workshop():
 	# trimmomatic_files = read_trimming.trim(sample_reads, maxwell_folder)
 	# trimmomatic_files = [i.as_sample() for i in trimmomatic_files]
 	folder = Path("/home/cld100/projects/workshop")
-	reference_assembly = folder / "AU1054 GENBANK" / "AU1054 GENBANK/GCA_000014085.1_ASM1408v1_genomic.gbff"
+	reference_assembly = folder / "AU1054 GENBANK" / "GCA_000014085.1_ASM1408v1_genomic.gbff"
 	sample_folder = folder / "reads_trimmed"
 	trimmomatic_files = list()
 	for i in sample_folder.iterdir():
