@@ -9,6 +9,7 @@ from loguru import logger
 from pipelines import sampleio
 from pipelines.processes import read_trimming
 from pipelines.processes.variant_calling import sample_variant_calling
+from pipelines import programio
 
 
 def read_sample_map(filename: Path) -> Dict[str, str]:
@@ -42,7 +43,7 @@ def transposon_variant_calling():
 	sample_variant_calling(reference, samples, project_folder / "breseq")
 
 
-def main_migs_maxwelllab_variant_calling():
+def main_mworkshop():
 	logger.info("Running variant pipeline...")
 	maxwell_folder = Path("/home/cld100/projects/migs/MaxwellLab")
 	sample_folder = maxwell_folder / "samples"
@@ -51,10 +52,18 @@ def main_migs_maxwelllab_variant_calling():
 
 	# read_trimming.trim([reference],parent_folder = maxwell_folder, stringent = True)
 	# reference_assembly = read_assembly.read_assembly([reference], maxwell_folder, stringent = True)[0]
-	reference_assembly = Path(maxwell_folder / "PA01_EV" / "prokka" / "PA01_EV.gff")
-	sample_reads = list()
-	for folder in sample_folder.iterdir():
-		sample_reads.append(sampleio.SampleReads.from_folder(folder))
-	trimmomatic_files = read_trimming.trim(sample_reads, maxwell_folder)
+	# reference_assembly = Path(maxwell_folder / "PA01_EV" / "prokka" / "PA01_EV.gff")
+	# sample_reads = list()
+	# for folder in sample_folder.iterdir():
+	#	sample_reads.append(sampleio.SampleReads.from_folder(folder))
+	# trimmomatic_files = read_trimming.trim(sample_reads, maxwell_folder)
+	# trimmomatic_files = [i.as_sample() for i in trimmomatic_files]
+	folder = Path("/home/cld100/projects/workshop")
+	reference_assembly = folder / "AU1054 GENBANK" / "AU1054 GENBANK/GCA_000014085.1_ASM1408v1_genomic.gbff"
+	sample_folder = folder / "reads_trimmed"
+	trimmomatic_files = list()
+	for i in sample_folder.iterdir():
+		trimmomatic_files.append(programio.TrimmomaticOutput.from_folder(i, i.name))
 	trimmomatic_files = [i.as_sample() for i in trimmomatic_files]
+
 	sample_variant_calling(reference_assembly, trimmomatic_files, maxwell_folder)
