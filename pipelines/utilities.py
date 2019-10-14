@@ -65,7 +65,7 @@ def get_reads_from_folder(folder: Path) -> Tuple[Path, Path]:
 	------
 	FileNotFoundError: Cannot locate either the forward or reverse files.
 	"""
-	candidates = list(i for i in folder.iterdir() if i.suffix == '.fastq')
+	candidates = list(i for i in folder.iterdir() if (i.suffix == '.fastq' or i.suffix == ''))
 	if not candidates:
 		logger.warning(
 			f"The files might be gzipped. While *most* programs can still use the compressed files, not all can, so uncompress just in case.")
