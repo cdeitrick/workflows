@@ -1,44 +1,53 @@
 from pathlib import Path
-from typing import List
+from typing import List, Union
 
 from loguru import logger
 
-from pipelines import sampleio, systemio
-from pipelines.programs import breseq, trimmomatic
+from pipelines import programio, sampleio, systemio, utilities
+from pipelines.programs import breseq
 
 
-def sample_variant_calling(reference: Path, samples: List[sampleio.SampleReads], parent_folder: Path):
-	cancel = False
+def sample_variant_calling(reference: Path, samples: List[sampleio.SampleReads], project_folder: Path):
+	"""
+		Performs simple variant calling between the supplied reference and the given samples.
+	Parameters
+	----------
+	reference: Path
+		The sample to use for the project
+	samples: List[sampleio.SampleReads
+		Contsins the source reads for variant calling. Trimming is not performmed at this stage.
+	project_folder: Path
+		The folder to use for the overall project.
+
+	Returns
+	-------
+
+	"""
 	# First validate the input parameters
-	if not reference.exists():
-		logger.critical(f"The reference file does not exist: {reference}")
-		cancel = True
-	if not parent_folder.exists():
-		try:
-			parent_folder.mkdir()
-		except FileNotFoundError:
-			logger.critical(f"The parent folder does not exist: {parent_folder}")
-			cancel = True
-
-	for sample in samples:
-		if not sample.forward.exists() or not sample.reverse.exists():
-			logger.critical(f"The read files for sample {sample.name} do not exist")
-			cancel = True
+	cancel = not utilities.verify_file_exists(reference)
+	cancel = cancel or not sampleio.verify_samples(samples)
 
 	if cancel:
 		message = "Something went wrong when validating the variant calling parameters!"
 		raise ValueError(message)
 
 	# Set up the environment
-	systemio.command_runner.set_command_log(parent_folder / "variant_calling_commands.sh")
+	utilities.checkdir(project_folder)
+
+	systemio.command_runner.set_command_log(project_folder / "commandlog_variant_calling.sh")
+	systemio.command_runner.write_command_to_commandlog(['module', 'load', 'breseq'])
 
 	breseq_workflow = breseq.Breseq(reference)
 	breseq_workflow.test()
 
-	sampleio.validate_samples(samples)
+	results = list()
 	for index, sample in enumerate(samples):
 		logger.info(f"Running variant calling on sample {index} of {len(samples)}: {sample.name}")
-		sample_folder = systemio.checkdir(parent_folder / sample.name)
+		sample_folder = utilities.checkdir(project_folder / sample.name)
 		breseq_folder = sample_folder / "breseq"
 
-		breseq_workflow.run(breseq_folder, sample.forward, sample.reverse)
+		result = breseq_workflow.run(breseq_folder, sample.forward, sample.reverse)
+		results.append(result)
+	return results
+
+

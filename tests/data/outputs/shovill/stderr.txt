@@ -1,0 +1,102 @@
+[shovill] Hello cld100
+[shovill] You ran: /opt/shovill/shovill-1.0.4/bin//shovill --minlen 500 --assembler spades --outdir /home/cld100/projects/migs/MaxwellLab/PA01_EV/shovill --R1 /home/cld100/projects/migs/MaxwellLab/PA01_EV/trimmomatic/PA01.forward.trimmed.paired.fastq --R2 /home/cld100/projects/migs/MaxwellLab/PA01_EV/trimmomatic/PA01.reverse.trimmed.paired.fastq --force --cpus 8
+[shovill] This is shovill 1.0.4
+[shovill] Written by Torsten Seemann
+[shovill] Homepage is https://github.com/tseemann/shovill
+[shovill] Operating system is linux
+[shovill] Perl version is v5.22.0
+[shovill] Machine has 28 CPU cores and 251.63 GB RAM
+[shovill] Using bwa - /opt/bwa/bwa-0.7.17/bin/bwa | Version: 0.7.17-r1188
+[shovill] Using flash - /opt/FLASH/FLASH-1.2.11/flash | FLASH v1.2.11
+[shovill] Using java - /opt/miniconda/miniconda3/bin/java | openjdk version "11.0.1" 2018-10-16 LTS
+[shovill] Using lighter - /opt/lighter/lighter-2019.07.26/lighter | Lighter v1.1.2
+[shovill] Using mash - /opt/mash/mash-2.0/bin/mash | 2.0
+[shovill] Using megahit - /opt/megahit/megahit-1.1.2/megahit | MEGAHIT v1.1.2
+[shovill] Using megahit_toolkit - /opt/megahit/megahit-1.1.2/megahit_toolkit | v1.1.2
+[shovill] Using pigz - /opt/miniconda/miniconda3/bin/pigz | pigz 2.3.4
+[shovill] Using pilon - /opt/pilon/pilon | Pilon version 1.22 Wed Mar 15 16:38:30 2017 -0400
+[shovill] Using samclip - /opt/samclip/samclip/samclip | samclip 0.2
+[shovill] Using samtools - /opt/samtools/samtools-1.8/bin/samtools | Version: 1.8 (using htslib 1.8)
+[shovill] Using seqtk - /opt/seqtk/seqtk/seqtk | Version: 1.3-r106
+[shovill] Using skesa - /opt/skesa/skesa-2.3/skesa | SKESA v.2.3.0
+[shovill] Using spades.py - /opt/spades/SPAdes-3.12.0/bin/spades.py | SPAdes v3.12.0
+[shovill] Using trimmomatic - /opt/trimmomatic/Trimmomatic-0.36/bin/trimmomatic | 0.36
+[shovill] Using velvetg - /opt/velvet/velvet-1.2.10/velvetg | Version 1.2.10
+[shovill] Using velveth - /opt/velvet/velvet-1.2.10/velveth | Version 1.2.10
+[shovill] Checking if spades supports new stitched read library option instead of --s2
+[shovill] Yes, it supports --pe1-m
+[shovill] Forced overwrite of existing --outdir /home/cld100/projects/migs/MaxwellLab/PA01_EV/shovill
+[shovill] Using tempdir: /tmp
+[shovill] Changing into folder: /home/cld100/projects/migs/MaxwellLab/PA01_EV/shovill
+[shovill] Collecting raw read statistics with 'seqtk'
+[shovill] Running: seqtk fqchk -q3 \/home\/cld100\/projects\/migs\/MaxwellLab\/PA01_EV\/trimmomatic\/PA01\.forward\.trimmed\.paired\.fastq >/tmp/9pMB53CUjW 2>&1 | sed 's/^/[seqtk] /' | tee -a shovill.log
+[shovill] Read stats: max_len = 151
+[shovill] Read stats: total_bp = 282619232
+[shovill] Read stats: min_len = 70
+[shovill] Read stats: avg_len = 132
+[shovill] Estimating genome size with 'mash'
+[shovill] Running: mash sketch -o /tmp/LExt34fhF4/sketch -k 32 -m 3 -r \/home\/cld100\/projects\/migs\/MaxwellLab\/PA01_EV\/trimmomatic\/PA01\.forward\.trimmed\.paired\.fastq 2>&1 | sed 's/^/[mash] /' | tee -a shovill.log
+[shovill] Using genome size 6190410 bp
+[shovill] Estimated sequencing depth: 45 x
+[shovill] No read depth reduction requested or necessary.
+[shovill] Appending -Xmx32g to _JAVA_OPTIONS
+[shovill] Running: ln -sf \/home\/cld100\/projects\/migs\/MaxwellLab\/PA01_EV\/trimmomatic\/PA01\.forward\.trimmed\.paired\.fastq R1.fq.gz 2>&1 | sed 's/^/[ln] /' | tee -a shovill.log
+[shovill] Running: ln -sf \/home\/cld100\/projects\/migs\/MaxwellLab\/PA01_EV\/trimmomatic\/PA01\.reverse\.trimmed\.paired\.fastq R2.fq.gz 2>&1 | sed 's/^/[ln] /' | tee -a shovill.log
+[shovill] Average read length looks like 132 bp
+[shovill] Setting k-mer range to (31 .. 99)
+[shovill] Estimated K-mers: 31 49 67 85 [kn=5, ks=18, kmin=31, kmax=99]
+[shovill] Using kmers: 31,49,67,85
+[shovill] Correcting reads with 'Lighter'
+[shovill] Running: lighter -od . -r R1.fq.gz -r R2.fq.gz -K 32 6190410 -t 8 -maxcor 1 2>&1 | sed 's/^/[lighter] /' | tee -a shovill.log
+[shovill] Overlapping/stitcing PE reads with 'FLASH'
+[shovill] Running: flash -m 20 -M 151 -d . -o flash -z -t 8 R1.cor.fq.gz R2.cor.fq.gz 2>&1 | sed 's/^//' | tee -a shovill.log
+[shovill] Assembling reads with 'spades'
+[shovill] Running: spades.py --pe1-1 flash.notCombined_1.fastq.gz --pe1-2 flash.notCombined_2.fastq.gz --only-assembler --threads 8 --memory 32 -o spades --tmp-dir /tmp -k 31,49,67,85  --pe1-m flash.extendedFrags.fastq.gz 2>&1 | sed 's/^/[spades] /' | tee -a shovill.log
+[shovill] Checking for assembly errors in spades.fasta
+[shovill] Running: bwa index spades.fasta 2>&1 | sed 's/^/[bwa-index] /' | tee -a shovill.log
+[shovill] Running: samtools faidx spades.fasta 2>&1 | sed 's/^/[faidx] /' | tee -a shovill.log
+[shovill] Running: (bwa mem -v 3 -x intractg -t 8 spades.fasta R1.fq.gz R2.fq.gz | samclip --ref spades.fasta.fai | samtools sort --threads 1 -m 16384m --reference spades.fasta -T /tmp/samtools.168359 -o shovill.bam) 2>&1 | sed 's/^/[bwa+samtools-sort] /' | tee -a shovill.log
+[shovill] Running: samtools index shovill.bam 2>&1 | sed 's/^/[samtools-index] /' | tee -a shovill.log
+[shovill] Correcting errors in spades.fasta
+[shovill] Running: pilon --genome spades.fasta --frags shovill.bam --minmq 60 --minqual 3 --fix bases --output pilon --threads 8 --changes --mindepth 0.25 2>&1 | sed 's/^/[pilon] /' | tee -a shovill.log
+[shovill] Repaired 53 contigs from spades.fasta at 75 positions.
+[shovill] Removing low coverage contig (< 2 x): NODE_275_length_651_cov_1.507067_pilon
+[shovill] Removing short contig (< 500 bp): NODE_283_length_484_cov_12.185464_pilon
+[shovill] Removing short contig (< 500 bp): NODE_284_length_453_cov_7.236413_pilon
+[shovill] Removing short contig (< 500 bp): NODE_285_length_447_cov_9.519337_pilon
+[shovill] Removing short contig (< 500 bp): NODE_286_length_447_cov_8.320442_pilon
+[shovill] Removing short contig (< 500 bp): NODE_287_length_421_cov_26.110119_pilon
+[shovill] Removing short contig (< 500 bp): NODE_288_length_387_cov_14.625828_pilon
+[shovill] Removing short contig (< 500 bp): NODE_289_length_374_cov_22.006920_pilon
+[shovill] Removing short contig (< 500 bp): NODE_290_length_371_cov_16.926573_pilon
+[shovill] Removing short contig (< 500 bp): NODE_291_length_369_cov_17.408451_pilon
+[shovill] Removing short contig (< 500 bp): NODE_292_length_369_cov_13.757042_pilon
+[shovill] Removing short contig (< 500 bp): NODE_293_length_344_cov_27.984556_pilon
+[shovill] Removing short contig (< 500 bp): NODE_294_length_314_cov_38.868996_pilon
+[shovill] Removing short contig (< 500 bp): NODE_295_length_289_cov_84.779412_pilon
+[shovill] Removing short contig (< 500 bp): NODE_296_length_281_cov_11.209184_pilon
+[shovill] Removing short contig (< 500 bp): NODE_297_length_279_cov_12.123711_pilon
+[shovill] Removing short contig (< 500 bp): NODE_298_length_258_cov_21.150289_pilon
+[shovill] Removing short contig (< 500 bp): NODE_299_length_252_cov_9.682635_pilon
+[shovill] Removing short contig (< 500 bp): NODE_300_length_229_cov_41.965278_pilon
+[shovill] Removing short contig (< 500 bp): NODE_301_length_202_cov_57.059829_pilon
+[shovill] Removing short contig (< 500 bp): NODE_302_length_201_cov_5.275862_pilon
+[shovill] Removing short contig (< 500 bp): NODE_303_length_159_cov_21.594595_pilon
+[shovill] Removing short contig (< 500 bp): NODE_304_length_149_cov_9.531250_pilon
+[shovill] Removing short contig (< 500 bp): NODE_305_length_145_cov_10.350000_pilon
+[shovill] Removing short contig (< 500 bp): NODE_306_length_97_cov_25.666667_pilon
+[shovill] Removing short contig (< 500 bp): NODE_307_length_96_cov_10.454545_pilon
+[shovill] Removing short contig (< 500 bp): NODE_308_length_94_cov_10.444444_pilon
+[shovill] Removing short contig (< 500 bp): NODE_309_length_89_cov_5.750000_pilon
+[shovill] Removing short contig (< 500 bp): NODE_310_length_88_cov_33.666667_pilon
+[shovill] Removing short contig (< 500 bp): NODE_311_length_88_cov_6.000000_pilon
+[shovill] Removing short contig (< 500 bp): NODE_312_length_86_cov_33129.000000_pilon
+[shovill] Assembly is 6223080, estimated genome size was 6190410 (+0.53%)
+[shovill] Using genome graph file 'spades/assembly_graph_with_scaffolds.gfa' => 'contigs.gfa'
+[shovill] Walltime used: 3 min 49 sec
+[shovill] Results in: /home/cld100/projects/migs/MaxwellLab/PA01_EV/shovill
+[shovill] Final assembly graph: /home/cld100/projects/migs/MaxwellLab/PA01_EV/shovill/contigs.gfa
+[shovill] Final assembly contigs: /home/cld100/projects/migs/MaxwellLab/PA01_EV/shovill/contigs.fa
+[shovill] It contains 281 (min=500) contigs totalling 6223080 bp.
+[shovill] Wishing you a life free of misassemblies.
+[shovill] Done.

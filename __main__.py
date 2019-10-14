@@ -10,9 +10,7 @@ parser.add_argument(
 
 args = parser.parse_args()
 
-if args.which == 'assembly':
-	main.mainassembly()
-elif args.which == 'variants':
+if args.which == 'variants':
 	main.main_migs_maxwelllab_variant_calling()
 else:
 	print("Not a possible value")

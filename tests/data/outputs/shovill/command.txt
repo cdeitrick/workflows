@@ -1,0 +1,1 @@
+srun --cpus 8 --mem-per-cpu 27000 shovill --minlen 500 --assembler spades --outdir /home/cld100/projects/migs/MaxwellLab/PA01_EV/shovill --R1 /home/cld100/projects/migs/MaxwellLab/PA01_EV/trimmomatic/PA01.forward.trimmed.paired.fastq --R2 /home/cld100/projects/migs/MaxwellLab/PA01_EV/trimmomatic/PA01.reverse.trimmed.paired.fastq --force --cpus 8

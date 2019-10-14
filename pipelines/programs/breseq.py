@@ -1,20 +1,12 @@
 from pathlib import Path
 from typing import List, Optional
 
-from pipelines import systemio
-
-
-class BreseqOutput:
-	def __init__(self, output_folder: Path):
-		self.index = output_folder / "output" / "index.html"
-		self.summary = output_folder / "output" / "summary.html"
-
-	def exists(self) -> bool:
-		return self.index.exists()
+from pipelines import systemio, utilities, programio
 
 
 class Breseq:
 	program = "breseq"
+
 	def __init__(self, reference: Path, threads: int = 8, population: bool = False):
 		self.reference = reference
 		self.threads: int = threads
@@ -30,8 +22,9 @@ class Breseq:
 			message = "Breseq cannot be found"
 			raise FileNotFoundError(message)
 
-	def run(self, output_folder: Path, *reads) -> BreseqOutput:
-		output = BreseqOutput(output_folder)
+	def run(self, output_folder: Path, *reads) -> programio.BreseqOutput:
+		sample_name = utilities.get_name_from_reads(reads[0])
+		output = programio.BreseqOutput.expected(output_folder, sample_name)
 		command = self.get_command(output_folder, *reads)
 
 		if not output.exists():
@@ -50,3 +43,5 @@ class Breseq:
 		command += list(reads)
 
 		return systemio.format_command(command)
+
+

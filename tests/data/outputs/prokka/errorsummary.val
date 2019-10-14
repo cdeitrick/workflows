@@ -1,0 +1,5 @@
+  6354 ERROR:   SEQ_FEAT.GeneXrefWithoutGene
+  6077 ERROR:   SEQ_FEAT.InvalidInferenceValue
+     1 ERROR:   SEQ_FEAT.OnlyGeneXrefs
+  6076 WARNING: SEQ_DESCR.FastaBracketTitle
+  6076 WARNING: SEQ_FEAT.ProteinNameEndsInBracket

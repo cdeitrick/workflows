@@ -1,46 +1,55 @@
 from pathlib import Path
-from pipelines.programs import trimmomatic, shovill
-from pipelines.utilities import checkdir
-from pipelines import sampleio
-from typing import List
+from typing import List, Union
+
 from loguru import logger
 
-def read_assembly(samples:List[sampleio.SampleReads], parent_folder:Path, stringent:bool = False)->List[shovill.ShovillOutput]:
-	logger.info(f"Assembling {len(samples)} samples...")
-	cancel = False
+from pipelines import programio, sampleio, systemio, utilities
+from pipelines.programs import shovill, trimmomatic
+from pipelines.utilities import checkdir
 
-	if not parent_folder.exists():
-		try:
-			parent_folder.mkdir()
-		except FileNotFoundError:
-			logger.critical(f"The parent folder does not exist and cannot be created: {parent_folder}")
-			cancel = True
 
-	for sample in samples:
-		if not sample.forward.exists() or not sample.reverse.exists():
-			logger.critical(f"The read files for sample {sample.name} do not exist")
-			cancel = True
+class AssemblyWorkflow:
+	def __init__(self, project_folder: Path):
+		systemio.command_runner.set_command_log(project_folder / "commandlog_trimming.sh")
+		systemio.command_runner.write_command_to_commandlog(['module', 'load', 'trimmomatic'])
+		systemio.command_runner.write_command_to_commandlog(['module', 'load', 'shovill'])
 
-	if cancel:
-		message = "Something went wrong when validating the variant calling parameters!"
-		raise ValueError(message)
+		self.trimmomatic_workflow = trimmomatic.Trimmomatic(stringent = True)
+		self.shovill_workflow = shovill.Shovill()
 
-	trimmomatic_workflow = trimmomatic.Trimmomatic(stringent = True)
-	shovill_workflow = shovill.Shovill()
-	output_files = list()
-	for index, sample in enumerate(samples, start = 1):
-		logger.info(f"Assembling sample {index} of {len(samples)}: {sample.name}")
+	def run(self, samples: List[Union[sampleio.SampleReads, programio.TrimmomaticOutput]], project_folder: Path) -> List[programio.ShovillOutput]:
+		logger.info(f"Assembling {len(samples)} samples...")
+		cancel = not sampleio.verify_samples(samples)
 
-		sample_folder = checkdir(parent_folder / sample.name)
+		if cancel:
+			message = "Something went wrong when validating the variant calling parameters!"
+			raise ValueError(message)
+
+		utilities.checkdir(project_folder)
+
+		output_files = list()
+		for index, sample in enumerate(samples, start = 1):
+			logger.info(f"Assembling sample {index} of {len(samples)}: {sample.name}")
+			sample_folder = checkdir(project_folder / sample.name)
+			result = self.assemble_sample(sample, sample_folder)
+			output_files.append(result)
+		return output_files
+
+	def assemble_sample(self, sample: Union[sampleio.SampleReads, programio.TrimmomaticOutput], sample_folder: Path) -> programio.ShovillOutput:
 		trimmomatic_folder = checkdir(sample_folder / "trimmomatic")
 		shovill_folder = checkdir(sample_folder / "shovill")
 
-		if not sample.is_trimmed:
-			trimmomatic_output = trimmomatic_workflow.run(sample.forward, sample.reverse, trimmomatic_folder)
+		if isinstance(sample, sampleio.SampleReads):
+			trimmomatic_output = self.trimmomatic_workflow.run(sample.forward, sample.reverse, trimmomatic_folder)
 		else:
 			logger.info(f"\t'{sample.name}' is already trimmed. Skipping...")
 			trimmomatic_output = sample
 
-		result = shovill_workflow.run(trimmomatic_output.forward, trimmomatic_output.reverse, shovill_folder)
-		output_files.append(result)
-	return output_files
+		result = self.shovill_workflow.run(trimmomatic_output.forward, trimmomatic_output.reverse, shovill_folder, sample_folder.name)
+		return result
+
+
+def read_assembly(samples: List[Union[sampleio.SampleReads, programio.TrimmomaticOutput]], project_folder: Path) -> List[programio.ShovillOutput]:
+	workflow = AssemblyWorkflow(project_folder)
+	results = workflow.run(samples, project_folder)
+	return results

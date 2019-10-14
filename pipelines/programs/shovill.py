@@ -1,30 +1,23 @@
 from pathlib import Path
-from typing import List
+from typing import List, Optional
 
-from pipelines import systemio
 from loguru import logger
 
-class ShovillOutput:
-	def __init__(self, output_folder: Path):
-		self.contigs = output_folder / "contigs.fa"
-		self.contigs_gfa = output_folder / "contigs.gfa"
-		self.corrections = output_folder / "shovill.corrections"
-		self.contigs_spades = output_folder / "spades.fasta"
-
-	def exists(self) -> bool:
-		return self.contigs.exists()
+from pipelines import systemio, programio, utilities
 
 
 class Shovill:
 	program = "shovill"
+
 	def __init__(self, minlen = 500, assembler = 'spades', threads: int = 8):
 		self.minlen = minlen
 		self.assembler = assembler
 		self.threads = threads
 
-	def run(self, forward: Path, reverse: Path, output_folder: Path) -> ShovillOutput:
-		logger.debug(f"shovill: {forward} {reverse} {output_folder}")
-		output = self.get_output(output_folder)
+	def run(self, forward: Path, reverse: Path, output_folder: Path, sample_name:Optional[str] = None) -> programio.ShovillOutput:
+		if sample_name is None:
+			sample_name = utilities.get_name_from_reads(forward)
+		output = programio.ShovillOutput.expected(output_folder, sample_name)
 		command = self.get_command(forward, reverse, output_folder)
 
 		if not output.exists():
@@ -47,6 +40,3 @@ class Shovill:
 			"--cpus", self.threads
 		]
 		return systemio.format_command(command)
-	@staticmethod
-	def get_output(output_folder: Path) -> ShovillOutput:
-		return ShovillOutput(output_folder)

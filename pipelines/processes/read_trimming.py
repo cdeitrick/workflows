@@ -1,27 +1,23 @@
 
 from pathlib import Path
-from pipelines.programs import trimmomatic, shovill
+from pipelines.programs import trimmomatic
+from pipelines import programio
 from pipelines import sampleio
 from typing import List
 from loguru import logger
 
-def trim(samples:List[sampleio.SampleReads], parent_folder:Path, stringent:bool = False)->List[trimmomatic.TrimmomaticOutput]:
-	cancel = False
-	for sample in samples:
-		if not sample.forward.exists() or not sample.reverse.exists():
-			logger.critical(f"The read files for sample {sample.name} do not exist")
-			cancel = True
+def trim(samples:List[sampleio.SampleReads], project_folder:Path, stringent:bool = False)->List[programio.TrimmomaticOutput]:
+	cancel = not sampleio.verify_samples(samples)
 
 	if cancel:
 		message = "Something went wrong when validating the variant calling parameters!"
 		raise ValueError(message)
-
 
 	trimmomatic_workflow = trimmomatic.Trimmomatic(stringent = stringent)
 	output_files = list()
 	for index, sample in enumerate(samples):
 		logger.info(f"Trimming sample {index} of {len(samples)}: {sample.name}")
 
-		trimmomatic_output = trimmomatic_workflow.run(sample.forward, sample.reverse, parent_folder / sample.name)
+		trimmomatic_output = trimmomatic_workflow.run(sample.forward, sample.reverse, project_folder / sample.name)
 		output_files.append(trimmomatic_output)
 	return output_files

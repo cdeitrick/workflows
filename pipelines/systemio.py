@@ -6,12 +6,6 @@ from typing import Any, Iterable, List, Optional, Union
 from loguru import logger
 
 
-def checkdir(path):
-	if isinstance(path, str): path = Path(path)
-	if not path.exists(): path.mkdir()
-	return path
-
-
 def get_srun_command(threads: Optional = None) -> List[Any]:
 	srun_command = ["srun"]
 	if threads:
@@ -21,14 +15,15 @@ def get_srun_command(threads: Optional = None) -> List[Any]:
 
 
 class CommandRunner:
-	def __init__(self, logfile: Optional[Path] = None):
+	def __init__(self, logfile: Optional[Path] = None, srun:bool = True):
+		self.use_srun = srun
 		if logfile:
 			logfile = Path(logfile)
 			if logfile.is_dir():
 				logfile = logfile / "commands.sh"
 		self.command_log = logfile
 
-	def run(self, command: List[Any], output_folder: Optional[Path] = None, srun: bool = True, threads: int = 8, logonly: bool = False):
+	def run(self, command: List[Any], output_folder: Optional[Path] = None, srun: bool = None, threads: int = 8, logonly: bool = False):
 		"""
 			Runs a program's command. Arguments are used to generate additional files containing the stdout, stderr,and
 			command used to run the program.
@@ -41,7 +36,7 @@ class CommandRunner:
 		threads: int; default 8
 			Used to indicate the number of threads srun should use.
 			This assumes that the given command includes the relevant parameter for the program being run.
-		srun: bool; default False
+		srun: bool; default None (default to CommandRunner.use_srun)
 			Whether to run the command with srun.
 		logonly: bool; default = False
 			If True, the given command will not be run. it will only be written to the command log. This is useful for programs that don't
@@ -50,7 +45,8 @@ class CommandRunner:
 		-------
 		subprocess.CompletedProcess
 		"""
-		if srun:
+		# TODO: Maybe replace the output_folder argument with the expected output of the command, which can be used to find the destination of the log files.
+		if srun or (srun is None and self.use_srun):
 			command = get_srun_command(threads) + command
 		command = format_command(command)
 
@@ -68,18 +64,22 @@ class CommandRunner:
 		self.write_line_to_commandlog("\n")
 
 		if output_folder:
-			stdout_path = output_folder / "stdout.txt"
-			stderr_path = output_folder / "stderr.txt"
-			command_path = output_folder / "command.txt"
-			try:
-				command_path.write_text(" ".join(command))
-				stdout_path.write_text(process.stdout)
-				stderr_path.write_text(process.stderr)
-			except FileNotFoundError:
-				logger.error(f"Could not write the output files to {output_folder}")
+			self.write_command(output_folder, command, process)
 		else:
 			logger.warning(f"Cannot detect the output folder...")
 			logger.warning(f"{process.stderr}")
+
+	@staticmethod
+	def write_command(folder: Path, command: List[str], process: subprocess.CompletedProcess):
+		stdout_path = folder / "stdout.txt"
+		stderr_path = folder / "stderr.txt"
+		command_path = folder / "command.txt"
+		try:
+			command_path.write_text(" ".join(command))
+			stdout_path.write_text(process.stdout)
+			stderr_path.write_text(process.stderr)
+		except FileNotFoundError:
+			logger.error(f"Could not write the output files to {folder}")
 
 	def write_command_to_commandlog(self, command: List[str]):
 		if self.command_log:
@@ -96,12 +96,16 @@ class CommandRunner:
 		if self.command_log:
 			with self.command_log.open('a') as file1:
 				file1.write(f"{line}\n")
-	def set_command_log(self, path:Union[str,Path]):
+
+	def set_command_log(self, path: Union[str, Path]):
 		self.command_log = Path(path)
-command_runner = CommandRunner() # Should use this object to make system calls.
+
+
+command_runner = CommandRunner()  # Should use this object to make system calls.
+
 
 def check_output(command: List[str]) -> Optional[str]:
-	logger.info(f"Checking the output of {command}")
+	logger.debug(f"Checking the output of {command}")
 	try:
 		result = subprocess.check_output(format_command(command), universal_newlines = True)
 	except subprocess.CalledProcessError:

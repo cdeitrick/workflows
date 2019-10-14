@@ -1,0 +1,7 @@
+organism: Burkholderia cenocepacia strain 
+contigs: 107
+bases: 6994048
+tmRNA: 1
+CDS: 6266
+tRNA: 71
+rRNA: 3

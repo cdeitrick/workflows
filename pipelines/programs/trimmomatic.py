@@ -1,77 +1,12 @@
 from pathlib import Path
-from typing import List, Optional, Union
-from pipelines import sampleio
-from pipelines import systemio
-from pipelines.resources import illumina_filename
+from typing import List, Optional
+
 from loguru import logger
+
+from pipelines import systemio, programio
+from pipelines.resources import illumina_filename
+
 ADAPTERS_FILENAME = illumina_filename
-
-
-class TrimmomaticOutput:
-	# TODO: remove this in favor of SampleReads
-
-	# def __init__(self, output_folder: Path, prefix: Union[str, Path]):
-	def __init__(self, name: str, forward: Path, reverse: Path, unpaired_forward: Optional[Path] = None, unpaired_reverse: Optional[Path] = None):
-		self.name = name
-		self.forward = forward
-		self.reverse = reverse
-		self.unpaired_forward = unpaired_forward
-		self.unpaired_reverse = unpaired_reverse
-
-	def reads(self) -> List[Path]:
-		return [self.forward, self.reverse, self.unpaired_forward, self.unpaired_reverse]
-
-	def exists(self):
-		f = self.forward.exists()
-		r = self.reverse.exists()
-		fu = self.unpaired_forward.exists()
-		ru = self.unpaired_reverse.exists()
-
-		return f and r and fu and ru
-
-	@staticmethod
-	def get_name_from_file(path: Path) -> str:
-		name = path.stem
-		# TODO: move this to the utilities module.
-		# If the path refers to a read file, only the first part is usefull.
-		if 'R1' in name or 'R2' in name:
-			name = name.split('_')[:-3]
-			name = "_".join(name)
-		return name
-
-	@classmethod
-	def from_folder(cls, folder: Path, prefix: Union[str, Path]) -> 'TrimmomaticOutput':
-		if isinstance(prefix, Path):
-			prefix = cls.get_name_from_file(prefix)
-		files = list(i for i in folder.iterdir() if i.suffix == '.fastq')
-		forward = [i for i in files if ('forward' in i.name and 'unpaired' not in i.name)][0]
-		reverse = [i for i in files if ('reverse' in i.name and 'unpaired' not in i.name)][0]
-
-		try:
-			unpaired_forward = [i for i in files if ('forward' in i.name and 'unpaired' in i.name)][0]
-		except IndexError:
-			unpaired_forward = None
-
-		try:
-			unpaired_reverse = [i for i in files if ('reverse' in i.name and 'unpaired' in i.name)][0]
-		except IndexError:
-			unpaired_reverse = None
-
-		return cls(prefix, forward, reverse, unpaired_forward, unpaired_reverse)
-
-	@classmethod
-	def get_expected(cls, folder:Path, prefix:Union[str,Path])->'TrimmomaticOutput':
-		if isinstance(prefix, Path): prefix = TrimmomaticOutput.get_name_from_file(prefix)
-		forward: Path = folder / '{}.forward.trimmed.paired.fastq'.format(prefix)
-		reverse: Path = folder / '{}.reverse.trimmed.paired.fastq'.format(prefix)
-		unpaired_forward: Optional[Path] = folder / '{}.forward.trimmed.unpaired.fastq'.format(prefix)
-		unpaired_reverse: Optional[Path] = folder / '{}.reverse.trimmed.unpaired.fastq'.format(prefix)
-		return cls(prefix, forward, reverse, unpaired_forward, unpaired_reverse)
-
-	def as_sample(self)->sampleio.SampleReads:
-
-		result = sampleio.SampleReads(self.name, self.forward, self.reverse, is_trimmed = True)
-		return result
 
 
 class Trimmomatic:
@@ -101,9 +36,11 @@ class Trimmomatic:
 			self.leading = 20
 			self.trailing = 20
 			self.minimum = 70
-	def __str__(self)->str:
+
+	def __str__(self) -> str:
 		string = f"Trimmomatic(leading = {self.leading}, trailing = {self.trailing}, minimum = {self.minimum}, clip = {self.clip.exists()})"
 		return string
+
 	@staticmethod
 	def version() -> Optional[str]:
 		return systemio.check_output(["trimmomatic", "-version"])
@@ -119,7 +56,7 @@ class Trimmomatic:
 			message = f"Cannot locate the adaptor file: {self.clip}"
 			raise FileNotFoundError(message)
 
-	def run(self, forward: Path, reverse: Path, output_folder: Path, sample_name: str = None) -> TrimmomaticOutput:
+	def run(self, forward: Path, reverse: Path, output_folder: Path, sample_name: str = None) -> programio.TrimmomaticOutput:
 		"""
 			Runs trimmomatic on the given pair of reads.
 		Parameters
@@ -132,7 +69,7 @@ class Trimmomatic:
 		if not output_folder.exists():
 			output_folder.mkdir()
 
-		output = TrimmomaticOutput.get_expected(output_folder, sample_name if sample_name else forward)
+		output = programio.TrimmomaticOutput.expected(output_folder, sample_name)
 		command = self.get_command(forward, reverse, output)
 
 		if not output.exists():
@@ -140,7 +77,7 @@ class Trimmomatic:
 
 		return output
 
-	def get_command(self, forward: Path, reverse: Path, output: TrimmomaticOutput) -> List[str]:
+	def get_command(self, forward: Path, reverse: Path, output: programio.TrimmomaticOutput) -> List[str]:
 		command = [
 			self.program, "PE",
 			# "-threads", str(self.options.threads),

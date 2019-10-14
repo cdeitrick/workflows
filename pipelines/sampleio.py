@@ -1,17 +1,10 @@
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Iterable, List, Optional, Tuple, Union
+from typing import List, Optional
 
 from loguru import logger
 
-
-def get_name_from_reads(path: Union[str, Path]) -> str:
-	# Ex. M64_123_S50_R1_001.fastq
-	# Remove the extra stuff added to the filename.
-	if isinstance(path, str):
-		path = Path(path)
-	parts = path.name.split('_')[:-3]
-	return "_".join(parts)
+from pipelines import utilities
 
 
 @dataclass
@@ -20,61 +13,21 @@ class SampleReads:
 	forward: Path
 	reverse: Path
 	folder: Optional[Path] = None
-	is_trimmed: bool = False
 
 	def exists(self):
 		return self.forward.exists() and self.reverse.exists()
 
 	@classmethod
 	def from_folder(cls, folder: Path, sample_id: Optional[str] = None) -> 'SampleReads':
-
-		forward, reverse = get_reads_from_folder(folder)
+		forward, reverse = utilities.get_reads_from_folder(folder)
 		if not sample_id:
-			sample_id = get_name_from_reads(forward)
+			# This will raise a FileNotFoundError if the reads cannot be found. Don't try to ignore the error.
+			sample_id = utilities.get_name_from_reads(forward)
 
 		return SampleReads(name = sample_id, forward = forward, reverse = reverse)
 
-	@classmethod
-	def from_trimmomatic(cls, folder: Path, sample_id: str) -> Optional['SampleReads']:
-		files = list(i for i in folder.iterdir() if i.suffix == ".fastq")
-		try:
-			forward = [i for i in files if ('forward' in i.name and 'unpaired' not in i.name)][0]
-			reverse = [i for i in files if ('reverse' in i.name and 'unpaired' not in i.name)][0]
-			return cls(sample_id, forward, reverse, folder, is_trimmed = False)
-		except IndexError:
-			logger.warning(f"Could not find trimmomatic reads in folder {folder}")
-			return None
-
-	def reads(self) -> Iterable[Path]:
+	def reads(self) -> List[Path]:
 		return [self.forward, self.reverse]
-
-def is_forward_read(filename:Path)->bool:
-	if 'R1' in filename.stem or ('forward' in filename.stem and 'unpaired' not in filename.stem):
-		return True
-	return False
-def is_reverse_read(filename:Path)->bool:
-	if 'R2' in filename.stem or ('reverse' in filename.stem and 'unpaired' not in filename.stem):
-		return True
-	return False
-
-def get_reads_from_folder(folder: Path) -> Tuple[Path, Path]:
-	candidates = list(i for i in folder.iterdir() if i.suffix == '.fastq')
-	if not candidates:
-		logger.warning(f"The files might be gzipped. While *most* programs can still use the compressed files, not all can, so uncompress just in case.")
-		logger.warning(f"This will have to be done manually for now.")
-
-	try:
-		forward = [i for i in candidates if is_forward_read(i)][0]
-		reverse = [i for i in candidates if is_reverse_read(i)][0]
-	except IndexError:
-		message = f"Could not locate the reads in folder (exists = {folder.exists()}): '{folder}'"
-		if folder.exists():
-			logger.debug(f"Folder contents:")
-			for i in folder.iterdir():
-				logger.debug(f"\t{i}")
-		raise FileNotFoundError(message)
-
-	return forward, reverse
 
 
 def get_samples_from_folder(folder: Path) -> List[SampleReads]:
@@ -92,7 +45,19 @@ def get_samples_from_folder(folder: Path) -> List[SampleReads]:
 	return samples
 
 
-def validate_samples(samples: List[SampleReads]):
+def verify_samples(samples: List[SampleReads]) -> bool:
+	"""
+		Verifies that all samples exist.
+	Parameters
+	----------
+	samples: List[SampleReads]
+		A list of samples to test.
+	"""
+	all_exist = True
 	for sample in samples:
-		if not sample.forward.exists() or not sample.reverse.exists():
-			logger.error(f"Sample {sample.name} cannot be found.")
+		if not sample.exists():
+			logger.warning(f"The read files for sample {sample.name} do not exist.")
+			logger.warning(f"\tForward Read: {sample.forward}")
+			logger.warning(f"\tReverse Read: {sample.reverse}")
+			all_exist = False
+	return all_exist

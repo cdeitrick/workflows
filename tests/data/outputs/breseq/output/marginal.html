@@ -1,0 +1,836 @@
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<html>
+<head>
+    <title>BRESEQ :: Marginal Predictions</title>
+    <style type="text/css">
+        body {
+            font-family: sans-serif;
+            font-size: 11pt;
+        }
+
+        th {
+            background-color: rgb(0, 0, 0);
+            color: rgb(255, 255, 255);
+        }
+
+        table {
+            background-color: rgb(1, 0, 0);
+            color: rgb(0, 0, 0);
+        }
+
+        tr {
+            background-color: rgb(255, 255, 255);
+        }
+
+        .mutation_in_codon {
+            color: red;
+            text-decoration: underline;
+        }
+
+        .snp_type_synonymous {
+            color: green;
+        }
+
+        .snp_type_nonsynonymous {
+            color: blue;
+        }
+
+        .snp_type_nonsense {
+            color: red;
+        }
+
+        .mutation_header_row {
+            background-color: rgb(0, 130, 0);
+        }
+
+        .read_alignment_header_row {
+            background-color: rgb(255, 0, 0);
+        }
+
+        .missing_coverage_header_row {
+            background-color: rgb(0, 100, 100);
+        }
+
+        .new_junction_header_row {
+            background-color: rgb(0, 0, 155);
+        }
+
+        .copy_number_header_row {
+            background-color: rgb(153, 102, 0);
+        }
+
+        .alternate_table_row_0 {
+            background-color: rgb(255, 255, 255);
+        }
+
+        .alternate_table_row_1 {
+            background-color: rgb(235, 235, 235);
+        }
+
+        .gray_table_row {
+            background-color: rgb(230, 230, 245);
+        }
+
+        .polymorphism_table_row {
+            background-color: rgb(160, 255, 160);
+        }
+
+        .highlight_table_row {
+            background-color: rgb(192, 255, 255);
+        }
+
+        .reject_table_row {
+            background-color: rgb(255, 200, 165);
+        }
+
+        .user_defined_table_row {
+            background-color: rgb(255, 255, 0);
+        }
+
+        .information_table_row {
+            background-color: rgb(200, 255, 255);
+        }
+
+        .junction_repeat {
+            background-color: rgb(255, 165, 0)
+        }
+
+        .junction_gene {
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .unhidden {
+            display: block;
+        }
+
+    </style>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+    <script type="text/javascript">
+        function hideTog(divID) {
+            var item = document.getElementById(divID);
+            if (item) {
+                item.className = (item.className == 'hidden') ? 'unhidden' : 'hidden';
+            }
+        }
+
+        function showTog(butID) {
+            var button = document.getElementById(butID);
+            if (button) {
+                button.value = (button.value == 'Show') ? 'Hide' : 'Show';
+            }
+        }
+    </script>
+
+</head>
+<body>
+<table width="100%" border="0" cellspacing="0" cellpadding="3">
+    <tr>
+        <td><a href="http://barricklab.org/breseq"><img src="evidence/breseq_small.png"/></a></td>
+        <td width="100%">
+            <b><i>breseq</i></b>&nbsp;&nbsp;version 0.32.1&nbsp;&nbsp;
+            <br><a href="index.html">mutation predictions</a> |
+            <a href="marginal.html">marginal predictions</a> |
+            <a href="summary.html">summary statistics</a> |
+            <a href="output.gd">genome diff</a> |
+            <a href="log.txt">command line log</a>
+        </td>
+    </tr>
+</table>
+
+<p>
+<p>
+<table border="0" cellspacing="1" , cellpadding="3">
+    <tr>
+        <th colspan="12" align="left" class="read_alignment_header_row">Marginal read alignment evidence (highest frequency 20 of 326 shown, sorted by
+            frequency from high to low)
+        </th>
+    </tr>
+    <tr>
+        <th>&nbsp;</th>
+        <th>seq&nbsp;id</th>
+        <th colspan="2">position</th>
+        <th>ref</th>
+        <th>new</th>
+        <th>freq</th>
+        <th>score&nbsp;(cons/poly)</th>
+        <th>reads</th>
+        <th>annotation</th>
+        <th>genes</th>
+        <th width="100%">product</th>
+    </tr>
+    <tr class="polymorphism_table_row">
+        <td><a href="evidence/RA_331.html">*</a></td>
+        <td align="center">contig00105</td>
+        <td align="right">122</td>
+        <td align="right">0</td>
+        <td align="center">T</td>
+        <td align="center">A</td>
+        <td align="right">79.3%
+        </td>
+        <td align="center">666.8
+            /&nbsp;172.3
+        </td>
+        <td align="center">338</td>
+        <td align="center">intergenic&nbsp;(&#8211;/&#8211;)</td>
+        <td align="center"><i>&#8211;/&#8211;</i></td>
+        <td align="left">&#8211;/&#8211;</td>
+    </tr>
+    <tr class="polymorphism_table_row">
+        <td><a href="evidence/RA_332.html">*</a></td>
+        <td align="center">contig00105</td>
+        <td align="right">123</td>
+        <td align="right">0</td>
+        <td align="center">G</td>
+        <td align="center">A</td>
+        <td align="right">79.3%
+        </td>
+        <td align="center">676.6
+            /&nbsp;176.4
+        </td>
+        <td align="center">340</td>
+        <td align="center">intergenic&nbsp;(&#8211;/&#8211;)</td>
+        <td align="center"><i>&#8211;/&#8211;</i></td>
+        <td align="left">&#8211;/&#8211;</td>
+    </tr>
+    <tr class="polymorphism_table_row">
+        <td><a href="evidence/RA_333.html">*</a></td>
+        <td align="center">contig00105</td>
+        <td align="right">128</td>
+        <td align="right">1</td>
+        <td align="center">.</td>
+        <td align="center">A</td>
+        <td align="right">72.7%
+        </td>
+        <td align="center">792.7
+            /&nbsp;296.1
+        </td>
+        <td align="center">323</td>
+        <td align="center">intergenic&nbsp;(&#8211;/&#8211;)</td>
+        <td align="center"><i>&#8211;/&#8211;</i></td>
+        <td align="left">&#8211;/&#8211;</td>
+    </tr>
+    <tr class="polymorphism_table_row">
+        <td><a href="evidence/RA_126.html">*</a></td>
+        <td align="center">contig00015</td>
+        <td align="right">156,072</td>
+        <td align="right">0</td>
+        <td align="center">T</td>
+        <td align="center">C</td>
+        <td align="right">70.5%
+        </td>
+        <td align="center">813.9
+            /&nbsp;inf
+        </td>
+        <td align="center">548</td>
+        <td align="center">intergenic&nbsp;(+394/&#8211;)</td>
+        <td align="center"><i>JFHDKIGG_02982/&#8211;</i></td>
+        <td align="left">[locus_tag=Bcen2424_0009] [db_xref=InterPro:IPR011577] [protein=cytochrome B561]
+            [protein_id=ABK06763.1][location=complement(15657..16187)] [gbkey=CDS]/&#8211;
+        </td>
+    </tr>
+    <tr class="polymorphism_table_row">
+        <td><a href="evidence/RA_125.html">*</a></td>
+        <td align="center">contig00015</td>
+        <td align="right">156,060</td>
+        <td align="right">0</td>
+        <td align="center">T</td>
+        <td align="center">C</td>
+        <td align="right">69.9%
+        </td>
+        <td align="center">759.0
+            /&nbsp;inf
+        </td>
+        <td align="center">532</td>
+        <td align="center">intergenic&nbsp;(+382/&#8211;)</td>
+        <td align="center"><i>JFHDKIGG_02982/&#8211;</i></td>
+        <td align="left">[locus_tag=Bcen2424_0009] [db_xref=InterPro:IPR011577] [protein=cytochrome B561]
+            [protein_id=ABK06763.1][location=complement(15657..16187)] [gbkey=CDS]/&#8211;
+        </td>
+    </tr>
+    <tr class="polymorphism_table_row">
+        <td><a href="evidence/RA_215.html">*</a></td>
+        <td align="center">contig00080</td>
+        <td align="right">3,011</td>
+        <td align="right">0</td>
+        <td align="center">C</td>
+        <td align="center">A</td>
+        <td align="right">68.8%
+        </td>
+        <td align="center">838.5
+            /&nbsp;inf
+        </td>
+        <td align="center">638</td>
+        <td align="center">intergenic&nbsp;(+113/&#8209;46)</td>
+        <td align="center"><i>JFHDKIGG_06315/JFHDKIGG_06316</i></td>
+        <td align="left">23S ribosomal RNA/5S ribosomal RNA</td>
+    </tr>
+    <tr class="polymorphism_table_row">
+        <td><a href="evidence/RA_340.html">*</a></td>
+        <td align="center">contig00105</td>
+        <td align="right">227</td>
+        <td align="right">0</td>
+        <td align="center">C</td>
+        <td align="center">G</td>
+        <td align="right">67.5%
+        </td>
+        <td align="center">407.3
+            /&nbsp;307.9
+        </td>
+        <td align="center">293</td>
+        <td align="center">intergenic&nbsp;(&#8211;/&#8211;)</td>
+        <td align="center"><i>&#8211;/&#8211;</i></td>
+        <td align="left">&#8211;/&#8211;</td>
+    </tr>
+    <tr class="polymorphism_table_row">
+        <td><a href="evidence/RA_322.html">*</a></td>
+        <td align="center">contig00103</td>
+        <td align="right">461</td>
+        <td align="right">0</td>
+        <td align="center">T</td>
+        <td align="center">C</td>
+        <td align="right">67.2%
+        </td>
+        <td align="center">21.6
+            /&nbsp;48.7
+        </td>
+        <td align="center">61</td>
+        <td align="center">intergenic&nbsp;(&#8211;/&#8211;)</td>
+        <td align="center"><i>&#8211;/&#8211;</i></td>
+        <td align="left">&#8211;/&#8211;</td>
+    </tr>
+    <tr class="polymorphism_table_row">
+        <td><a href="evidence/RA_139.html">*</a></td>
+        <td align="center">contig00016</td>
+        <td align="right">57,682</td>
+        <td align="right">0</td>
+        <td align="center">G</td>
+        <td align="center">C</td>
+        <td align="right">65.5%
+        </td>
+        <td align="center">33.5
+            /&nbsp;26.7
+        </td>
+        <td align="center">30</td>
+        <td align="center"><font class="snp_type_nonsynonymous">T64S</font>&nbsp;(A<font class="mutation_in_codon">C</font>C&rarr;A<font
+                class="mutation_in_codon">G</font>C)&nbsp;
+        </td>
+        <td align="center"><i>JFHDKIGG_03027</i></td>
+        <td align="left">[locus_tag=Bcen2424_4455] [db_xref=InterPro:IPR008160] [protein=Collagen triple helix repeat protein] [protein_id=ABK11189.1]
+            [location=complement(1410256..1411635)][gbkey=CDS]
+        </td>
+    </tr>
+    <tr class="polymorphism_table_row">
+        <td><a href="evidence/RA_339.html">*</a></td>
+        <td align="center">contig00105</td>
+        <td align="right">223</td>
+        <td align="right">0</td>
+        <td align="center">T</td>
+        <td align="center">C</td>
+        <td align="right">65.4%
+        </td>
+        <td align="center">304.7
+            /&nbsp;254.2
+        </td>
+        <td align="center">273</td>
+        <td align="center">intergenic&nbsp;(&#8211;/&#8211;)</td>
+        <td align="center"><i>&#8211;/&#8211;</i></td>
+        <td align="left">&#8211;/&#8211;</td>
+    </tr>
+    <tr class="polymorphism_table_row">
+        <td><a href="evidence/RA_124.html">*</a></td>
+        <td align="center">contig00015</td>
+        <td align="right">150,031</td>
+        <td align="right">0</td>
+        <td align="center">A</td>
+        <td align="center">G</td>
+        <td align="right">64.4%
+        </td>
+        <td align="center">214.0
+            /&nbsp;196.2
+        </td>
+        <td align="center">203</td>
+        <td align="center">noncoding&nbsp;(17/77&nbsp;nt)</td>
+        <td align="center"><i>JFHDKIGG_02974</i></td>
+        <td align="left">tRNA&#8209;Val(gac)</td>
+    </tr>
+    <tr class="polymorphism_table_row">
+        <td><a href="evidence/RA_169.html">*</a></td>
+        <td align="center">contig00029</td>
+        <td align="right">81,536</td>
+        <td align="right">0</td>
+        <td align="center">G</td>
+        <td align="center">A</td>
+        <td align="right">62.5%
+        </td>
+        <td align="center">1.8
+            /&nbsp;11.6
+        </td>
+        <td align="center">18</td>
+        <td align="center"><font class="snp_type_synonymous">T176T</font>&nbsp;(AC<font class="mutation_in_codon">C</font>&rarr;AC<font
+                class="mutation_in_codon">T</font>)&nbsp;
+        </td>
+        <td align="center"><i>JFHDKIGG_04524</i></td>
+        <td align="left">hypothetical protein</td>
+    </tr>
+    <tr class="polymorphism_table_row">
+        <td><a href="evidence/RA_265.html">*</a></td>
+        <td align="center">contig00095</td>
+        <td align="right">936</td>
+        <td align="right">0</td>
+        <td align="center">C</td>
+        <td align="center">G</td>
+        <td align="right">60.4%
+        </td>
+        <td align="center">85.3
+            /&nbsp;143.9
+        </td>
+        <td align="center">106</td>
+        <td align="center">intergenic&nbsp;(+435/&#8211;)</td>
+        <td align="center"><i>JFHDKIGG_06335/&#8211;</i></td>
+        <td align="left">hypothetical protein/&#8211;</td>
+    </tr>
+    <tr class="polymorphism_table_row">
+        <td><a href="evidence/RA_330.html">*</a></td>
+        <td align="center">contig00105</td>
+        <td align="right">93</td>
+        <td align="right">0</td>
+        <td align="center">C</td>
+        <td align="center">.</td>
+        <td align="right">59.7%
+        </td>
+        <td align="center">123.9
+            /&nbsp;inf
+        </td>
+        <td align="center">383</td>
+        <td align="center">intergenic&nbsp;(&#8211;/&#8211;)</td>
+        <td align="center"><i>&#8211;/&#8211;</i></td>
+        <td align="left">&#8211;/&#8211;</td>
+    </tr>
+    <tr class="polymorphism_table_row">
+        <td><a href="evidence/RA_127.html">*</a></td>
+        <td align="center">contig00015</td>
+        <td align="right">156,234</td>
+        <td align="right">0</td>
+        <td align="center">T</td>
+        <td align="center">C</td>
+        <td align="right">59.5%
+        </td>
+        <td align="center">365.3
+            /&nbsp;inf
+        </td>
+        <td align="center">621</td>
+        <td align="center">intergenic&nbsp;(+556/&#8211;)</td>
+        <td align="center"><i>JFHDKIGG_02982/&#8211;</i></td>
+        <td align="left">[locus_tag=Bcen2424_0009] [db_xref=InterPro:IPR011577] [protein=cytochrome B561]
+            [protein_id=ABK06763.1][location=complement(15657..16187)] [gbkey=CDS]/&#8211;
+        </td>
+    </tr>
+    <tr class="polymorphism_table_row">
+        <td><a href="evidence/RA_68.html">*</a></td>
+        <td align="center">contig00004</td>
+        <td align="right">251,644</td>
+        <td align="right">0</td>
+        <td align="center">C</td>
+        <td align="center">G</td>
+        <td align="right">59.5%
+        </td>
+        <td align="center">73.3
+            /&nbsp;154.8
+        </td>
+        <td align="center">111</td>
+        <td align="center"><font class="snp_type_nonsynonymous">D159H</font>&nbsp;(<font class="mutation_in_codon">G</font>AC&rarr;<font
+                class="mutation_in_codon">C</font>AC)&nbsp;
+        </td>
+        <td align="center"><i>JFHDKIGG_00980</i></td>
+        <td align="left">hypothetical protein</td>
+    </tr>
+    <tr class="polymorphism_table_row">
+        <td><a href="evidence/RA_135.html">*</a></td>
+        <td align="center">contig00016</td>
+        <td align="right">57,663</td>
+        <td align="right">0</td>
+        <td align="center">T</td>
+        <td align="center">G</td>
+        <td align="right">59.3%
+        </td>
+        <td align="center">2.9
+            /&nbsp;27.0
+        </td>
+        <td align="center">28</td>
+        <td align="center"><font class="snp_type_synonymous">S70S</font>&nbsp;(TC<font class="mutation_in_codon">A</font>&rarr;TC<font
+                class="mutation_in_codon">C</font>)&nbsp;
+        </td>
+        <td align="center"><i>JFHDKIGG_03027</i></td>
+        <td align="left">[locus_tag=Bcen2424_4455] [db_xref=InterPro:IPR008160] [protein=Collagen triple helix repeat protein] [protein_id=ABK11189.1]
+            [location=complement(1410256..1411635)][gbkey=CDS]
+        </td>
+    </tr>
+    <tr class="polymorphism_table_row">
+        <td><a href="evidence/RA_108.html">*</a></td>
+        <td align="center">contig00011</td>
+        <td align="right">169,988</td>
+        <td align="right">0</td>
+        <td align="center">A</td>
+        <td align="center">G</td>
+        <td align="right">58.8%
+        </td>
+        <td align="center">6.5
+            /&nbsp;13.6
+        </td>
+        <td align="center">17</td>
+        <td align="center">intergenic&nbsp;(+23/+32)</td>
+        <td align="center"><i>JFHDKIGG_02352/JFHDKIGG_02353</i></td>
+        <td align="left">[locus_tag=Bcen2424_1017] [db_xref=InterPro:IPR001727] [protein=protein of unknown function UPF0016] [protein_id=ABK07770.1]
+            [location=complement(1124653..1125309)][gbkey=CDS]/[locus_tag=Bcen2424_1016] [protein=conserved hypothetical protein]
+            [protein_id=ABK07769.1][location=1123888..1124598] [gbkey=CDS]
+        </td>
+    </tr>
+    <tr class="polymorphism_table_row">
+        <td><a href="evidence/RA_306.html">*</a></td>
+        <td align="center">contig00103</td>
+        <td align="right">86</td>
+        <td align="right">0</td>
+        <td align="center">A</td>
+        <td align="center">G</td>
+        <td align="right">58.1%
+        </td>
+        <td align="center">5.1
+            /&nbsp;70.9
+        </td>
+        <td align="center">65</td>
+        <td align="center">intergenic&nbsp;(&#8211;/&#8211;)</td>
+        <td align="center"><i>&#8211;/&#8211;</i></td>
+        <td align="left">&#8211;/&#8211;</td>
+    </tr>
+    <tr class="polymorphism_table_row">
+        <td><a href="evidence/RA_69.html">*</a></td>
+        <td align="center">contig00004</td>
+        <td align="right">251,656</td>
+        <td align="right">0</td>
+        <td align="center">T</td>
+        <td align="center">C</td>
+        <td align="right">57.3%
+        </td>
+        <td align="center">48.2
+            /&nbsp;119.9
+        </td>
+        <td align="center">103</td>
+        <td align="center"><font class="snp_type_nonsynonymous">I155V</font>&nbsp;(<font class="mutation_in_codon">A</font>TA&rarr;<font
+                class="mutation_in_codon">G</font>TA)&nbsp;
+        </td>
+        <td align="center"><i>JFHDKIGG_00980</i></td>
+        <td align="left">hypothetical protein</td>
+    </tr>
+</table>
+
+<p>
+<table border="0" cellspacing="1" cellpadding="3">
+    <tr>
+        <th colspan="12" align="left" class="new_junction_header_row">Marginal new junction evidence (lowest skew 10 of 33 shown)</th>
+    </tr>
+    <!-- Header Lines for New Junction -->
+    <tr>
+        <th colspan="2">&nbsp;</th>
+        <th>seq&nbsp;id</th>
+        <th>position</th>
+        <th>reads&nbsp;(cov)</th>
+        <th>reads&nbsp;(cov)</th>
+        <th>score</th>
+        <th>skew</th>
+        <th>freq</th>
+        <th>annotation</th>
+        <th>gene</th>
+        <th width="100%">product</th>
+    </tr>
+
+    <!-- Item Lines for New Junction -->
+    <!-- Side 1 Item Lines for New Junction -->
+    <tr class="mutation_table_row_0">
+        <td rowspan="2"><a href="evidence/JC_418.html">*</a></td>
+        <td rowspan="1"><a href="evidence/JC_SIDE_1_418.html">?</a></td>
+        <td rowspan="1" class="junction_gene">contig00103</td>
+        <td align="center" class="junction_gene">=&nbsp;493</td>
+        <td align="center" class="junction_gene">70 (2.130)</td>
+        <td rowspan="2" align="center">7 (0.220)</td>
+        <td rowspan="2" align="center">5/264</td>
+        <td rowspan="2" align="center">3.0</td>
+        <td rowspan="2" align="center">16.9%</td>
+        <td align="center" class="junction_gene">intergenic&nbsp;(&#8211;/&#8211;)</td>
+        <td align="center" class="junction_gene"><i>&#8211;/&#8211;</i></td>
+        <td class="junction_gene">&#8211;/&#8211;</td>
+    </tr>
+    <!-- Side 2 Item Lines for New Junction -->
+    <tr class="mutation_table_row_0">
+        <td rowspan="1"><a href="evidence/JC_SIDE_2_418.html">?</a></td>
+        <td rowspan="1" class="junction_gene">contig00106</td>
+        <td align="center" class="junction_gene">3&nbsp;=</td>
+        <td align="center" class="junction_gene">0 (0.000)</td>
+        <td align="center" class="junction_gene">intergenic&nbsp;(&#8211;/&#8211;)</td>
+        <td align="center" class="junction_gene"><i>&#8211;/&#8211;</i></td>
+        <td class="junction_gene">&#8211;/&#8211;</td>
+    </tr>
+    <!-- Side 1 Item Lines for New Junction -->
+    <tr class="mutation_table_row_1">
+        <td rowspan="2"><a href="evidence/JC_404.html">*</a></td>
+        <td rowspan="1"><a href="evidence/JC_SIDE_1_404.html">?</a></td>
+        <td rowspan="1" class="junction_gene">contig00056</td>
+        <td align="center" class="junction_gene">=&nbsp;7871</td>
+        <td align="center" class="junction_gene">37 (0.770)</td>
+        <td rowspan="2" align="center">3 (0.070)</td>
+        <td rowspan="2" align="center">3/240</td>
+        <td rowspan="2" align="center">3.2</td>
+        <td rowspan="2" align="center">8.4%</td>
+        <td align="center" class="junction_gene">coding&nbsp;(218/1092&nbsp;nt)</td>
+        <td align="center" class="junction_gene"><i>JFHDKIGG_05992</i></td>
+        <td class="junction_gene">[locus_tag=Bcen2424_2435] [db_xref=InterPro:IPR000808,InterPro:IPR002586,InterPro:IPR002744][protein=Cobyrinic acid
+            a,c&#8209;diamide synthase] [protein_id=ABK09185.1][location=complement(2703485..2704576)] [gbkey=CDS]
+        </td>
+    </tr>
+    <!-- Side 2 Item Lines for New Junction -->
+    <tr class="mutation_table_row_1">
+        <td rowspan="1"><a href="evidence/JC_SIDE_2_404.html">?</a></td>
+        <td rowspan="1" class="junction_gene">contig00056</td>
+        <td align="center" class="junction_gene">7917&nbsp;=</td>
+        <td align="center" class="junction_gene">32 (0.750)</td>
+        <td align="center" class="junction_gene">coding&nbsp;(172/1092&nbsp;nt)</td>
+        <td align="center" class="junction_gene"><i>JFHDKIGG_05992</i></td>
+        <td class="junction_gene">[locus_tag=Bcen2424_2435] [db_xref=InterPro:IPR000808,InterPro:IPR002586,InterPro:IPR002744][protein=Cobyrinic acid
+            a,c&#8209;diamide synthase] [protein_id=ABK09185.1][location=complement(2703485..2704576)] [gbkey=CDS]
+        </td>
+    </tr>
+    <!-- Side 1 Item Lines for New Junction -->
+    <tr class="mutation_table_row_0">
+        <td rowspan="2"><a href="evidence/JC_380.html">*</a></td>
+        <td rowspan="1"><a href="evidence/JC_SIDE_1_380.html">?</a></td>
+        <td rowspan="1" class="junction_gene">contig00008</td>
+        <td align="center" class="junction_gene">=&nbsp;104817</td>
+        <td align="center" class="junction_gene">27 (0.490)</td>
+        <td rowspan="2" align="center">8 (0.140)</td>
+        <td rowspan="2" align="center">7/268</td>
+        <td rowspan="2" align="center">3.2</td>
+        <td rowspan="2" align="center">22.9%</td>
+        <td align="center" class="junction_gene">intergenic&nbsp;(+302/&#8209;284)</td>
+        <td align="center" class="junction_gene"><i>JFHDKIGG_01710/JFHDKIGG_01711</i></td>
+        <td class="junction_gene">[locus_tag=Bcen2424_0674] [db_xref=InterPro:IPR000583] [protein=glutamine amidotransferase,class&#8209;II]
+            [protein_id=ABK07427.1] [location=complement(754380..755294)][gbkey=CDS]/[locus_tag=Bcen2424_0673]
+            [db_xref=InterPro:IPR001020,InterPro:IPR004899,InterPro:IPR005546,InterPro:IPR006315][protein=outer membrane autotransporter barrel domain
+            protein] [protein_id=ABK07426.1] [location=complement(748506..753794)][gbkey=CDS]
+        </td>
+    </tr>
+    <!-- Side 2 Item Lines for New Junction -->
+    <tr class="mutation_table_row_0">
+        <td rowspan="1"><a href="evidence/JC_SIDE_2_380.html">?</a></td>
+        <td rowspan="1" class="junction_repeat">contig00026</td>
+        <td align="center" class="junction_repeat">=&nbsp;61</td>
+        <td align="center" class="junction_repeat">NA (NA)</td>
+        <td align="center" class="junction_repeat">intergenic&nbsp;(&#8211;/&#8209;324)</td>
+        <td align="center" class="junction_repeat"><i>&#8211;/JFHDKIGG_04175</i></td>
+        <td class="junction_repeat">&#8211;/[locus_tag=Bcen2424_0779] [db_xref=InterPro:IPR007833] [protein=Capsule polysaccharide biosynthesis]
+            [protein_id=ABK07532.1] [location=877672..878877][gbkey=CDS]
+        </td>
+    </tr>
+    <!-- Side 1 Item Lines for New Junction -->
+    <tr class="mutation_table_row_1">
+        <td rowspan="2"><a href="evidence/JC_375.html">*</a></td>
+        <td rowspan="1"><a href="evidence/JC_SIDE_1_375.html">?</a></td>
+        <td rowspan="1" class="junction_gene">contig00002</td>
+        <td align="center" class="junction_gene">356&nbsp;=</td>
+        <td align="center" class="junction_gene">25 (0.520)</td>
+        <td rowspan="2" align="center">6 (0.160)<br>+CCA</td>
+        <td rowspan="2" align="center">4/262</td>
+        <td rowspan="2" align="center">3.4</td>
+        <td rowspan="2" align="center">22.6%</td>
+        <td align="center" class="junction_gene">coding&nbsp;(57/957&nbsp;nt)</td>
+        <td align="center" class="junction_gene"><i>JFHDKIGG_00296</i></td>
+        <td class="junction_gene">[locus_tag=Bcen2424_6766] [db_xref=InterPro:IPR002202] [protein=PE&#8209;PGRS family protein][protein_id=ABK13495.1]
+            [location=complement(1015331..1019638)][gbkey=CDS]
+        </td>
+    </tr>
+    <!-- Side 2 Item Lines for New Junction -->
+    <tr class="mutation_table_row_1">
+        <td rowspan="1"><a href="evidence/JC_SIDE_2_375.html">?</a></td>
+        <td rowspan="1" class="junction_gene">contig00106</td>
+        <td align="center" class="junction_gene">=&nbsp;415</td>
+        <td align="center" class="junction_gene">17 (0.560)</td>
+        <td align="center" class="junction_gene">intergenic&nbsp;(&#8211;/&#8211;)</td>
+        <td align="center" class="junction_gene"><i>&#8211;/&#8211;</i></td>
+        <td class="junction_gene">&#8211;/&#8211;</td>
+    </tr>
+    <!-- Side 1 Item Lines for New Junction -->
+    <tr class="mutation_table_row_0">
+        <td rowspan="2"><a href="evidence/JC_386.html">*</a></td>
+        <td rowspan="1"><a href="evidence/JC_SIDE_1_386.html">?</a></td>
+        <td rowspan="1" class="junction_gene">contig00015</td>
+        <td align="center" class="junction_gene">156007&nbsp;=</td>
+        <td align="center" class="junction_gene">84 (1.400)</td>
+        <td rowspan="2" align="center">7 (0.130)</td>
+        <td rowspan="2" align="center">5/250</td>
+        <td rowspan="2" align="center">3.6</td>
+        <td rowspan="2" align="center">15.2%</td>
+        <td align="center" class="junction_gene">intergenic&nbsp;(+329/&#8211;)</td>
+        <td align="center" class="junction_gene"><i>JFHDKIGG_02982/&#8211;</i></td>
+        <td class="junction_gene">[locus_tag=Bcen2424_0009] [db_xref=InterPro:IPR011577] [protein=cytochrome B561]
+            [protein_id=ABK06763.1][location=complement(15657..16187)] [gbkey=CDS]/&#8211;
+        </td>
+    </tr>
+    <!-- Side 2 Item Lines for New Junction -->
+    <tr class="mutation_table_row_0">
+        <td rowspan="1"><a href="evidence/JC_SIDE_2_386.html">?</a></td>
+        <td rowspan="1" class="junction_gene">contig00051</td>
+        <td align="center" class="junction_gene">=&nbsp;40719</td>
+        <td align="center" class="junction_gene">0 (0.000)</td>
+        <td align="center" class="junction_gene">intergenic&nbsp;(+316/&#8211;)</td>
+        <td align="center" class="junction_gene"><i>JFHDKIGG_05850/&#8211;</i></td>
+        <td class="junction_gene">[locus_tag=Bcen2424_0544] [db_xref=InterPro:IPR001753] [protein=short chain enoyl&#8209;CoA hydratase]
+            [protein_id=ABK07298.1] [location=605087..605863][gbkey=CDS]/&#8211;
+        </td>
+    </tr>
+    <!-- Side 1 Item Lines for New Junction -->
+    <tr class="mutation_table_row_1">
+        <td rowspan="2"><a href="evidence/JC_378.html">*</a></td>
+        <td rowspan="1"><a href="evidence/JC_SIDE_1_378.html">?</a></td>
+        <td rowspan="1" class="junction_gene">contig00004</td>
+        <td align="center" class="junction_gene">=&nbsp;105698</td>
+        <td align="center" class="junction_gene">100 (1.880)</td>
+        <td rowspan="2" align="center">5 (0.100)</td>
+        <td rowspan="2" align="center">5/250</td>
+        <td rowspan="2" align="center">3.6</td>
+        <td rowspan="2" align="center">5.1%</td>
+        <td align="center" class="junction_gene">coding&nbsp;(814/897&nbsp;nt)</td>
+        <td align="center" class="junction_gene"><i>JFHDKIGG_00831</i></td>
+        <td class="junction_gene">[locus_tag=Bcen2424_1602] [db_xref=InterPro:IPR000515,InterPro:IPR005667,InterPro:IPR011865][protein=sulfate ABC
+            transporter, inner membrane subunit CysT] [protein_id=ABK08354.1] [location=1761856..1762752][gbkey=CDS]
+        </td>
+    </tr>
+    <!-- Side 2 Item Lines for New Junction -->
+    <tr class="mutation_table_row_1">
+        <td rowspan="1"><a href="evidence/JC_SIDE_2_378.html">?</a></td>
+        <td rowspan="1" class="junction_gene">contig00004</td>
+        <td align="center" class="junction_gene">=&nbsp;105704</td>
+        <td align="center" class="junction_gene">92 (1.860)</td>
+        <td align="center" class="junction_gene">coding&nbsp;(808/897&nbsp;nt)</td>
+        <td align="center" class="junction_gene"><i>JFHDKIGG_00831</i></td>
+        <td class="junction_gene">[locus_tag=Bcen2424_1602] [db_xref=InterPro:IPR000515,InterPro:IPR005667,InterPro:IPR011865][protein=sulfate ABC
+            transporter, inner membrane subunit CysT] [protein_id=ABK08354.1] [location=1761856..1762752][gbkey=CDS]
+        </td>
+    </tr>
+    <!-- Side 1 Item Lines for New Junction -->
+    <tr class="mutation_table_row_0">
+        <td rowspan="2"><a href="evidence/JC_420.html">*</a></td>
+        <td rowspan="1"><a href="evidence/JC_SIDE_1_420.html">?</a></td>
+        <td rowspan="1" class="junction_gene">contig00106</td>
+        <td align="center" class="junction_gene">=&nbsp;415</td>
+        <td align="center" class="junction_gene">17 (0.560)</td>
+        <td rowspan="2" align="center">6 (0.200)<br>+TGG</td>
+        <td rowspan="2" align="center">3/262</td>
+        <td rowspan="2" align="center">3.8</td>
+        <td rowspan="2" align="center">26.5%</td>
+        <td align="center" class="junction_gene">intergenic&nbsp;(&#8211;/&#8211;)</td>
+        <td align="center" class="junction_gene"><i>&#8211;/&#8211;</i></td>
+        <td class="junction_gene">&#8211;/&#8211;</td>
+    </tr>
+    <!-- Side 2 Item Lines for New Junction -->
+    <tr class="mutation_table_row_0">
+        <td rowspan="1"><a href="evidence/JC_SIDE_2_420.html">?</a></td>
+        <td rowspan="1" class="junction_gene">contig00106</td>
+        <td align="center" class="junction_gene">416&nbsp;=</td>
+        <td align="center" class="junction_gene">17 (0.560)</td>
+        <td align="center" class="junction_gene">intergenic&nbsp;(&#8211;/&#8211;)</td>
+        <td align="center" class="junction_gene"><i>&#8211;/&#8211;</i></td>
+        <td class="junction_gene">&#8211;/&#8211;</td>
+    </tr>
+    <!-- Side 1 Item Lines for New Junction -->
+    <tr class="mutation_table_row_1">
+        <td rowspan="2"><a href="evidence/JC_374.html">*</a></td>
+        <td rowspan="1"><a href="evidence/JC_SIDE_1_374.html">?</a></td>
+        <td rowspan="1" class="junction_gene">contig00002</td>
+        <td align="center" class="junction_gene">164&nbsp;=</td>
+        <td align="center" class="junction_gene">54 (1.120)</td>
+        <td rowspan="2" align="center">6 (0.160)<br>+CCA</td>
+        <td rowspan="2" align="center">3/262</td>
+        <td rowspan="2" align="center">3.8</td>
+        <td rowspan="2" align="center">14.7%</td>
+        <td align="center" class="junction_gene">intergenic&nbsp;(&#8211;/&#8209;136)</td>
+        <td align="center" class="junction_gene"><i>&#8211;/JFHDKIGG_00296</i></td>
+        <td class="junction_gene">&#8211;/[locus_tag=Bcen2424_6766] [db_xref=InterPro:IPR002202] [protein=PE&#8209;PGRS family
+            protein][protein_id=ABK13495.1] [location=complement(1015331..1019638)][gbkey=CDS]
+        </td>
+    </tr>
+    <!-- Side 2 Item Lines for New Junction -->
+    <tr class="mutation_table_row_1">
+        <td rowspan="1"><a href="evidence/JC_SIDE_2_374.html">?</a></td>
+        <td rowspan="1" class="junction_gene">contig00106</td>
+        <td align="center" class="junction_gene">=&nbsp;415</td>
+        <td align="center" class="junction_gene">17 (0.560)</td>
+        <td align="center" class="junction_gene">intergenic&nbsp;(&#8211;/&#8211;)</td>
+        <td align="center" class="junction_gene"><i>&#8211;/&#8211;</i></td>
+        <td class="junction_gene">&#8211;/&#8211;</td>
+    </tr>
+    <!-- Side 1 Item Lines for New Junction -->
+    <tr class="mutation_table_row_0">
+        <td rowspan="2"><a href="evidence/JC_399.html">*</a></td>
+        <td rowspan="1"><a href="evidence/JC_SIDE_1_399.html">?</a></td>
+        <td rowspan="1" class="junction_gene">contig00032</td>
+        <td align="center" class="junction_gene">74105&nbsp;=</td>
+        <td align="center" class="junction_gene">40 (0.800)</td>
+        <td rowspan="2" align="center">3 (0.060)</td>
+        <td rowspan="2" align="center">3/260</td>
+        <td rowspan="2" align="center">3.9</td>
+        <td rowspan="2" align="center">5.1%</td>
+        <td align="center" class="junction_gene">coding&nbsp;(173/663&nbsp;nt)</td>
+        <td align="center" class="junction_gene"><i>JFHDKIGG_04733</i></td>
+        <td class="junction_gene">[locus_tag=Bcen2424_6018]
+            [db_xref=InterPro:IPR000051,InterPro:IPR004033,InterPro:IPR013216,InterPro:IPR013217][protein=Methyltransferase type
+            11][protein_id=ABK12750.1] [location=166651..167313] [gbkey=CDS]
+        </td>
+    </tr>
+    <!-- Side 2 Item Lines for New Junction -->
+    <tr class="mutation_table_row_0">
+        <td rowspan="1"><a href="evidence/JC_SIDE_2_399.html">?</a></td>
+        <td rowspan="1" class="junction_gene">contig00033</td>
+        <td align="center" class="junction_gene">70099&nbsp;=</td>
+        <td align="center" class="junction_gene">74 (1.470)</td>
+        <td align="center" class="junction_gene">coding&nbsp;(820/1431&nbsp;nt)</td>
+        <td align="center" class="junction_gene"><i>JFHDKIGG_04797</i></td>
+        <td class="junction_gene">[locus_tag=Bcen2424_1249] [db_xref=InterPro:IPR001248] [protein=permease for cytosine/purines,uracil, thiamine,
+            allantoin] [protein_id=ABK08001.1][location=1379642..1381072] [gbkey=CDS]
+        </td>
+    </tr>
+    <!-- Side 1 Item Lines for New Junction -->
+    <tr class="mutation_table_row_1">
+        <td rowspan="2"><a href="evidence/JC_390.html">*</a></td>
+        <td rowspan="1"><a href="evidence/JC_SIDE_1_390.html">?</a></td>
+        <td rowspan="1" class="junction_gene">contig00020</td>
+        <td align="center" class="junction_gene">=&nbsp;67523</td>
+        <td align="center" class="junction_gene">54 (1.080)</td>
+        <td rowspan="2" align="center">3 (0.060)</td>
+        <td rowspan="2" align="center">3/264</td>
+        <td rowspan="2" align="center">4.1</td>
+        <td rowspan="2" align="center">5.6%</td>
+        <td align="center" class="junction_gene">coding&nbsp;(108/282&nbsp;nt)</td>
+        <td align="center" class="junction_gene"><i>JFHDKIGG_03549</i></td>
+        <td class="junction_gene">[locus_tag=Bcen2424_2283] [db_xref=InterPro:IPR005590] [protein=protein of unknown function DUF333]
+            [protein_id=ABK09034.1] [location=complement(2537339..2537620)][gbkey=CDS]
+        </td>
+    </tr>
+    <!-- Side 2 Item Lines for New Junction -->
+    <tr class="mutation_table_row_1">
+        <td rowspan="1"><a href="evidence/JC_SIDE_2_390.html">?</a></td>
+        <td rowspan="1" class="junction_gene">contig00020</td>
+        <td align="center" class="junction_gene">67529&nbsp;=</td>
+        <td align="center" class="junction_gene">48 (0.970)</td>
+        <td align="center" class="junction_gene">coding&nbsp;(114/282&nbsp;nt)</td>
+        <td align="center" class="junction_gene"><i>JFHDKIGG_03549</i></td>
+        <td class="junction_gene">[locus_tag=Bcen2424_2283] [db_xref=InterPro:IPR005590] [protein=protein of unknown function DUF333]
+            [protein_id=ABK09034.1] [location=complement(2537339..2537620)][gbkey=CDS]
+        </td>
+    </tr>
+</table>
+</body>
+</html>
