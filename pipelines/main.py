@@ -7,7 +7,6 @@ from typing import Dict, List
 from loguru import logger
 
 from pipelines import sampleio
-from pipelines.processes import read_trimming
 from pipelines.processes.variant_calling import sample_variant_calling
 from pipelines import programio
 
@@ -43,7 +42,7 @@ def transposon_variant_calling():
 	sample_variant_calling(reference, samples, project_folder / "breseq")
 
 
-def main_mworkshop():
+def main_workshop():
 	logger.info("Running variant pipeline...")
 	maxwell_folder = Path("/home/cld100/projects/migs/MaxwellLab")
 	sample_folder = maxwell_folder / "samples"

@@ -11,6 +11,6 @@ parser.add_argument(
 args = parser.parse_args()
 
 if args.which == 'variants':
-	main.main_migs_maxwelllab_variant_calling()
+	main.main_workshop()
 else:
 	print("Not a possible value")
