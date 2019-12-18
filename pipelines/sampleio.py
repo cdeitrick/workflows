@@ -57,8 +57,8 @@ def get_samples_from_table(filename:Path)->List[SampleReads]:
 		reader = csv.DictReader(table, delimiter = "\t")
 		for line in reader:
 			sample_name = line['sampleName']
-			read_forward = line['readForward']
-			read_reverse = line['readReverse']
+			read_forward = Path(line['readForward'])
+			read_reverse = Path(line['readReverse'])
 			sample = SampleReads(sample_name, read_forward, read_reverse)
 			samples.append(sample)
 	return samples
