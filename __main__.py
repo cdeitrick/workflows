@@ -11,8 +11,4 @@ parser.add_argument(
 
 args = parser.parse_args()
 
-if args.which == 'variants':
-	main.main_workshop()
-else:
-	message = f" Not a vaid value: '{args.which}': {'variants', 'assembly'}"
-	print("Not a possible value")
+main.main_shelly()

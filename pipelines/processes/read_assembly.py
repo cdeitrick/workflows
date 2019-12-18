@@ -40,7 +40,7 @@ class AssemblyWorkflow:
 		shovill_folder = checkdir(sample_folder / "shovill")
 
 		if isinstance(sample, sampleio.SampleReads):
-			trimmomatic_output = self.trimmomatic_workflow.run(sample.forward, sample.reverse, trimmomatic_folder)
+			trimmomatic_output = self.trimmomatic_workflow.run(sample.forward, sample.reverse, trimmomatic_folder, sample.name)
 		else:
 			logger.info(f"\t'{sample.name}' is already trimmed. Skipping...")
 			trimmomatic_output = sample
