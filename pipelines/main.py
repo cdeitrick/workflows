@@ -33,7 +33,7 @@ def collect_samples_from_folder(folder:Path)->List[Dict[str,Union[str,Path]]]:
 			}
 			result.append(data)
 		else:
-			message = f"Cannot find the reads for sample {folder.name}"
+			message = f"Cannot find the reads for sample {subfolder.name} ('{subfolder.absolute()}')"
 			logger.warning(message)
 	return result
 
@@ -56,6 +56,6 @@ def main_shelly():
 	import csv
 	outputpath = project_folder / "samples.tsv"
 	with outputpath.open('w') as output:
-		writer = csv.DictWriter(output, fieldnames = ["sampleName", "readForward", "readReverse"])
+		writer = csv.DictWriter(output, fieldnames = ["sampleName", "readForward", "readReverse"], delimiter = "\t")
 		writer.writeheader()
 		writer.writerows(project_samples)
