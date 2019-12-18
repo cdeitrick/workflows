@@ -56,7 +56,7 @@ class Trimmomatic:
 			message = f"Cannot locate the adaptor file: {self.clip}"
 			raise FileNotFoundError(message)
 
-	def run(self, forward: Path, reverse: Path, output_folder: Path, sample_name: str = None) -> programio.TrimmomaticOutput:
+	def run(self, forward: Path, reverse: Path, output_folder: Path, sample_name: str) -> programio.TrimmomaticOutput:
 		"""
 			Runs trimmomatic on the given pair of reads.
 		Parameters

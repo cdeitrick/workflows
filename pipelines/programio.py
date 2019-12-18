@@ -197,8 +197,8 @@ class TrimmomaticOutput(BaseSampleOutput):
 	def expected(cls, folder: Path, sample_name: str) -> 'TrimmomaticOutput':
 		forward: Path = folder / f'{sample_name}.forward.trimmed.paired.fastq'
 		reverse: Path = folder / f'{sample_name}.reverse.trimmed.paired.fastq'
-		unpaired_forward: Optional[Path] = folder / '{sample_name}.forward.trimmed.unpaired.fastq'
-		unpaired_reverse: Optional[Path] = folder / '{sample_name}.reverse.trimmed.unpaired.fastq'
+		unpaired_forward: Optional[Path] = folder / f'{sample_name}.forward.trimmed.unpaired.fastq'
+		unpaired_reverse: Optional[Path] = folder / f'{sample_name}.reverse.trimmed.unpaired.fastq'
 		return cls(sample_name, folder, forward, reverse, unpaired_forward, unpaired_reverse)
 
 	def as_sample(self) -> sampleio.SampleReads:

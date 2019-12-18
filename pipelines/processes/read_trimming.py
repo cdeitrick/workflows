@@ -18,6 +18,6 @@ def trim(samples:List[sampleio.SampleReads], project_folder:Path, stringent:bool
 	for index, sample in enumerate(samples):
 		logger.info(f"Trimming sample {index} of {len(samples)}: {sample.name}")
 
-		trimmomatic_output = trimmomatic_workflow.run(sample.forward, sample.reverse, project_folder / sample.name)
+		trimmomatic_output = trimmomatic_workflow.run(sample.forward, sample.reverse, project_folder / sample.name, sample.name)
 		output_files.append(trimmomatic_output)
 	return output_files
