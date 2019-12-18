@@ -10,6 +10,7 @@ from pipelines import sampleio
 #from pipelines.processes import read_assembly
 from pipelines.processes.variant_calling import sample_variant_calling
 from pipelines.processes.read_trimming import trim
+from pipelines import utilities
 #from pipelines import programio
 
 def _shelly_get_sample_reads_from_folder(folder:Path)->Optional[Tuple[Path,Path]]:
@@ -42,12 +43,13 @@ def main_shelly():
 	logger.info(" Running the large dataset of samples.")
 
 	project_folder = Path.home() / "projects" / "shelly"
+	project_output_folder = utilities.checkdir(project_folder / "output")
 	table_filename = project_folder / "samples.tsv"
 
-	reference = Path()
+	reference = project_folder / "T4.gbff"
 	samples = sampleio.get_samples_from_table(table_filename)
 	# Trim the reads
-	trimmed_output = trim(samples, project_folder)
+	trimmed_output = trim(samples, project_output_folder)
 	trimmed_samples = [i.as_sample() for i in trimmed_output]
 	# Call variants
-	sample_variant_calling(reference, trimmed_samples, project_folder, ispop = True)
+	sample_variant_calling(reference, trimmed_samples, project_output_folder, ispop = True)
