@@ -9,6 +9,7 @@ from loguru import logger
 from pipelines import sampleio
 #from pipelines.processes import read_assembly
 from pipelines.processes.variant_calling import sample_variant_calling
+from pipelines.processes.read_trimming import trim
 #from pipelines import programio
 
 def _shelly_get_sample_reads_from_folder(folder:Path)->Optional[Tuple[Path,Path]]:
@@ -45,5 +46,8 @@ def main_shelly():
 
 	reference = Path()
 	samples = sampleio.get_samples_from_table(table_filename)
-
-	sample_variant_calling(reference, samples, project_folder, ispop = True)
+	# Trim the reads
+	trimmed_output = trim(samples, project_folder)
+	trimmed_samples = [i.as_sample() for i in trimmed_output]
+	# Call variants
+	sample_variant_calling(reference, trimmed_samples, project_folder, ispop = True)

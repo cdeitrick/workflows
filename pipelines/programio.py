@@ -167,6 +167,7 @@ class ShovillOutput(BaseSampleOutput):
 
 @dataclass
 class TrimmomaticOutput(BaseSampleOutput):
+	name: str
 	forward: Path
 	reverse: Path
 	unpaired_forward: Optional[Path]

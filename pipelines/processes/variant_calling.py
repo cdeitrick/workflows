@@ -20,10 +20,6 @@ def sample_variant_calling(reference: Path, samples: List[sampleio.SampleReads],
 		The folder to use for the overall project.
 	ispop: bool; default False
 		Whether to run variant calling as populations or clones.
-
-	Returns
-	-------
-
 	"""
 	# First validate the input parameters
 	cancel = not utilities.verify_file_exists(reference)
