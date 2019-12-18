@@ -54,7 +54,7 @@ def get_samples_from_table(filename:Path)->List[SampleReads]:
 	samples = list()
 
 	with filename.open() as table:
-		reader = csv.DictReader(table)
+		reader = csv.DictReader(table, delimiter = "\t")
 		for line in reader:
 			sample_name = line['sampleName']
 			read_forward = line['readForward']
