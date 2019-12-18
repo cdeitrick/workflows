@@ -44,6 +44,26 @@ def get_samples_from_folder(folder: Path) -> List[SampleReads]:
 			pass
 	return samples
 
+def get_samples_from_table(filename:Path)->List[SampleReads]:
+	""" Reads a tab-delimited file of samples and extracts the read filenames.
+		Should have the columns 'sampleName', 'readForward', 'readReverse'
+	"""
+
+	import csv
+
+	samples = list()
+
+	with filename.open() as table:
+		reader = csv.DictReader(table)
+		for line in reader:
+			sample_name = line['sampleName']
+			read_forward = line['readForward']
+			read_reverse = line['readReverse']
+			sample = SampleReads(sample_name, read_forward, read_reverse)
+			samples.append(sample)
+	return samples
+
+
 
 def verify_samples(samples: List[SampleReads]) -> bool:
 	"""

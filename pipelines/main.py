@@ -6,9 +6,9 @@ from typing import Dict, List, Optional, Tuple, Union
 
 from loguru import logger
 
-#from pipelines import sampleio
+from pipelines import sampleio
 #from pipelines.processes import read_assembly
-#from pipelines.processes.variant_calling import sample_variant_calling
+from pipelines.processes.variant_calling import sample_variant_calling
 #from pipelines import programio
 
 def _shelly_get_sample_reads_from_folder(folder:Path)->Optional[Tuple[Path,Path]]:
@@ -41,21 +41,9 @@ def main_shelly():
 	logger.info(" Running the large dataset of samples.")
 
 	project_folder = Path.home() / "projects" / "shelly"
+	table_filename = project_folder / "samples.tsv"
 
-	bioproject_folder_left = project_folder / "bioproject-PRJNA407467"
-	bioproject_folder_right = project_folder / "bioproject-PRJNA499085"
+	reference = Path()
+	samples = sampleio.get_samples_from_table(table_filename)
 
-	bioproject_samples_folder_left = bioproject_folder_left / "samples"
-	bioproject_samples_folder_right = bioproject_folder_right / "samples"
-
-	bioproject_samples_left = collect_samples_from_folder(bioproject_samples_folder_left)
-	bioproject_samples_right = collect_samples_from_folder(bioproject_samples_folder_right)
-
-	project_samples = bioproject_samples_left + bioproject_samples_right
-
-	import csv
-	outputpath = project_folder / "samples.tsv"
-	with outputpath.open('w') as output:
-		writer = csv.DictWriter(output, fieldnames = ["sampleName", "readForward", "readReverse"], delimiter = "\t")
-		writer.writeheader()
-		writer.writerows(project_samples)
+	sample_variant_calling(reference, samples, project_folder, ispop = True)

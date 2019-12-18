@@ -7,7 +7,7 @@ from pipelines import programio, sampleio, systemio, utilities
 from pipelines.programs import breseq
 
 
-def sample_variant_calling(reference: Path, samples: List[sampleio.SampleReads], project_folder: Path):
+def sample_variant_calling(reference: Path, samples: List[sampleio.SampleReads], project_folder: Path, ispop:bool = False):
 	"""
 		Performs simple variant calling between the supplied reference and the given samples.
 	Parameters
@@ -18,6 +18,8 @@ def sample_variant_calling(reference: Path, samples: List[sampleio.SampleReads],
 		Contsins the source reads for variant calling. Trimming is not performmed at this stage.
 	project_folder: Path
 		The folder to use for the overall project.
+	ispop: bool; default False
+		Whether to run variant calling as populations or clones.
 
 	Returns
 	-------
@@ -37,7 +39,7 @@ def sample_variant_calling(reference: Path, samples: List[sampleio.SampleReads],
 	systemio.command_runner.set_command_log(project_folder / "commandlog_variant_calling.sh")
 	systemio.command_runner.write_command_to_commandlog(['module', 'load', 'breseq'])
 
-	breseq_workflow = breseq.Breseq(reference)
+	breseq_workflow = breseq.Breseq(reference, threads = 16, population = ispop)
 	breseq_workflow.test()
 
 	results = list()
